@@ -25,6 +25,28 @@ void *createUtil(){
 	return x;
 }
 
+void destroyUtil( void* x ){
+	Util y = (Util) x;
+	free(y);
+}
+/*
+void destroyUtil_key( void* x ){
+	Util y = (Util) x;
+	free(y);
+}
+*/
+
+void destroyPost( void* x ){
+	Post y = (Post) x;
+	free(x);
+}
+/*
+void destroyPost_key( void* x ){
+	unsigned int * y = (unsigned int *) x;
+	free(y);
+}
+*/
+
 
 
 /*

@@ -28,4 +28,7 @@ typedef struct post {
 void *createPost();
 void *createUtil();
 
+void destroyUtil( void* x );
+void destroyPost( void* x );
+
 #endif

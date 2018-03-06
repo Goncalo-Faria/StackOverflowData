@@ -31,8 +31,8 @@ TAD_community init(){
 
     TAD_community x = malloc(sizeof(struct TCD_community));
 
-    x->user = g_hash_table_new(g_int_hash,  g_int_equal);
-    x->post = g_hash_table_new(g_int_hash,  g_int_equal);
+    x->user = g_hash_table_new_full(g_int_hash,  g_int_equal, NULL, destroyUtil);
+    x->post = g_hash_table_new_full(g_int_hash,  g_int_equal, NULL, destroyPost);
 
     return x;
 }
