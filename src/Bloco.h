@@ -23,4 +23,7 @@ typedef struct post {
 
 }*Post;
 
+void *createPost();
+void *createUtil()
+
 #endif

@@ -1,43 +1,29 @@
 #include "Bloco.h"
+#include <stdlib>
 
 
-typedef struct utilizador {
+void *createPost(){
+	Util x = malloc (sizeof (struct post));
+	x->nome = "Nop";
+  	x->id = 0;
+	x->fundador = 0;
+	return x;
+}
 
-	unsigned char nome[100];
-	unsigned int perguntas;
-	unsigned int respostas;
-	unsigned int ID;
-
-}*Util ;
-
-typedef struct post {
-
-	unsigned int fundador;
-	unsigned int ID;
-	unsigned char nome[100];
-
-}*Post;
 
 // create -- destroy -- getters (P e respostas)
 
 // create the Util
 void *createUtil(){
 	Util x = malloc (sizeof (struct utilizador));
-	x->nome = "";
+	x->nome = "Nop";
 	x->perguntas = 0;
 	x->respostas = 0;
-	x->ID = 0;
+	x->id = 0;
 	return x;
 }
 
-//create a new Post
-void *createPost(){
-	Post x = malloc (sizeof (struct post));
-	x->ID  = 0;
-	x->nome = "";
-	x->fundador = 0;
-	return x;
-}
+
 
 /*
 
@@ -78,13 +64,5 @@ void setQ ( Post x , int q ) {
 
 
 
-// DESTROY
-void destroyPost (Post x){
-	Free (x);
-}
-
-void destroyUtil (Util x){
-	Free (x);
-}
 
 
