@@ -1,14 +1,26 @@
-/* Operações
-	-- ^ Consultas
-	-- ^ Procura
-	-- ^ Adicionar informação
-*/
+#ifndef LINKEDHASH_h
+#define LINKEDHASH_h
+
 typedef struct *Htable;
 
-void create_HT (Htable , int );
-int add_HT (Htable ,int , int );
-int search_HT (Htable , int ,int );
+
+#include <stdlib.h>
+
+/**
+ * 
+ * Construtores.
+ * 
+ */
+
+Htable create_Ht (float loadMax, float loadMin );
+void destroy_Ht ( Htable tb );
+//
 
 
-int remove_HT (Htable  , int , int  );
-int destroy_HT (Htable  , int , int  ) ;
+// métodos.
+
+int add_Ht(Htable tb ,unsigned char * key ,void * info, size_t spc,int*collision );
+void * search_Ht ( Htable tb, unsigned  char* key, size_t * spc );
+int remove_Ht(Htable tb,unsigned char*key);
+
+#endif

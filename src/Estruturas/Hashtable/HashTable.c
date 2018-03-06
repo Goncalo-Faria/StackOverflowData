@@ -10,7 +10,7 @@ typedef struct tuple {
 }TU;
 
 typedef struct dat {
-    char* word;
+    unsigned char * word;
     void * info;
     size_t fat;
 } *DATA;
@@ -27,18 +27,28 @@ typedef struct htable {
 /**
  * HASH FUNCTION.
  * 
+ * http://www.cse.yorku.ca/~oz/hash.html
+ * 
  * */
-static int hash (char* word , int N ) {
-	return ( (int)word % N );
+static unsigned long hash (unsigned char* word , int N ) {
+
+        unsigned long hash = 5381;
+        int c;
+
+        while (c = *str++)
+            hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+        return hash%N;
+
 }
 
 
 /**/
-int add_Ht(Htable tb ,char * key ,void * info, size_t spc );
+int add_Ht(Htable tb ,unsigned char * key ,void * info, size_t spc,int*collision );
 Htable create_Ht (float loadMax, float loadMin );
-void * search_Ht ( Htable tb, char* key, size_t * spc );
+void * search_Ht ( Htable tb, unsigned  char* key, size_t * spc );
 void destroy_Ht ( Htable tb );
-int remove_Ht(Htable tb, char*key);
+int remove_Ht(Htable tb,unsigned char*key);
 
 /**/
 
@@ -135,7 +145,7 @@ static int head_N ( void* a,void *b){
     return -1;
 }
 
-int add_Ht(Htable tb ,char * key ,void * info, size_t spc ){
+int add_Ht(Htable tb , unsigned char * key ,void * info, size_t spc,int*collision ){
     /*
         void* info deverá conter o pedaço e memória final.
     */
@@ -145,7 +155,7 @@ int add_Ht(Htable tb ,char * key ,void * info, size_t spc ){
     // esta estrutura será copiada-> por completo.
     
     klen = strlen ( key );
-    g.word = malloc( sizeof(char)* (klen+1) );
+    g.word = malloc( sizeof(unsigned char)* (klen+1) );
     strcpy(g.word ,key );
     g.fat  = spc;
     g.info = info;
@@ -154,8 +164,13 @@ int add_Ht(Htable tb ,char * key ,void * info, size_t spc ){
         tbdouble_H(tb);    
 
     // os apontadores devem conter o pedaço de memória final.
-    ind = add_N(head_N ,tb->v[ind] , &g , sizeof(struct dat) );
+    *collision = 0;
 
+    if(empty_ll(tb->v[ind] ))
+        *collision++;
+
+    ind = add_N(head_N ,tb->v[ind] , &g , sizeof(struct dat) );
+    
     if( ind ) // 0 se não adicionou. 
         tb->use++;
     
@@ -166,7 +181,7 @@ static int eq (void* op1, void* d ){
     // reflexiva, deterministica, transitiva e simétrica.
     DATA cont = (DATA)d;
 
-    if ( !strcmp( cont->word, (char*)op1 ))
+    if ( !strcmp( cont->word, (unsigned char*)op1 ))
         return 1;
     
     return 0; 
@@ -176,7 +191,7 @@ static int eqD (void* op1, void* d ){
     // reflexiva, deterministica, transitiva e simétrica.
     DATA cont = (DATA)d;
 
-    if ( !strcmp( cont->word, (char*)op1 )){
+    if ( !strcmp( cont->word, (unsigned char*)op1 )){
             boxDelete(NULL, d);
             return 1;
         }
@@ -184,8 +199,8 @@ static int eqD (void* op1, void* d ){
     return 0; 
 }
 
-void * search_Ht ( Htable tb, char* key, size_t * spc ){
-    int ind = hash(key ,tb->size );
+void * search_Ht ( Htable tb, unsigned char* key, size_t * spc ){
+    unsigned long int ind = hash(key ,tb->size );
     DATA cont;
 
     if( empty_ll(tb->v[ind] ) )
@@ -200,8 +215,8 @@ void * search_Ht ( Htable tb, char* key, size_t * spc ){
     return cont->info; 
 }
 
-int remove_Ht( Htable tb, char*key){
-    ind = hash(key ,tb->size );
+int remove_Ht( Htable tb, unsigned char*key){
+    unsigned long ind = hash(key ,tb->size );
 
     if( empty_ll(tb->v[ind] ) )
         return 0;
