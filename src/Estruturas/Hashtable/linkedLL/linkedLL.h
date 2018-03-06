@@ -11,8 +11,6 @@
     Project: https://github.com/Goncalo-Faria/AbstractDatatyp_API.
 */
 
-#include <stdlib.h>
-
 typedef struct root* LL;
 /*
     This is the data type that will represent the list.
@@ -27,7 +25,7 @@ LL create_ll(void);
 
 */
 
-int add_N(int (*ord )(void* , void*) ,LL x , void* op1, size_t fat );
+int add_N(int (*ord )(void* , void*) ,LL x , void* op1, unsigned long fat );
     /*
         This method receives a function, a list and generic pointer block in memory and it's size.
         
@@ -50,7 +48,7 @@ int rem_N( int (*f )(void* , void*) ,LL x ,void* op1 );
         
     */
 
-void* ind_ll( LL x , int i, size_t * s );
+void* ind_ll( LL x , int i, unsigned long * s );
     /*
         i is the index. And the value that 's' is pointing to will have the size of the returned memory block.
 

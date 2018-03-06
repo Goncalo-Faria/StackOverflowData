@@ -1,4 +1,4 @@
-#include "linkedLL.h"
+#include "linkedLL/linkedLL.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -23,6 +23,11 @@ typedef struct htable {
 
 } *Htable;
 
+
+/**
+ * HASH FUNCTION.
+ * 
+ * */
 static int hash (char* word , int N ) {
 	return ( (int)word % N );
 }
@@ -33,7 +38,7 @@ int add_Ht(Htable tb ,char * key ,void * info, size_t spc );
 Htable create_Ht (float loadMax, float loadMin );
 void * search_Ht ( Htable tb, char* key, size_t * spc );
 void destroy_Ht ( Htable tb );
-int rem_Ht(Htable tb, char*key size_t* spc);
+int remove_Ht(Htable tb, char*key);
 
 /**/
 
@@ -49,6 +54,15 @@ static int boxDelete (void* op1 , void* x){
     return 1;
 
 }
+
+static int wordDelete (void* op1 , void* x){
+
+    DATA* y=(DATA*) x;
+    free(y->word);
+    return 1;
+
+}
+
 
 ///
 
@@ -87,7 +101,6 @@ Htable create_Ht (float loadMax, float loadMin ){
     return hold;
 }
 
-
 static void tbdouble_H (Htable tb) {
     int i,old,j,oldU = tb->use;
     size_t fat;
@@ -116,6 +129,8 @@ static int head_N ( void* a,void *b){
     /*
         auxiliary function.
         f(x)=True;    
+
+        Serve para adicionar à cabeça.
     */
     return -1;
 }
@@ -157,6 +172,18 @@ static int eq (void* op1, void* d ){
     return 0; 
 }
 
+static int eqD (void* op1, void* d ){
+    // reflexiva, deterministica, transitiva e simétrica.
+    DATA cont = (DATA)d;
+
+    if ( !strcmp( cont->word, (char*)op1 )){
+            boxDelete(NULL, d);
+            return 1;
+        }
+    
+    return 0; 
+}
+
 void * search_Ht ( Htable tb, char* key, size_t * spc ){
     int ind = hash(key ,tb->size );
     DATA cont;
@@ -173,14 +200,38 @@ void * search_Ht ( Htable tb, char* key, size_t * spc ){
     return cont->info; 
 }
 
-void destroy_Ht ( Htable tb ){
+int remove_Ht( Htable tb, char*key){
+    ind = hash(key ,tb->size );
 
+    if( empty_ll(tb->v[ind] ) )
+        return 0;
+
+    ind = rem_N( eqD , tb->v[ind] , key );
+    
+    return ind;
+
+}
+
+void destroy_Ht ( Htable tb, int flag  ){
+    /*
+        Se .info tiver apontadores .. este módulo ná é reponsável por da free deles.
+
+        flag == 1 significa eliminar os dados.
+        flag == 0 significa não eliminar os dados.
+    */
     unsigned int i;
     //dell_H(tb->v,tb->size);
-    
-    for (i=0; i< tb->size;i++){
+    if(flag)
+        for (i=0; i< tb->size;i++){
+            Rem_N(  boxDelete , tb->v[i] , NULL );
+            free(tb->v[i])
+        }
+    else 
+        for (i=0; i< tb->size;i++){
+            Rem_N(  wordDelete , tb->v[i] , NULL );
+            free(tb->v[i])
+        }
+        
 
-        Rem_N(  boxDelete , tb->v[i] , NULL );
-    
     free(tb);
 }

@@ -137,7 +137,7 @@ static int yes( void* a,void *b){
     return 1;
 }
 
-void clean_ll(LL x , void (*ff) (void*) ){
+void clean_ll(LL x){
     /*
     Deletes the list. Assumes the list exists even if empty.
     */
