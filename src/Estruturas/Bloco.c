@@ -35,6 +35,8 @@ void *createPost(){
 	x->nome = "";
 }
 
+/*
+
 // Create a Util with some info
 void *createUtil_p (char *n , int p , int r , int f ) {
 	Util x = malloc (sizeof (struc utilizador));
@@ -52,14 +54,24 @@ void *createPost_p(int id , char* name){
 }
 
 
+
 // GETTERS!
-int getPerguntas(Util x) {
+int getQ(Util x) {
 	return ( x->perguntas );
 }
 
-int getRespostas(Util x) {
+int getA(Util x) {
 	return ( x->respostas);
 }
+
+//SETTERS!
+
+void setQ ( Post x , int q ) {
+	x
+}
+
+*/
+
 
 
 // DESTROY
