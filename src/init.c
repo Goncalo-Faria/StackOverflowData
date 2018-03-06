@@ -3,7 +3,7 @@
 
 #include <stdio.h> // temporario
 #include <string.h>
-#include <glib.h>
+#include "Community.h"
 #include <Bloco.h>
 
 /**
@@ -14,10 +14,18 @@
  * 
  * PostTypeId = 2 resposta;
  * */
-typedef struct TCD_community{
-    GHashTable* user;
-    GHashTable* post;
-} * TAD_community;
+
+
+// Métodos publicos.
+//TAD_community init();
+//TAD_community clean(TAD_community com);
+//TAD_community load(TAD_community com, char* dump_path)
+
+// Métodos privados.
+static void parsePost( TAD_community com, xmlNode * node);
+static void parseUser( TAD_community com, xmlNode * node);
+
+//
 
 TAD_community init(){
 
@@ -36,10 +44,6 @@ TAD_community clean(TAD_community com){
 
       return com;
 }
-
-static void parsePost( TAD_community com, xmlNode * node);
-static void parseUser( TAD_community com, xmlNode * node);
-
 
 TAD_community load(TAD_community com, char* dump_path){
 
