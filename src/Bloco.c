@@ -38,7 +38,7 @@ void destroyUtil_key( void* x ){
 
 void destroyPost( void* x ){
 	Post y = (Post) x;
-	free(x);
+	free(y);
 }
 /*
 void destroyPost_key( void* x ){
