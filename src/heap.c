@@ -9,7 +9,6 @@
 typedef struct ent {
     
     int key;
-    size_t fat;
     void * data;
 
 } *ENTRY ;
@@ -19,6 +18,7 @@ typedef struct heap {
     ENTRY * v;
     int len;
     int use;
+    int max;
 
 } * HEAP;
 
@@ -26,22 +26,42 @@ int length_H(HEAP x){
     return x->use;
 }
 
+int maxQ_H(HEAP x){
+    return ( x->use == x->max );
+}
+
 HEAP create_H(void){
     HEAP x = (HEAP)malloc( sizeof (struct heap) );
     x->use=0;
     x->v = malloc( 2 * sizeof (ENTRY) );
     x->len = 2;
+    x->max = -1;
+
+    return x;
+}
+
+HEAP limcreate_H(int lim){
+    HEAP x = (HEAP)malloc( sizeof (struct heap) );
+    x->use=0;
+    x->v = malloc( 2 * sizeof (ENTRY) );
+    x->len = 2;
+    x->max = lim;
     
     return x;
 }
 
 void destroy_H(HEAP x){
 
-    int i;
+    destroyC_H( x ,  NULL);
+}
+
+void destroyC_H(HEAP x,  void (*ff) (void*)){
+
+    int i,r = !(f == NULL);
     if(x){
         for(i=0; i < x->use; i++ ){
-            if(x->v[i]->data)
-                free(x->v[i]->data);
+            if(x->v[i]->data && r)
+                ff(x->v[i]->data);
             free(x->v[i]);
         }
         free( x->v );
@@ -113,18 +133,27 @@ static void BubleDown (ENTRY * v , int i, int N ){
 
 }
 
-void add_Heap( HEAP x, int key , void* n , size_t fat){
+void addR_Heap( HEAP x, int key , void* n , void (*ff) (void*) ){
+
+    ff ( x->v[use-1]->data );
+
+    x->v[use-1]->data = n;
+    x->v[use-1]->key  = key;
+
+    BubleUp(x->v , x->use-1 );
+}
+
+void add_Heap( HEAP x, int key , void* n ){
 
     if( full(x) ) tabledouble(x);
     x->v[x->use] = malloc( sizeof(struct ent) );
     x->v[x->use]->data = n;
-    x->v[x->use]->fat = fat;
     x->v[x->use++]->key = key;
 
     BubleUp(x->v , x->use-1 );
 }
 
-void* rem_Heap( HEAP x, int *key, size_t *fat ){
+void* rem_Heap( HEAP x, int *key){
 
     /*
         the flags are 'u' for use.
@@ -137,7 +166,6 @@ void* rem_Heap( HEAP x, int *key, size_t *fat ){
     if ( quarter(x) ) tablehalv(x);
 
     *key = x->v[0]->key ;
-    *fat = x->v[0]->fat ; 
     n    = x->v[0]->data;
 
     x->v[0]->data = NULL;
