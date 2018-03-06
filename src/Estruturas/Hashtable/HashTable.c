@@ -4,6 +4,9 @@
 
 #define NOT_INTER(x) ( ( (x) < 0 ) && ( (x) > 1 ) )
 
+#define tbdouble_H(tb) stch(tb, 1)
+#define tbhalv_H(tb) stch(tb, 0)
+
 typedef struct tuple {
     char max;
     char min;
@@ -35,7 +38,7 @@ static unsigned long hash (unsigned char* word , int N ) {
         unsigned long hash = 5381;
         int c;
 
-        while (c = *str++)
+        while (c = *word++)
             hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
         return hash%N;
@@ -47,7 +50,7 @@ static unsigned long hash (unsigned char* word , int N ) {
 int add_Ht(Htable tb ,unsigned char * key ,void * info, size_t spc,int*collision );
 Htable create_Ht (float loadMax, float loadMin );
 void * search_Ht ( Htable tb, unsigned  char* key, size_t * spc );
-void destroy_Ht ( Htable tb );
+void destroy_Ht ( Htable tb , int flag );
 int remove_Ht(Htable tb,unsigned char*key);
 
 /**/
@@ -111,28 +114,39 @@ Htable create_Ht (float loadMax, float loadMin ){
     return hold;
 }
 
-static void tbdouble_H (Htable tb) {
-    int i,old,j,oldU = tb->use;
+static int stch (Htable tb,int flag) {
+    int i,old,j,oldU = tb->use,num,s=0, c;
     size_t fat;
     LL* oldT = tb->v ;
     void* info;
     DATA y;
 
+
     old= tb->size;
     tb->use = 0;
-    tb->size= old*2;
+
+    if(flag)
+        tb->size= old*2;
+    else
+        tb->size= old/2;
+
+
     tb->v = fill_H( tb->size );
 
     for(i=0; i<old && oldU; i++) 
-        if(! empty_ll( oldT[i] ) )
-            for( j=0;j<length_ll(oldT[i]);j++){
+        if(! empty_ll( oldT[i] ) ){
+            c = length_ll(oldT[i]);
+            for( j=0; j<c ;j++){
                 info = ind_ll(oldT[i], j, &fat );
                 y = (DATA)info;
-                add_Ht(tb, y->word , y->info, y->fat );
+                add_Ht(tb, y->word , y->info, y->fat, &num);
+                s+=num;
                 oldU--;
             }
+        }
 
     dell_H(oldT, old);
+    return s;
 }
 
 static int head_N ( void* a,void *b){
@@ -160,11 +174,12 @@ int add_Ht(Htable tb , unsigned char * key ,void * info, size_t spc,int*collisio
     g.fat  = spc;
     g.info = info;
 
+    *collision = 0;
+
     if ( (float)tb->use/(float)tb->size >= (float)tb->load.max/100 )
-        tbdouble_H(tb);    
+        *collision = tbdouble_H(tb);    
 
     // os apontadores devem conter o pedaço de memória final.
-    *collision = 0;
 
     if(empty_ll(tb->v[ind] ))
         *collision++;
@@ -223,6 +238,9 @@ int remove_Ht( Htable tb, unsigned char*key){
 
     ind = rem_N( eqD , tb->v[ind] , key );
     
+    if ( (float)tb->use/(float)tb->size <= (float)tb->load.min/100 )
+        tbhalv_H(tb);    
+
     return ind;
 
 }
@@ -238,13 +256,13 @@ void destroy_Ht ( Htable tb, int flag  ){
     //dell_H(tb->v,tb->size);
     if(flag)
         for (i=0; i< tb->size;i++){
-            Rem_N(  boxDelete , tb->v[i] , NULL );
-            free(tb->v[i])
+            rem_N(  boxDelete , tb->v[i] , NULL );
+            free(tb->v[i]);
         }
     else 
         for (i=0; i< tb->size;i++){
-            Rem_N(  wordDelete , tb->v[i] , NULL );
-            free(tb->v[i])
+            rem_N(  wordDelete , tb->v[i] , NULL );
+            free(tb->v[i]);
         }
         
 
