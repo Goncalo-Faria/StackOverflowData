@@ -1,5 +1,5 @@
 #include "Bloco.h"
-#include <stdlib>
+#include <stdlib.h>
 
 
 void *createPost(){

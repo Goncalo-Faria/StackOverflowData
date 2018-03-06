@@ -12,15 +12,15 @@ int main(){
   return 0;
   */
   
-  TAD_community x = init();
+    TAD_community x = init();
 
-  x = load( x , "practicedata" );
+    x = load( x , "practicedata" );
 
-  printf("USER::%d \n",g_hash_table_size(x->post));
+    printf("USER::%d \n",g_hash_table_size(x->post));
 
-  clean(x);
-  return 1;
-
+    clean(x);
+    return 1;
+}
 
     
     /*
@@ -41,7 +41,7 @@ int main(){
     return 0;
     */
 
-} 
+
 
 /**
  *
