@@ -6,12 +6,13 @@ typedef struct utilizador {
 	unsigned char nome[100];
 	unsigned int perguntas;
 	unsigned int respostas;
-	unsigned int fundador;
+	unsigned int ID;
 
 }*Util ;
 
 typedef struct post {
 
+	unsigned int fundador;
 	unsigned int ID;
 	unsigned char nome[100];
 
@@ -23,9 +24,9 @@ typedef struct post {
 void *createUtil(){
 	Util x = malloc (sizeof (struct utilizador));
 	x->nome = "";
-	x->perguntas = "";
-	x->respostas = "";
-	x->fundador = 0;
+	x->perguntas = 0;
+	x->respostas = 0;
+	x->ID = 0;
 	return x;
 }
 
@@ -34,6 +35,7 @@ void *createPost(){
 	Post x = malloc (sizeof (struct post));
 	x->ID  = 0;
 	x->nome = "";
+	x->fundador = 0;
 	return x;
 }
 
