@@ -9,6 +9,7 @@ typedef struct post * Post;
 
 typedef struct utilizador {
 
+	unsigned int id;
 	unsigned char nome[100];
 	unsigned int Q;
 	unsigned int A;
@@ -18,12 +19,13 @@ typedef struct utilizador {
 typedef struct post {
 
 	unsigned int id;
+	unsigned int type;// 1 Q ; 2 A;
     unsigned int fundador;
 	unsigned char nome[100];
 
 }*Post;
 
 void *createPost();
-void *createUtil()
+void *createUtil();
 
 #endif

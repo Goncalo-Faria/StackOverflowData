@@ -1,11 +1,13 @@
 #include "Bloco.h"
 #include <stdlib.h>
+#include <string.h>
 
 
 void *createPost(){
-	Util x = malloc (sizeof (struct post));
-	x->nome = "Nop";
+	Post x = malloc (sizeof (struct post));
+	strcpy((char*)x->nome,"Nop");
   	x->id = 0;
+	x->type = 0;
 	x->fundador = 0;
 	return x;
 }
@@ -16,9 +18,9 @@ void *createPost(){
 // create the Util
 void *createUtil(){
 	Util x = malloc (sizeof (struct utilizador));
-	x->nome = "Nop";
-	x->perguntas = 0;
-	x->respostas = 0;
+	strcpy((char*)x->nome,"Nop");
+	x->Q = 0;
+	x->A = 0;
 	x->id = 0;
 	return x;
 }

@@ -14,9 +14,7 @@ int main(){
   
     TAD_community x = init();
 
-    x = load( x , "practicedata" );
-
-    printf("USER::%d \n",g_hash_table_size(x->post));
+    load( x , "practicedata" );
 
     clean(x);
     return 1;
