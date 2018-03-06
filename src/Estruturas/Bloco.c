@@ -26,6 +26,7 @@ void *createUtil(){
 	x->perguntas = "";
 	x->respostas = "";
 	x->fundador = 0;
+	return x;
 }
 
 //create a new Post
@@ -33,6 +34,7 @@ void *createPost(){
 	Post x = malloc (sizeof (struct post));
 	x->ID  = 0;
 	x->nome = "";
+	return x;
 }
 
 /*
