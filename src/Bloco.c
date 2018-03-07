@@ -39,6 +39,11 @@ void destroyUtil_key( void* x ){
 }
 */
 
+void setDate ( Post x ,int d,int m ,int a){
+	free_date(x->date);
+	x->date = createDate(d,m,a);
+}
+
 void destroyPost( void* x ){
 	Post y = (Post) x;
 	free_date(y->data) ;

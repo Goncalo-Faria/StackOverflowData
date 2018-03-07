@@ -22,7 +22,9 @@ typedef struct utilizador {
 	unsigned char nome[MAX];
 	unsigned int Q;
 	unsigned int A;
-	unsigned char bio[MAX];
+
+
+	unsigned char bio [MAX];
 //	unsigned int AGE;
 //	unsigned char loc[100];
 //	unsigned int UV;
@@ -58,5 +60,7 @@ void *createUtil();
 void destroyUtil( void* x );
 //destroy a specify post
 void destroyPost( void* x );
+
+void setDate ( Post x ,int d,int m ,int a);
 
 #endif

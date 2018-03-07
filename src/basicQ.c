@@ -43,15 +43,15 @@ STR_pair info_from_post(TAD_community com, int id){
 
 LONG_list top_most_active(TAD_community com, int N){
     int num;
+
     HEAP x = limcreate_H(N);
     LONG_list ll = create_list(N);
     g_hash_table_foreach(com->user, f , (void*)x)
     
     //
     for(i=0; i<N;i++){
-        rem_Heap( x , &num );
-        num *= -1;
-        set_list(ll, i , (long)num );
+        c = (Util) rem_Heap( x , &num );
+        set_list(ll, i , c->id );
     }
     
     destroy_H(x);
