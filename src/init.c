@@ -6,6 +6,7 @@
 #include "Community.h"
 #include <Bloco.h>
 
+
 /**
  *  Main structure.
  * 
@@ -34,9 +35,10 @@ TAD_community init(){
 
     TAD_community x = malloc(sizeof(struct TCD_community));
 
-    x->user = g_hash_table_new_full(g_int_hash,  g_int_equal, NULL, destroyUtil);
-    x->post = g_hash_table_new_full(g_int_hash,  g_int_equal, NULL, destroyPost);
+    x->user  = g_hash_table_new_full(g_int64_hash ,  g_int64_equal, free , destroyUtil);
+    x->post  = g_hash_table_new_full(g_int_hash,  g_int_equal, free , destroyPost);
 
+    x->treeP = g_tree_new_full(date_compare, NULL  ,NULL, destroyPost );
     return x;
 }
 
@@ -93,7 +95,7 @@ TAD_community load(TAD_community com, char* dump_path){
 static void parsePost ( TAD_community com , xmlNode* node ){
 
     xmlChar * hold;
-    int num, ident;
+    int num, *ident;
     Util y = NULL;
     Post x = NULL;
     //unsigned long childCount = xmlChildElementCount(node),i;
@@ -104,29 +106,25 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             //printf("%c%s\n",'-', node->name);
             //printf("%d\n",++e);
             x = (Post)createPost();
+            ident = malloc ( sizeof(int ) );
 
-            // GET POST ID
+            // GET POST ID <LONG>
             hold = xmlGetProp(node, (const xmlChar*)"Id");
-            x->id = ident = (unsigned int) atoi((const char*) hold );
+            *ident = (int) atoi((const char*) hold );
             xmlFree(hold);
 
             // GET POST TYPE
             hold = xmlGetProp(node, (const xmlChar*)"PostTypeId");
-            x->type = (unsigned int) atoi((const char*) hold );
+            x->type = (unsigned char) atoi((const char*) hold );
             xmlFree(hold);
 
             // GET OWNER ID
             hold = xmlGetProp(node, (const xmlChar*)"OwnerUserId");
-            x->fundador = num = (unsigned int) atoi((const char*) hold );
-            xmlFree(hold);
-
-            // GET UTIL BIO
-            hold = xmlGetProp(node, (const xmlChar*)"AboutMe");
-            sprintf((char*)x->bio,"%s",(const char*)hold );
+            x->fundador = num = (unsigned long) atol((const char*) hold );
             xmlFree(hold);
 
             // GET OWNER REF
-            y = (Util)g_hash_table_lookup(com->user ,&num);
+            y = (Util)g_hash_table_lookup(com->user , &num);
             
             // COUNT POST TYPE 
             if(x->type == 1)
@@ -139,8 +137,7 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             sprintf((char*)x->nome,"%s",(const char*)hold );
             xmlFree(hold);
 
-            g_hash_table_insert(com->post , (void*)&ident, x );
-
+            g_hash_table_insert(com->post , (void*)ident, x );
         }
 
         parsePost(com , node->children);
@@ -152,7 +149,7 @@ static void parseUser ( TAD_community com , xmlNode* node ){
 
     xmlChar * hold;
     Util x = NULL;
-    int ident;
+    unsigned long *ident;
     //unsigned long childCount = xmlChildElementCount(node),i;
 
     while(node){
@@ -161,18 +158,24 @@ static void parseUser ( TAD_community com , xmlNode* node ){
             //printf("%c%s\n",'-', node->name);
             //printf("%d\n",++e);
             x = (Util)createUtil();
+            ident = malloc ( sizeof( unsigned long ));
 
             // get user id
             hold = xmlGetProp(node, (const xmlChar*)"Id");
-            x->id = ident =(unsigned int) atoi((const char*) hold );
+            *ident = (unsigned int) atol((const char*) hold );
             xmlFree(hold);
             
+            // GET UTIL BIO
+            hold = xmlGetProp(node, (const xmlChar*)"AboutMe");
+            sprintf((char*)x->bio,"%s",(const char*)hold );
+            xmlFree(hold);
+
             // get Display name
             hold = xmlGetProp(node, (const xmlChar*)"DisplayName");
             sprintf((char*)x->nome,"%s",(const char*)hold );
             xmlFree(hold);
 
-            g_hash_table_insert(com->user , (void*)(&ident), x );
+            g_hash_table_insert(com->user , (void*)(ident), x );
 
         }
 

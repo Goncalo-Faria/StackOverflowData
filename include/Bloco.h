@@ -2,7 +2,7 @@
 #ifndef bloco_h
 #define bloco_h
 
-#define Max 100
+//#define Max 100
 
 typedef struct utilizador *Util ;
 typedef struct post * Post;
@@ -18,13 +18,13 @@ typedef struct post * Post;
 */
 typedef struct utilizador {
 
-	unsigned long id;
-	unsigned char nome[MAX];
+	//unsigned long id;
+	unsigned char nome[100];
 	unsigned int Q;
 	unsigned int A;
 
 
-	unsigned char bio [MAX];
+	unsigned char bio [200];
 //	unsigned int AGE;
 //	unsigned char loc[100];
 //	unsigned int UV;
@@ -43,10 +43,10 @@ typedef struct utilizador {
 */
 typedef struct post {
 
-	unsigned int id;
-	unsigned int type;// 1 Q ; 2 A;
-    unsigned int fundador;
-	unsigned char nome[MAX];
+	//unsigned int id;
+	unsigned char type;// 1 Q ; 2 A;
+    unsigned long fundador;
+	unsigned char nome[100];
 	Date data;
 
 }*Post;
