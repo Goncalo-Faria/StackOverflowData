@@ -1,7 +1,7 @@
 #include "Bloco.h"
 #include <stdlib.h>
 #include <string.h>
-
+#include "date.h"
 
 void *createPost(){
 	Post x = malloc (sizeof (struct post));
@@ -9,13 +9,14 @@ void *createPost(){
   	x->id = 0;
 	x->type = 0;
 	x->fundador = 0;
+	//x->data = malloc (sizeof(struct date));
+	x->data = createDate ( 0 , 0 ,0);
 	return x;
 }
 
 
 // create -- destroy -- getters (P e respostas)
 
-// create the Util
 void *createUtil(){
 	Util x = malloc (sizeof (struct utilizador));
 	strcpy((char*)x->nome,"Nop");
@@ -29,6 +30,7 @@ void destroyUtil( void* x ){
 	Util y = (Util) x;
 	free(y);
 }
+
 /*
 void destroyUtil_key( void* x ){
 	Util y = (Util) x;
@@ -38,8 +40,10 @@ void destroyUtil_key( void* x ){
 
 void destroyPost( void* x ){
 	Post y = (Post) x;
+	free_date(y->data) ;
 	free(y);
 }
+
 /*
 void destroyPost_key( void* x ){
 	unsigned int * y = (unsigned int *) x;
@@ -52,6 +56,7 @@ void destroyPost_key( void* x ){
 /*
 
 // Create a Util with some info
+
 void *createUtil_p (char *n , int p , int r , int f ) {
 	Util x = malloc (sizeof (struc utilizador));
 	x -> nome = n;
