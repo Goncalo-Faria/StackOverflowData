@@ -57,7 +57,7 @@ void destroy_H(HEAP x){
 
 void destroyC_H(HEAP x,  void (*ff) (void*)){
 
-    int i,r = !(f == NULL);
+    int i,r = !(ff == NULL);
     if(x){
         for(i=0; i < x->use; i++ ){
             if(x->v[i]->data && r)
@@ -136,10 +136,10 @@ static void BubleDown (ENTRY * v , int i, int N ){
 void addR_Heap( HEAP x, int key , void* n , void (*ff) (void*) ){
 
     if ( ff )
-        ff ( x->v[use-1]->data );
+        ff ( x->v[x->use-1]->data );
 
-    x->v[use-1]->data = n;
-    x->v[use-1]->key  = key;
+    x->v[x->use-1]->data = n;
+    x->v[x->use-1]->key  = key;
 
     BubleUp(x->v , x->use-1 );
 }
