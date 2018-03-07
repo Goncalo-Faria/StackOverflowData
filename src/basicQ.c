@@ -46,7 +46,7 @@ LONG_list top_most_active(TAD_community com, int N){
 
     HEAP x = limcreate_H(N);
     LONG_list ll = create_list(N);
-    g_hash_table_foreach(com->user, f , (void*)x)
+    g_hash_table_foreach( com->user, f , (void*)x)
     
     //
     for(i=0; i<N;i++){
@@ -72,16 +72,54 @@ static void f (void* key, void* value, void* user_data){
 
 
 
+// recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
+// estou a assumir que recebo uma AVL;
 
 
-LONG_pair total_posts(TAD community com, Date begin, Date end){
- 
- // ia fazer heap com data_begin
-    // heap com data_end
+typedef struct contain {
+    Date dateB;
+    Date dateE;
+    long q;
+    long a;
+}*Contain;
 
-    // somar as 2 datas;
 
+LONG_pair total_posts(TAD community com, Date begin, Date end) {
+
+    Contain x = malloc (sizeof (struct contain));
+    x->dateB = begin;
+    x->dateE = end; 
+
+    // nao esta defenido por incompetencia (LONG_PAI) xD !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    x->q=0;
+    x->a=0;
+
+    g_tree_foreach (com->treeP ,  g  , (void*)x) ;
+
+    LONG_pair res = create_pairr ( x->q , x->a  ) ;
+    
+    free(x);
+
+    return res;
 }
+
+static void g ( void* key , void *value , void *datas ) {
+
+    Date x = (Date) x;
+    Date_ y = (Date_) datas
+    Post p = (Post) value;
+    /*
+    Se as datas forem iguais e tipo for 1 (quest) aumenta as quest e vice-versa para as respostas
+    compara atraves do data_compare -> data.h
+    */
+    if ( date_compare ( x , y->date1 , null) <= 0 && date_compare ( x , y->date1 , null) >= 0 ) {
+        if ( (p->type) == 1) y->q++;
+        else y->a++;
+    }
+}
+
+
+
 
 
 
