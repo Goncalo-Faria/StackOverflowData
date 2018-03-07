@@ -135,7 +135,8 @@ static void BubleDown (ENTRY * v , int i, int N ){
 
 void addR_Heap( HEAP x, int key , void* n , void (*ff) (void*) ){
 
-    ff ( x->v[use-1]->data );
+    if ( ff )
+        ff ( x->v[use-1]->data );
 
     x->v[use-1]->data = n;
     x->v[use-1]->key  = key;
@@ -154,12 +155,6 @@ void add_Heap( HEAP x, int key , void* n ){
 }
 
 void* rem_Heap( HEAP x, int *key){
-
-    /*
-        the flags are 'u' for use.
-                  and 'c' for copy
-           
-    */
 
     void *n;
 
