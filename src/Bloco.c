@@ -20,6 +20,7 @@ void *createPost(){
 void *createUtil(){
 	Util x = malloc (sizeof (struct utilizador));
 	strcpy((char*)x->nome,"Nop");
+	strcpy((char*)x->bio, "Nop");
 	x->Q = 0;
 	x->A = 0;
 	x->id = 0;

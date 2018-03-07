@@ -14,13 +14,19 @@ typedef struct post * Post;
 ->nº de perguntas 
 ->nº de respostas
 ->ID
+->BIO
 */
 typedef struct utilizador {
 
-	unsigned int id;
-	unsigned char nome[100];
+	unsigned long id;
+	unsigned char nome[MAX];
 	unsigned int Q;
 	unsigned int A;
+	unsigned char bio[MAX];
+//	unsigned int AGE;
+//	unsigned char loc[100];
+//	unsigned int UV;
+//	unsigned int DV;
 
 }*Util ;
 
@@ -38,15 +44,19 @@ typedef struct post {
 	unsigned int id;
 	unsigned int type;// 1 Q ; 2 A;
     unsigned int fundador;
-	unsigned char nome[100];
+	unsigned char nome[MAX];
 	Date data;
 
 }*Post;
 
+// create a new post
 void *createPost();
+// create a new util
 void *createUtil();
 
+//destroy some specify post
 void destroyUtil( void* x );
+//destroy a specify post
 void destroyPost( void* x );
 
 #endif
