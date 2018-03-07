@@ -27,6 +27,9 @@ static void parseUser( TAD_community com, xmlNode * node);
 
 //
 
+// recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
+// estou a assumir que recebo uma AVL;
+
 TAD_community init(){
 
     TAD_community x = malloc(sizeof(struct TCD_community));
@@ -115,6 +118,11 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             // GET OWNER ID
             hold = xmlGetProp(node, (const xmlChar*)"OwnerUserId");
             x->fundador = num = (unsigned int) atoi((const char*) hold );
+            xmlFree(hold);
+
+            // GET UTIL BIO
+            hold = xmlGetProp(node, (const xmlChar*)"AboutMe");
+            sprintf((char*)x->bio,"%s",(const char*)hold );
             xmlFree(hold);
 
             // GET OWNER REF
