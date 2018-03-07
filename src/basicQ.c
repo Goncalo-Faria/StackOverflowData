@@ -42,16 +42,20 @@ STR_pair info_from_post(TAD_community com, int id){
 }
 
 LONG_list top_most_active(TAD_community com, int N){
-
+    int num;
     HEAP x = limcreate_H(N);
     LONG_list ll = create_list(N);
     g_hash_table_foreach(com->user, f , (void*)x)
     
     //
-    for(i=0; i<N;i++)
-
-
-    set_list(ll, i , );
+    for(i=0; i<N;i++){
+        rem_Heap( x , &num );
+        num *= -1;
+        set_list(ll, i , (long)num );
+    }
+    
+    destroy_H(x);
+    return ll;
 
 }
 
@@ -64,3 +68,41 @@ static void f (void* key, void* value, void* user_data){
     else 
         add_Heap( y , (-1) * num , value );
 }
+
+
+
+
+
+
+LONG_pair total_posts(TAD community com, Date begin, Date end){
+ 
+ // ia fazer heap com data_begin
+    // heap com data_end
+
+    // somar as 2 datas;
+
+}
+
+
+
+
+USER get_user_info(TAD community com, long id){
+
+    User x  = NULL;
+    util y = NULL;
+
+    // preciso que o id seja do tipo int
+    y = (Util)g_hash_table_lookup(com->util ,& (int *)id);
+    // atraves do ID da me isso
+
+    // create_user (char* short_bio, long* post_history);
+
+
+   
+    x = create_user ( x -> bio , x -> Q) ;
+    free(y);
+
+    return x;
+}
+
+
