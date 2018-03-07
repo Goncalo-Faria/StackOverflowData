@@ -7,7 +7,7 @@ Date createDate(int day, int month, int year);
 int get_day(Date d);
 int get_month(Date d); // must return a value between 0 and 11 
 int get_year(Date d);
-void free_date(Date d);
-int date_compare ( void* a /*x*/, void* b/*y*/,void* user_data);
+void free_date(void* d);
+int date_compare ( const void* a /*x*/, const void* b/*y*/,void* user_data);
 
 #endif

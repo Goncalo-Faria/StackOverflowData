@@ -5,22 +5,58 @@
 #include "heap.h"
 #include "Community.h"
 
+
+// auxiliary structures.
+typedef struct contain {
+    Date dateB;
+    Date dateE;
+    long q;
+    long a;
+}*Contain;
+
+
 // Métodos publicos.
 STR_pair info_from_post(TAD_community com, int id);
 LONG_list top_most_active(TAD_community com, int N);
 
 
-// Métodos privados.
-static void f (void* key, void* value, void* user_data);
+// Métodos privados-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+static void f (void* key, void* value, void* user_data){
+    Util x = (Util)value;
+    HEAP y = (HEAP)user_data;
+    int  num = x->Q + x->A;
 
+    if( maxQ_H(y) )// está na capacidade
+        addR_Heap( y, (-1) * num , value , destroyUtil );
+    else 
+        add_Heap( y , (-1) * num , value );
+}
 
+static void g ( void* key , void *value , void *datas ) {
+
+    Date x = (Date) key ;
+    Contain y = (Contain) datas
+    Post p = (Post) value;
+    /*
+    Se as datas forem iguais e tipo for 1 (quest) aumenta as quest e vice-versa para as respostas
+    compara atraves do data_compare -> data.h
+    */
+
+    if ( date_compare ( x , y->dateB , NULL ) <= 0 && date_compare ( x , y->dateE , NULL) >= 0 ) {
+        if ( (p->type) == 1) y->q++;
+        else y->a++;
+    }
+}
+
+//->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 STR_pair info_from_post(TAD_community com, int id){
     char* str1, *str2;
     Util y = NULL;
     Post x = NULL;
     STR_pair result;
+    unsigned long userid;
 
     str1=malloc( sizeof(char)*100 );
     str2=malloc( sizeof(char)*100 );
@@ -28,9 +64,9 @@ STR_pair info_from_post(TAD_community com, int id){
     x = (Post)g_hash_table_lookup(com->post ,&id);
     strcpy(str1,(char*)x->nome);
 
-    id = x->fundador;
+    userid = x->fundador;
 
-    y = (Util)g_hash_table_lookup(com->user ,&id);
+    y = (Util)g_hash_table_lookup(com->user ,&userid);
     strcpy(str2,(char*)y->nome);
 
     result = create_pair(str1,str2);
@@ -59,29 +95,11 @@ LONG_list top_most_active(TAD_community com, int N){
 
 }
 
-static void f (void* key, void* value, void* user_data){
-    Util x = (Util)value;
-    HEAP y = (HEAP)user_data;
-    int  num = x->Q + x->A;
-    if( maxQ_H(y) )// está na capacidade
-        addR_Heap( y, (-1) * num , value , destroyUtil );
-    else 
-        add_Heap( y , (-1) * num , value );
-}
-
 
 
 
 // recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
 // estou a assumir que recebo uma AVL;
-
-
-typedef struct contain {
-    Date dateB;
-    Date dateE;
-    long q;
-    long a;
-}*Contain;
 
 
 LONG_pair total_posts(TAD community com, Date begin, Date end) {
@@ -103,26 +121,11 @@ LONG_pair total_posts(TAD community com, Date begin, Date end) {
     return res;
 }
 
-static void g ( void* key , void *value , void *datas ) {
-
-    Date x = (Date) x;
-    Date_ y = (Date_) datas
-    Post p = (Post) value;
-    /*
-    Se as datas forem iguais e tipo for 1 (quest) aumenta as quest e vice-versa para as respostas
-    compara atraves do data_compare -> data.h
-    */
-    if ( date_compare ( x , y->date1 , null) <= 0 && date_compare ( x , y->date1 , null) >= 0 ) {
-        if ( (p->type) == 1) y->q++;
-        else y->a++;
-    }
-}
 
 
 
 
-
-
+/*
 
 USER get_user_info(TAD community com, long id){
 
@@ -143,4 +146,4 @@ USER get_user_info(TAD community com, long id){
     return x;
 }
 
-
+*/

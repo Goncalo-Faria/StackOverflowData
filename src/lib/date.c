@@ -27,11 +27,11 @@ int get_year(Date d) {
     return d->year;
 }
 
-void free_date(Date d) {
+void free_date(void* d) {
     free(d);
 }
 
-int date_compare ( void* a /*x*/, void* b/*y*/,void* user_data){
+int date_compare ( const void* a /*x*/, const void* b/*y*/,void* user_data){
 
     // user data será sempre null;
 

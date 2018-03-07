@@ -38,7 +38,7 @@ TAD_community init(){
     x->user  = g_hash_table_new_full(g_int64_hash ,  g_int64_equal, free , destroyUtil);
     x->post  = g_hash_table_new_full(g_int_hash,  g_int_equal, free , destroyPost);
 
-    x->treeP = g_tree_new_full(date_compare, NULL  ,NULL, destroyPost );
+    x->treeP = g_tree_new_full(date_compare, NULL  , free_date , destroyPost );
     return x;
 }
 
@@ -95,7 +95,9 @@ TAD_community load(TAD_community com, char* dump_path){
 static void parsePost ( TAD_community com , xmlNode* node ){
 
     xmlChar * hold;
-    int num, *ident;
+    Date s;
+    char buffer[100];
+    int num, *ident, dia, mes, ano;
     Util y = NULL;
     Post x = NULL;
     //unsigned long childCount = xmlChildElementCount(node),i;
@@ -111,6 +113,14 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             // GET POST ID <LONG>
             hold = xmlGetProp(node, (const xmlChar*)"Id");
             *ident = (int) atoi((const char*) hold );
+            xmlFree(hold);
+
+            /*
+                                    "CreationDate"
+            */
+            hold = xmlGetProp(node, (const xmlChar*)"CreationDate");
+            sscanf( (const char*)hold,"%d-%d-%d%s",&ano,&mes,&dia,buffer);
+            s = createDate(dia,mes,ano);
             xmlFree(hold);
 
             // GET POST TYPE
@@ -137,6 +147,7 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             sprintf((char*)x->nome,"%s",(const char*)hold );
             xmlFree(hold);
 
+            g_tree_insert(com->treeP, s , x );
             g_hash_table_insert(com->post , (void*)ident, x );
         }
 
