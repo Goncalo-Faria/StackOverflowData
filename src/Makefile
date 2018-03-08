@@ -9,7 +9,7 @@ CFLAGS = -Wall -std=c11 -g `pkg-config --cflags libxml-2.0` `pkg-config --cflags
 DEPS=$(IDIR)/$(wildcard *.h)
 SOURCES=$(wildcard *.c)
 MY_LIBS=$(wildcard $(LDIR)/*.c)
-SOURCES_OBJ=$(ODIR)/$(patsubst %.c,%.o,$(SOURCES))
+SOURCES_OBJ=$(patsubst %.c,$(ODIR)/%.o,$(SOURCES))
 MY_LIBS_OBJ=$(foreach o, $(patsubst %.c,%.o,$(MY_LIBS)), $(ODIR)/$o)
 LIBS = `pkg-config --libs libxml-2.0` `pkg-config --libs glib-2.0`
 
@@ -25,4 +25,3 @@ clean:
 	rm obj/*.o
 	rm obj/lib/*.o
 	rm program
-
