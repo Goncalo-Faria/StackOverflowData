@@ -1,60 +1,6 @@
 #ifndef bloco_h
 #define bloco_h
 
-
-//#define Max 100
-
-typedef struct utilizador *Util ;
-typedef struct post * Post;
-
-#include "interface.h"
-
-// create the Util
-/*
-->nome
-->nº de perguntas 
-->nº de respostas
-->ID
-->BIO
-*/
-typedef struct utilizador {
-
-	//unsigned long id;
-	unsigned char nome[100];
-	unsigned int Q;
-	unsigned int A;
-
-
-	unsigned char bio [200];
-//	unsigned int AGE;
-//	unsigned char loc[100];
-//	unsigned int UV;
-//	unsigned int DV;
-
-}*Util ;
-
-
-// create the Post
-/* 
-->nome
-->ID
-->Type
-->Fundador
-->data
-*/
-typedef struct post {
-
-	//unsigned int id;
-	unsigned char type;// 1 Q ; 2 A;
-    unsigned long fundador;
-	unsigned char nome[100];
-	unsigned int score;
-	GHashTable* bacia;
-
-	//Date data;
-
-}*Post;
-
 // create a new post
 void *createPost();
 // create a new util
@@ -66,5 +12,29 @@ void destroyUtil( void* x );
 void destroyPost( void* x );
 
 void setDate ( Post x ,int d,int m ,int a);
+
+//Util Getters
+int getQ(Util x);
+int getA(Util x);
+char* getUN(Util x);
+char* getB(Util x);
+
+//Post Getters
+int getS(Post x);
+char* getN(Post x);
+long getF(Post x);
+char getT(Post x);
+
+//Util Setters
+void setB(Util x, char* b);
+void setUN(Util x, char* un);
+void setA(Util x, int a);
+void setQ(Util x, int q);
+
+//Post Setters
+void setT(Post x, char t);
+void setS(Post x, int s);
+void setN(Post x, char* n);
+void setF(Post x, long f)
 
 #endif

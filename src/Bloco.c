@@ -2,10 +2,40 @@
 //#include <stdlib.h>
 #include <string.h>
 
+typedef struct utilizador *Util ;
+typedef struct post *Post;
+
+typedef struct utilizador {
+
+	//unsigned long id;
+	unsigned char nome[100];
+	unsigned int Q;
+	unsigned int A;
+	unsigned char bio [200];
+//	unsigned int AGE;
+//	unsigned char loc[100];
+//	unsigned int UV;
+//	unsigned int DV;
+
+}*Util ;
+
+typedef struct post {
+
+	//unsigned int id;
+	unsigned char type;// 1 Q ; 2 A;
+    unsigned long fundador;
+	unsigned char nome[100];
+	unsigned int score;
+	GHashTable* bacia;
+
+	//Date data;
+
+}*Post;
+
 void *createPost(){
 	Post x = g_malloc (sizeof (struct post));
 	strcpy((char*)x->nome,"Nop");
-  	x->id = 0;
+	x->id = 0;
 	x->type = 0;
 	x->fundador = 0;
 	x->score = 0;
@@ -84,24 +114,80 @@ void *createPost_p(int id , char* name){
 	x -> nome = name;
 }
 
+*/
 
+// Util getters
 
-// GETTERS!
 int getQ(Util x) {
-	return ( x->perguntas );
+	return (x->perguntas);
 }
 
 int getA(Util x) {
-	return ( x->respostas);
+	return (x->respostas);
 }
 
-//SETTERS!
-
-void setQ ( Post x , int q ) {
-	x
+char* getUN(Util x){
+	return (x->nome);
 }
 
-*/
+char* getB(Util x){
+	return (x->bio);
+}
+
+// Post getters
+
+long getF(Post x){
+	return (x->fundador);
+}
+
+char* getN(Post x){
+	return (x->nome);
+}
+
+int getS(Post x){
+	return (x->score);
+}
+
+char getT(Post x){
+	return (x->type);
+}
+
+//Util setters
+
+void setQ(Util x, int q){
+	x -> perguntas = q;
+}
+
+void setA(Util x, int a){
+	x -> respostas = a;
+}
+
+void setUN(Util x, char* un){
+	strcpy(x->nome, un);
+}
+
+void setB(Util x, char* b){
+	strcpy(x->bio, b);
+}
+
+// Post setters
+
+void setF(Post x, long f){
+	x -> fundador = f;
+}
+
+void setN(Post x, char* n){
+	strncpy(x->nome, n);
+}
+
+void setS(Post x, int s){
+	x -> score = s;
+}
+
+void setT(Post x, char t){
+	x -> type = t;
+}
+
 
 
 
