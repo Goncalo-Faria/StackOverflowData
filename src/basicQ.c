@@ -22,7 +22,7 @@ LONG_list top_most_active(TAD_community com, int N);
 
 
 // Métodos privados-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-static void target_freq (void* key, void* value, void* user_data){
+static void heapify (void* key, void* value, void* user_data){
     Util x = (Util)value;
     HEAP y = (HEAP)user_data;
     int  num = getU_Q( x ) + getU_A( x );
@@ -33,10 +33,11 @@ static void target_freq (void* key, void* value, void* user_data){
         add_Heap( y , (-1) * num , key );
 }
 
-static void target_int( void* key , void *value , void *datas ) {
+static void count ( void* key , void *value , void *datas ) {
 
     Date x = (Date) key ;
     Container y = (Container) datas
+    LONG_pair k = (LONG_pair) t->spec; 
     Post p = (Post) value;
     /*
     Se as datas forem iguais e tipo for 1 (quest) aumenta as quest e vice-versa para as respostas
@@ -44,13 +45,13 @@ static void target_int( void* key , void *value , void *datas ) {
     */
 
     if ( date_compare ( x , y->dateB , NULL ) <= 0 && date_compare ( x , y->dateE , NULL) >= 0 ) {
-        if ( getP_type( p )  == 1) y->q++;
-        else y->a++;
+        if ( getP_type( p )  == 1) inc_Fst(k)++;// é Questão.
+        else inc_Snd(k)++;// não é Questão.
     }
 }
 
 // REPARAR -> GONCAS
-static void target_ans( void *key , void*value , void* user_data ){
+static void find_ans ( void *key , void*value , void* user_data ){
 
     Container box = (Container) user_data;
     HEAP x = (HEAP)user_data->spec;
@@ -58,11 +59,11 @@ static void target_ans( void *key , void*value , void* user_data ){
     int num = getP_score(post);
 
 
-    if ( data_compare ( box->dateB ) <= 0 && data_compare ( box->dateE ) >= 0 && getP_type(post) == 1 )
+    if ( data_compare ( box->dateB , (Date) key ) <= 0 && data_compare ( box->dateE, (Date) key ) >= 0 && getP_type(post) == 2 )// é resposta.
         if ( maxQ_H (heap) )// se está na capacidade
-            addR_Heap( data , - 1 * (num)  , post  , destroyPost );
+            addR_Heap( x , (-1) * num , post );
         else 
-            add_Heap( data , (-1) * num , post );
+            add_Heap( x , (-1) * num , post  );
 
 }
 
@@ -103,7 +104,7 @@ LONG_list top_most_active(TAD_community com, int N){
     LONG_list ll = create_list(N);
     unsigned long* c;
 
-    userSet_transversal( com, target_freq, (void*)x);
+    userSet_transversal( com, heapify , (void*)x);
     
     //
     for(i=0; i<N;i++){
@@ -134,10 +135,9 @@ LONG_pair total_posts(TAD community com, Date begin, Date end) {
     setFst(x->spec, 0 );
     setSnd(x->spec, 0 );
 
-    g_tree_foreach (com->treeP ,  target_int  , (void*)x) ;
+    postTree_transversal( com ,count, (void*)x );
 
-    LONG_pair res = (LONG_pair) x->spec ;
-    
+    LONG_pair res = (LONG_pair) x->spec;
     g_free(x);
 
     return res;
@@ -185,8 +185,7 @@ LONG_list most_voted_answers(TAD community com, int N, Date begin, Date end){
     carrier->dateB = begin;
     carrier->dateE = end;
 
-
-    g_tree_foreach (com->treeP , target_ans , (void *)carrier);
+    postTree_transversal( com ,find_ans , (void*)carrier );
 
     ll = create_list(N);
 

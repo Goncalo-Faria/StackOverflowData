@@ -53,6 +53,11 @@ void userSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,voi
     g_hash_table_foreach( com->user, f , x );
 }
 
+void postTree_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x){ // eliminar
+
+    g_tree_foreach (com->treeP ,  f   , x );
+}
+
 void postSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x ){
     
     g_hash_table_foreach( com->post, f , x );

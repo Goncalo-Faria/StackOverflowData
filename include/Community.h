@@ -17,6 +17,7 @@ Post postSet_lookup( TAD_community com, unsigned int num );
 
 void userSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x );
 void postSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x );
+void postTree_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x);
 
 
 #endif
