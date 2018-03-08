@@ -31,7 +31,33 @@ void free_date(void* d) {
     free(d);
 }
 
-int date_compare ( const void* a /*x*/, const void* b/*y*/,void* user_data){
+int date_compare ( const void* a /*x*/, const void* b /*y*/,void* user_data){
+
+    // user data será sempre null;
+
+    Date x = (Date)a , y = (Date)b;
+
+    if ( x->year > y->year  )
+        return -1;
+    else if( x->year  < y->year )
+        return 1 ;
+    //-----------------------------------------
+    if( x->month  > y->month  )
+        return -1;
+    else if( x->month < y->month  )
+        return 1;
+    //-----------------------------------------
+    if( x->day > y->day )
+        return -1;
+    else if( x->day < y->day )
+        return 1;
+
+    return 0;
+}
+
+ /*
+
+int date_compare ( const void* a /x/, const void* b/y/,void* user_data){
 
     // user data será sempre null;
 
@@ -54,4 +80,5 @@ int date_compare ( const void* a /*x*/, const void* b/*y*/,void* user_data){
 
     return 0;
 }
+*/
 
