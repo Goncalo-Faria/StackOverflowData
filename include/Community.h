@@ -15,4 +15,8 @@ unsigned int postSet_size(TAD_community com);
 Util userSet_lookup( TAD_community com, unsigned long num );
 Post postSet_lookup( TAD_community com, unsigned int num );
 
+void userSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x );
+void postSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x );
+
+
 #endif

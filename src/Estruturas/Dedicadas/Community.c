@@ -38,8 +38,6 @@ unsigned int userSet_size(TAD_community com){
     return g_hash_table_size(com->user);
 }
 
-
-
 Util userSet_lookup( TAD_community com, unsigned long num ){
 
     return (Util)g_hash_table_lookup(com->user , &num);
@@ -48,5 +46,15 @@ Util userSet_lookup( TAD_community com, unsigned long num ){
 Post postSet_lookup( TAD_community com, unsigned int num ){
 
     return (Post)g_hash_table_lookup(com->post , &num);
+}
+
+void userSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x ){
+    
+    g_hash_table_foreach( com->user, f , x );
+}
+
+void postSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x ){
+    
+    g_hash_table_foreach( com->post, f , x );
 }
 

@@ -78,13 +78,13 @@ STR_pair info_from_post(TAD_community com, int id){
 
     str1=g_malloc( sizeof(char)*100 );
     str2=g_malloc( sizeof(char)*100 );
-
-    x = (Post)g_hash_table_lookup(com->post ,&id);
+    
+    x = postSet_lookup(com, id);
     strcpy(str1,(char*) getP_name(x) );
 
     userid = getP_fund( x );
-
-    y = (Util)g_hash_table_lookup(com->user ,&userid);
+    
+    y = userSet_lookup(com, userid);
     strcpy(str2,(char*) getU_name(y) );
 
     result = create_pair(str1,str2);
@@ -102,7 +102,8 @@ LONG_list top_most_active(TAD_community com, int N){
     HEAP x = limcreate_H(N, NULL);// não elimina conteudo.
     LONG_list ll = create_list(N);
     unsigned long* c;
-    g_hash_table_foreach( com->user, target_freq , (void*)x)
+
+    userSet_transversal( com, target_freq, (void*)x);
     
     //
     for(i=0; i<N;i++){
@@ -124,7 +125,7 @@ LONG_list top_most_active(TAD_community com, int N){
 // --3 FEITO
 LONG_pair total_posts(TAD community com, Date begin, Date end) {
 
-    Container x = g_malloc (sizeof (struct jief));
+    Container x = g_malloc (sizeof (struct contain));
     x->dateB = begin;
     x->dateE = end; 
     x->spec  = (void*)create_longpair();
@@ -194,7 +195,7 @@ LONG_list most_voted_answers(TAD community com, int N, Date begin, Date end){
         set_list(ll , i , getP_id ( newp ) );
     }
 
-    destroy_H(carrie->spec);
+    destroy_H(carrier->spec);
     g_free(carrier);
 
     return ll;
