@@ -8,11 +8,11 @@
 
 typedef struct heap *HEAP; 
 
-HEAP create_H(void);
+HEAP create_H(void (*in_free) (void*) );
 /*
     Esta função cria uma nova instância da Estrutura.
 */
-HEAP limcreate_H(int lim);
+HEAP limcreate_H(int lim, void (*in_free) (void*) );
 /*
     Esta função cria uma estrutura com um limite de elementos.
 */
@@ -44,7 +44,7 @@ void add_Heap( HEAP x, int key , void* n);
     Adiciona um elemento a heap.
 
 */
-void addR_Heap( HEAP x, int key , void* n , void (*ff) (void*) );
+void addR_Heap( HEAP x, int key , void* n );
 /*
     Substitui o maior elemento da heap pelo inserido.
 

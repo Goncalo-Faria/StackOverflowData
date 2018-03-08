@@ -5,6 +5,7 @@
 #define full(x) ( (x)->use == (x)->len )
 #define quarter(x) ( ( (x)->use * 4 ) <= (x)->len )
 
+typedef void (*freeFunc)(void*);
 
 typedef struct ent {
     
@@ -20,7 +21,11 @@ typedef struct heap {
     int use;
     int max;
 
+    freeFunc dataCl;
+
 } * HEAP;
+
+
 
 int length_H(HEAP x){
     return x->use;
@@ -30,32 +35,31 @@ int maxQ_H(HEAP x){
     return ( x->use == x->max );
 }
 
-HEAP create_H(void){
+HEAP create_H(void (*in_free) (void*) ){
     HEAP x = (HEAP)g_malloc( sizeof (struct heap) );
     x->use=0;
     x->v = g_malloc( 2 * sizeof (ENTRY) );
     x->len = 2;
     x->max = -1;
+    x->dataCl = in_free;
 
     return x;
 }
 
-HEAP limcreate_H(int lim){
+HEAP limcreate_H(int lim, void (*in_free) (void*) ){
     HEAP x = (HEAP)g_malloc( sizeof (struct heap) );
     x->use=0;
     x->v = g_malloc( 2 * sizeof (ENTRY) );
     x->len = 2;
     x->max = lim;
+    x->dataCl = in_free;
     
     return x;
 }
 
 void destroy_H(HEAP x){
 
-    destroyC_H( x ,  NULL);
-}
-
-void destroyC_H(HEAP x,  void (*ff) (void*)){
+    freeFunc ff = x->dataCl;
 
     int i,r = !(ff == NULL);
     if(x){
@@ -133,7 +137,9 @@ static void BubleDown (ENTRY * v , int i, int N ){
 
 }
 
-void addR_Heap( HEAP x, int key , void* n , void (*ff) (void*) ){
+void addR_Heap( HEAP x, int key , void* n ){
+    
+    freeFunc ff = x->dataCl;
 
     if ( ff )
         ff ( x->v[x->use-1]->data );
