@@ -5,6 +5,7 @@
 #include <string.h>
 #include "Community.h"
 #include <Bloco.h>
+#include <glib.h>
 
 
 /**
@@ -31,26 +32,6 @@ static void parseUser( TAD_community com, xmlNode * node);
 
 // recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
 // estou a assumir que recebo uma AVL;
-
-TAD_community init(){
-
-    TAD_community x = g_malloc(sizeof(struct TCD_community));
-
-    x->user  = g_hash_table_new_full(g_int64_hash ,  g_int64_equal, g_free , destroyUtil);
-    x->post  = g_hash_table_new_full(g_int_hash,  g_int_equal, g_free , destroyPost);
-
-    x->treeP = g_tree_new_full(date_compare, NULL  , free_date , NULL );
-    return x;
-}
-
-TAD_community clean(TAD_community com){
-
-    g_hash_table_destroy(com->user);
-    g_hash_table_destroy(com->post);
-    g_tree_destroy(com->treeP);
-
-    return com;
-}
 
 TAD_community load(TAD_community com, char* dump_path){
 
@@ -83,7 +64,7 @@ TAD_community load(TAD_community com, char* dump_path){
     root_element = xmlDocGetRootElement(doc);
 
     parsePost(com,root_element);
-    printf("USER::%d \n",g_hash_table_size(com->post));
+    printf("USER::%d \n",postSet_size(com));
     
     g_free(tmpstr);
 
@@ -100,8 +81,8 @@ static void parsePost ( TAD_community com , xmlNode* node ){
     Date s;
     char buffer[100];
     long num;
-    int *ident, dia, mes, ano ;
-    unsigned int *Qid,*Aid;
+    int dia, mes, ano ;
+    unsigned int *Qid,*Aid, *ident;
     Util y = NULL;
     Post x = NULL;
     //unsigned long childCount = xmlChildElementCount(node),i;
@@ -148,7 +129,7 @@ static void parsePost ( TAD_community com , xmlNode* node ){
 
 
             // GET OWNER REF
-            y = (Util)g_hash_table_lookup(com->user , &num);
+            y = userSet_lookup(com , num);
             
             // COUNT POST TYPE 
             if( getP_type(x) == 1)
@@ -163,8 +144,8 @@ static void parsePost ( TAD_community com , xmlNode* node ){
         
             if( getP_type(x) == 1 ){ // Questão.
                 *Qid = *ident;
-                if ( !Q_belongs_hash(x ,*Qid) )// verifica se existe!
-                    add_toBacia(x , Qid , NULL );
+                if ( !Q_belongs_hash(y ,*Qid) )// verifica se existe!
+                    add_toBacia(y , Qid , NULL );
 
             /**
              * Se o user for o owner da Q info é null.
@@ -176,23 +157,23 @@ static void parsePost ( TAD_community com , xmlNode* node ){
                 g_free(Qid);
             //
             } else {
-                if ( !A_belongs_hash(x ,*ident) ){// verifica se existe!
+                if ( !A_belongs_hash(y ,*ident) ){// verifica se existe!
 
                     hold = xmlGetProp(node, (const xmlChar*)"ParentId");
                     *Qid = (unsigned int) atoi((const char*) hold );
                     xmlFree(hold);
 
-                    Aid  = (unsigned int) g_malloc( sizeof( unsigned int) );
+                    Aid  = g_malloc( sizeof( unsigned int) );
                     *Aid = *ident; // valor da resposta.
 
-                    add_toBacia(x , Qid , Aid);
+                    add_toBacia(y , Qid , Aid);
                 }
                 else 
                     g_free(Qid);
             }         
             // GET POST TITLE
             hold = xmlGetProp(node, (const xmlChar*)"Title");
-            setP_name( x, (const char*)hold );
+            setP_name( x, ( char*)hold );
             xmlFree(hold);
 
             g_tree_insert(com->treeP, s , x );
@@ -221,17 +202,17 @@ static void parseUser ( TAD_community com , xmlNode* node ){
 
             // get user id
             hold = xmlGetProp(node, (const xmlChar*)"Id");
-            *ident = (unsigned int) atol((const char*) hold );
+            *ident = (unsigned long) atol((const char*) hold );
             xmlFree(hold);
             
             // GET UTIL BIO
             hold = xmlGetProp(node, (const xmlChar*)"AboutMe");
-            setU_bio(x, (const char*)hold );
+            setU_bio(x, (char*)hold );
             xmlFree(hold);
 
             // get Display name
             hold = xmlGetProp(node, (const xmlChar*)"DisplayName");
-            setU_name(x, (const char*)hold );
+            setU_name(x, (char*)hold );
             xmlFree(hold);
 
             g_hash_table_insert(com->user , (void*)(ident), x );

@@ -67,6 +67,8 @@ void setP_score(Post x, unsigned int s);
 
 void setP_type(Post x, unsigned char t);
 
+void setP_id(Post x, unsigned int o );
+
 
 
 

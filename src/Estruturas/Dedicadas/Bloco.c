@@ -155,7 +155,7 @@ void add_toBacia(Util x, unsigned int * id , void * dados ){
     g_hash_table_insert( x->bacia , (void*) id , dados );
 }
 
-int belongs_toBacia ( Util x , unsigned int Parent_id, char flag ){
+int belongs_toBacia ( Util x , unsigned int Parent_id, char flag ){ // O que acontece na eventualidade de 2 ter uma resposta no post que criou? em datas diferentes.
     
 	GHashTable* set = x->bacia;
 	// flag == 1; meens Q.
@@ -164,10 +164,13 @@ int belongs_toBacia ( Util x , unsigned int Parent_id, char flag ){
         // é uma questão e existe.
         return 1;
 
-    if( flag == 2 && g_hash_table_contains ( set , &Parent_id  ) )
+    if( flag == 2 && g_hash_table_contains ( set , &Parent_id  ) ){
+		// é uma Resposta.
         if ( g_hash_table_lookup(set, &Parent_id) )
-            //isto significa que existe resposta.
+            //isto significa que existe questão.
             return 1;
+		return 2;
+		}
 
     return 0;
 
