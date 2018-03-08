@@ -2,6 +2,7 @@
 #include "pair.h"
 #include "list.h"
 #include "user.h"
+#include "Community.h"
 
 typedef struct TCD_community * TAD_community;
 
@@ -41,6 +42,6 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N);
 LONG_list better_answer(TAD_community com, int id);
 
 // query 11
-LONG_LIST most_used_best_rep(TAD_community com, int N, Date begin, Date end);
+LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end);
 
 TAD_community clean(TAD_community com);

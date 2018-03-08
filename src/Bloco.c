@@ -124,7 +124,7 @@ char* getP_name(Post x){
 	return (x->nome);
 }
 
-unsigned int getP_Score(Post x){
+unsigned int getP_score(Post x){
 	return (x->score);
 }
 

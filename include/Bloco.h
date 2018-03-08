@@ -39,7 +39,7 @@ unsigned long getP_fund(Post x);
 
 char* getP_name(Post x);
 
-unsigned int getP_Score(Post x);
+unsigned int getP_score(Post x);
 
 unsigned char getP_type(Post x);
 

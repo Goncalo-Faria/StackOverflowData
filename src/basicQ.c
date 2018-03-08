@@ -12,7 +12,8 @@ typedef struct contain {
     Date dateE;
     long q;
     long a;
-}*Contain;
+    void* spec;
+}*Container;
 
 
 // Métodos publicos.
@@ -24,18 +25,18 @@ LONG_list top_most_active(TAD_community com, int N);
 static void target_freq (void* key, void* value, void* user_data){
     Util x = (Util)value;
     HEAP y = (HEAP)user_data;
-    int  num = x->Q + x->A;
+    int  num = getU_Q( x ) + getU_A( x );
 
     if( maxQ_H(y) )// está na capacidade
-        addR_Heap( y, (-1) * num , value , destroyUtil );
+        addR_Heap( y, (-1) * num , key );
     else 
-        add_Heap( y , (-1) * num , value );
+        add_Heap( y , (-1) * num , key );
 }
 
 static void target_int( void* key , void *value , void *datas ) {
 
     Date x = (Date) key ;
-    Contain y = (Contain) datas
+    Container y = (Container) datas
     Post p = (Post) value;
     /*
     Se as datas forem iguais e tipo for 1 (quest) aumenta as quest e vice-versa para as respostas
@@ -43,30 +44,28 @@ static void target_int( void* key , void *value , void *datas ) {
     */
 
     if ( date_compare ( x , y->dateB , NULL ) <= 0 && date_compare ( x , y->dateE , NULL) >= 0 ) {
-        if ( (p->type) == 1) y->q++;
+        if ( getP_type( p )  == 1) y->q++;
         else y->a++;
     }
 }
-/*
+
 // REPARAR -> GONCAS
-static void target_ans( void *key , void*value , void* hp ){
+static void target_ans( void *key , void*value , void* user_data ){
 
-    Heap heap = (Heap) hp;
+    Container box = (Container) user_data;
+    HEAP x = (HEAP)user_data->spec;
+    Post post = (Post)value;
+    int num = getP_score(post);
 
-    Contain data = (Contain) key;
 
-    Post post = (Post) value;
-
-    // falta implementar
-    int num = p -> score ;
-    if ( data_compare ( Contain -> dateB ) <= 0 && data_compare ( Contain -> dateE ) >= 0 && post -> type == 1 ) {
-     if ( maxQ_H (heap) )// se está na capacidade
+    if ( data_compare ( box->dateB ) <= 0 && data_compare ( box->dateE ) >= 0 && getP_type(post) == 1 )
+        if ( maxQ_H (heap) )// se está na capacidade
             addR_Heap( data , - 1 * (num)  , post  , destroyPost );
         else 
             add_Heap( data , (-1) * num , post );
 
 }
-*/
+
 
 //->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // -- 1 FEITO
@@ -81,12 +80,12 @@ STR_pair info_from_post(TAD_community com, int id){
     str2=g_malloc( sizeof(char)*100 );
 
     x = (Post)g_hash_table_lookup(com->post ,&id);
-    strcpy(str1,(char*)x->nome);
+    strcpy(str1,(char*) getP_name(x) );
 
-    userid = x->fundador;
+    userid = getP_fund( x );
 
     y = (Util)g_hash_table_lookup(com->user ,&userid);
-    strcpy(str2,(char*)y->nome);
+    strcpy(str2,(char*) getU_name(y) );
 
     result = create_pair(str1,str2);
 
@@ -100,14 +99,15 @@ STR_pair info_from_post(TAD_community com, int id){
 LONG_list top_most_active(TAD_community com, int N){
     int num;
 
-    HEAP x = limcreate_H(N);
+    HEAP x = limcreate_H(N, NULL);// não elimina conteudo.
     LONG_list ll = create_list(N);
-    g_hash_table_foreach( com->user, f , (void*)x)
+    unsigned long* c;
+    g_hash_table_foreach( com->user, target_freq , (void*)x)
     
     //
     for(i=0; i<N;i++){
-        c = (Util) rem_Heap( x , &num );
-        set_list(ll, i , c->id );
+        c = (unsigned long* ) rem_Heap( x , &num );
+        set_list(ll, i , *c );
     }
     
     destroy_H(x);
@@ -124,34 +124,39 @@ LONG_list top_most_active(TAD_community com, int N){
 // --3 FEITO
 LONG_pair total_posts(TAD community com, Date begin, Date end) {
 
-    Contain x = g_malloc (sizeof (struct contain));
+    Container x = g_malloc (sizeof (struct jief));
     x->dateB = begin;
     x->dateE = end; 
+    x->spec  = (void*)create_longpair();
 
     // nao esta defenido por incompetencia (LONG_PAIR) xD !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    x->q=0;
-    x->a=0;
+    setFst(x->spec, 0 );
+    setSnd(x->spec, 0 );
 
-    g_tree_foreach (com->treeP ,  g  , (void*)x) ;
+    g_tree_foreach (com->treeP ,  target_int  , (void*)x) ;
 
-    LONG_pair res = create_pairr ( x->q , x->a  ) ;
+    LONG_pair res = (LONG_pair) x->spec ;
     
-    free(x);
+    g_free(x);
 
     return res;
 }
 
 // --4 precisamos da tag
+/*
 LONG_list questions_with_tag(TAD community com, char* tag, Date begin, Date end) {
 
 
 }
+*/
 
 
-// --5 ESTA POR ACABAR
+// --5 ESTA POR ACABAR 
+
+/*
 USER get_user_info(TAD community com, long id){
 
-USER create_user(char* short_bio, long* post_history);
+ //USER create_user(char* short_bio, long* post_history);
 
     Heap x = limcreate_H ( )
     User x  = NULL;
@@ -165,24 +170,36 @@ USER create_user(char* short_bio, long* post_history);
 
     return x;
 }
+ */
 
- 
+
 // --6 FEITA
 LONG_list most_voted_answers(TAD community com, int N, Date begin, Date end){
-     int num;
-     LONG_list x = create_list(N);
+    int num, i;
+    LONG_list ll; 
+    Post newp;
+    Container carrier = g_malloc( sizeof( struct contain ) );
+    carrier->spec   = (void*)limcreate_H (N , NULL);
 
-     Heap h = limcreate_H (N);
-     g_tree_foreach (com->treeP , n , (void *)x);
-
-     for (int i=0, i < N ; i++){
-        post = (Post) rem_Heap( x , &num );
-        set_list(x, i , post);
-     }
+    carrier->dateB = begin;
+    carrier->dateE = end;
 
 
+    g_tree_foreach (com->treeP , target_ans , (void *)carrier);
+
+    ll = create_list(N);
+
+    for ( i=0, i < N ; i++){
+        newp = (Post)rem_Heap( (HEAP)carrier->spec , &num );
+        set_list(ll , i , getP_id ( newp ) );
+    }
+
+    destroy_H(carrie->spec);
+    g_free(carrier);
+
+    return ll;
 }
-
+/*
 // --7 FALTA ACABAR
 LONG_list most_answered_questions(TAD community com, int N, Date begin, Date end){
 
@@ -196,4 +213,4 @@ LONG_list most_answered_questions(TAD community com, int N, Date begin, Date end
 
 
 
-
+*/
