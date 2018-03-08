@@ -33,10 +33,10 @@ static void parseUser( TAD_community com, xmlNode * node);
 
 TAD_community init(){
 
-    TAD_community x = malloc(sizeof(struct TCD_community));
+    TAD_community x = g_malloc(sizeof(struct TCD_community));
 
-    x->user  = g_hash_table_new_full(g_int64_hash ,  g_int64_equal, free , destroyUtil);
-    x->post  = g_hash_table_new_full(g_int_hash,  g_int_equal, free , destroyPost);
+    x->user  = g_hash_table_new_full(g_int64_hash ,  g_int64_equal, g_free , destroyUtil);
+    x->post  = g_hash_table_new_full(g_int_hash,  g_int_equal, g_free , destroyPost);
 
     x->treeP = g_tree_new_full(date_compare, NULL  , free_date , destroyPost );
     return x;
@@ -55,7 +55,7 @@ TAD_community load(TAD_community com, char* dump_path){
     xmlDoc *doc = NULL;
     xmlNode *root_element = NULL;
 
-    char* tmpstr = malloc( sizeof(char)* (strlen(dump_path) + 10) ); 
+    char* tmpstr = g_malloc( sizeof(char)* (strlen(dump_path) + 10) ); 
     ////////////////////////////////////////////7
     sprintf(tmpstr,"%s/Users.xml",dump_path);
     doc = xmlReadFile(tmpstr, NULL, 0);
@@ -83,7 +83,7 @@ TAD_community load(TAD_community com, char* dump_path){
     parsePost(com,root_element);
     printf("USER::%d \n",g_hash_table_size(com->post));
     
-    free(tmpstr);
+    g_free(tmpstr);
 
     xmlFreeDoc(doc);
     xmlCleanupParser();
@@ -108,7 +108,7 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             //printf("%c%s\n",'-', node->name);
             //printf("%d\n",++e);
             x = (Post)createPost();
-            ident = malloc ( sizeof(int ) );
+            ident = g_malloc ( sizeof(int ) );
 
             // GET POST ID <LONG>
             hold = xmlGetProp(node, (const xmlChar*)"Id");
@@ -169,7 +169,7 @@ static void parseUser ( TAD_community com , xmlNode* node ){
             //printf("%c%s\n",'-', node->name);
             //printf("%d\n",++e);
             x = (Util)createUtil();
-            ident = malloc ( sizeof( unsigned long ));
+            ident = g_malloc ( sizeof( unsigned long ));
 
             // get user id
             hold = xmlGetProp(node, (const xmlChar*)"Id");

@@ -1,6 +1,6 @@
 #include "interface.h"
 #include "Bloco.h"
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <string.h>
 #include "heap.h"
 #include "Community.h"
@@ -58,8 +58,8 @@ STR_pair info_from_post(TAD_community com, int id){
     STR_pair result;
     unsigned long userid;
 
-    str1=malloc( sizeof(char)*100 );
-    str2=malloc( sizeof(char)*100 );
+    str1=g_malloc( sizeof(char)*100 );
+    str2=g_malloc( sizeof(char)*100 );
 
     x = (Post)g_hash_table_lookup(com->post ,&id);
     strcpy(str1,(char*)x->nome);
@@ -104,7 +104,7 @@ LONG_list top_most_active(TAD_community com, int N){
 
 LONG_pair total_posts(TAD community com, Date begin, Date end) {
 
-    Contain x = malloc (sizeof (struct contain));
+    Contain x = g_malloc (sizeof (struct contain));
     x->dateB = begin;
     x->dateE = end; 
 
