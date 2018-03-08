@@ -17,8 +17,11 @@ typedef struct contain {
 
 
 // Métodos publicos.
-STR_pair info_from_post(TAD_community com, int id);
-LONG_list top_most_active(TAD_community com, int N);
+STR_pair info_from_post(TAD_community com, int id);//#1
+LONG_list top_most_active(TAD_community com, int N);//#2
+LONG_pair total_posts(TAD community com, Date begin, Date end);//#3
+LONG_list most_voted_answers(TAD community com, int N, Date begin, Date end);//#6
+
 
 
 // Métodos privados-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -117,14 +120,11 @@ LONG_list top_most_active(TAD_community com, int N){
 
 }
 
-
-
-
 // recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
 // estou a assumir que recebo uma AVL;
 
 // --3 FEITO
-LONG_pair total_posts(TAD community com, Date begin, Date end) {
+LONG_pair total_posts(TAD_community com, Date begin, Date end) {
 
     Container x = g_malloc (sizeof (struct contain));
     x->dateB = begin;
@@ -175,7 +175,7 @@ USER get_user_info(TAD community com, long id){
 
 
 // --6 FEITA
-LONG_list most_voted_answers(TAD community com, int N, Date begin, Date end){
+LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
     int num, i;
     LONG_list ll; 
     Post newp;
