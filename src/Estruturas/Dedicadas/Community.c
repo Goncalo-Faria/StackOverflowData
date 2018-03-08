@@ -1,5 +1,5 @@
 #include <glib.h>
-#include <Community.h>
+#include <Community.c>
 
 typedef struct TCD_community{
     GHashTable* user;
