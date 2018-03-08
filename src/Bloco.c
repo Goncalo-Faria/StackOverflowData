@@ -21,7 +21,7 @@ typedef struct utilizador {
 
 typedef struct post {
 
-	//unsigned int id;
+	unsigned int id;
 	unsigned char type;// 1 Q ; 2 A;
     unsigned long fundador;
 	unsigned char nome[100];
@@ -46,6 +46,7 @@ void *createPost(){
 	x->type = 0;
 	x->fundador = 0;
 	x->score = 0;
+	x->id = 0;
 	//x->data = g_malloc (sizeof(struct date));
 	//x->data = createDate ( 0 , 0 , 0 );
 	return x;
@@ -85,11 +86,12 @@ void destroyUtil_key( void* x ){
 	free(y);
 }
 */
-
+/*
 void setDate ( Post x ,int d,int m ,int a){
 	free_date(x->date);
 	x->date = createDate(d,m,a);
 }
+*/
 
 // Util getters
 
@@ -110,6 +112,9 @@ char* getU_bio(Util x){
 }
 
 // Post getters
+unsigned int getP_id(Post x){
+	return ( x->id );
+}
 
 unsigned long getP_fund(Post x){
 	return (x->fundador);
@@ -129,11 +134,11 @@ unsigned char getP_type(Post x){
 
 //Util setters
 
-void incQ(Util x){
+void inc_Q(Util x){
 	x ->Q++;
 }
 
-void incA(Util x){
+void inc_A(Util x){
 	x->A++;
 }
 
@@ -145,7 +150,35 @@ void setU_bio(Util x, char* b){
 	strcpy(x->bio, b);
 }
 
+void add_toBacia(Util x, unsigned int * id , void * dados ){
+    
+    g_hash_table_insert( x->bacia , (void*) id , dados );
+}
+
+int belongs_toBacia ( Util x , unsigned int Parent_id, char flag ){
+    
+	GHashTable* set = x->bacia;
+	// flag == 1; meens Q.
+    // flag == 2; meens A.
+    if( flag == 1 && g_hash_table_contains ( set , &Parent_id ) )
+        // é uma questão e existe.
+        return 1;
+
+    if( flag == 2 && g_hash_table_contains ( set , &Parent_id  ) )
+        if ( g_hash_table_lookup(set, &Parent_id) )
+            //isto significa que existe resposta.
+            return 1;
+
+    return 0;
+
+
+}
+
 // Post setters
+
+void setP_id(Post x, unsigned int o ){
+	x->id = o;
+}
 
 void setP_fund(Post x, long f){
 	x -> fundador = f;

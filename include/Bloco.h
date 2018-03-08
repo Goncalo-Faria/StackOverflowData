@@ -6,7 +6,8 @@ typedef struct utilizador *Util ;
 typedef struct post *Post;
 
 
-
+#define Q_belongs_hash(user,id) belongs_toBacia(user,id,1)
+#define A_belongs_hash(user,id) belongs_toBacia(user,id,2)
 
 
 // create a new post
@@ -19,7 +20,7 @@ void destroyUtil( void* x );
 //destroy a specify post
 void destroyPost( void* x );
 
-void setDate ( Post x ,int d,int m ,int a);
+//void setDate ( Post x ,int d,int m ,int a);
 
 
 
@@ -44,13 +45,17 @@ unsigned char getP_type(Post x);
 
 //Util setters
 
-void incQ(Util x);
+void inc_Q(Util x);
 
-void incA(Util x);
+void inc_A(Util x);
 
 void setU_name(Util x, char* un);
 
 void setU_bio(Util x, char* b);
+
+void add_toBacia(Util x, unsigned int * id , void * dados );
+
+int belongs_toBacia ( Util x , unsigned int Parent_id, char flag );
 
 // Post setters
 
