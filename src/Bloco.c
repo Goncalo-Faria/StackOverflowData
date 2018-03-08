@@ -1,8 +1,6 @@
 #include "Bloco.h"
 //#include <stdlib.h>
-#include <glib.h>
 #include <string.h>
-#include "date.h"
 
 void *createPost(){
 	Post x = g_malloc (sizeof (struct post));
@@ -10,8 +8,9 @@ void *createPost(){
   	x->id = 0;
 	x->type = 0;
 	x->fundador = 0;
+	x->score = 0;
 	//x->data = g_malloc (sizeof(struct date));
-	x->data = createDate ( 0 , 0 ,0);
+	//x->data = createDate ( 0 , 0 , 0 );
 	return x;
 }
 
@@ -25,11 +24,17 @@ void *createUtil(){
 	x->Q = 0;
 	x->A = 0;
 	x->id = 0;
+
+	x->bacia = g_hash_table_new_full(g_int_hash ,  g_int_equal, NULL , NULL );// key é post.
+
+	
 	return x;
 }
 
 void destroyUtil( void* x ){
 	Util y = (Util) x;
+
+	g_hash_table_destroy(x->bacia);
 	g_free(y);
 }
 

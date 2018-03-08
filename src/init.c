@@ -44,10 +44,10 @@ TAD_community init(){
 
 TAD_community clean(TAD_community com){
 
-      g_hash_table_destroy(com->user);
-      g_hash_table_destroy(com->post);
+    g_hash_table_destroy(com->user);
+    g_hash_table_destroy(com->post);
 
-      return com;
+    return com;
 }
 
 TAD_community load(TAD_community com, char* dump_path){
@@ -132,6 +132,12 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             hold = xmlGetProp(node, (const xmlChar*)"OwnerUserId");
             x->fundador = num = (unsigned long) atol((const char*) hold );
             xmlFree(hold);
+
+            hold = xmlGetProp(node, (const xmlChar*)"Score");
+            x->score = (unsigned int) atoi((const char*) hold );
+            xmlFree(hold);
+
+
 
             // GET OWNER REF
             y = (Util)g_hash_table_lookup(com->user , &num);
