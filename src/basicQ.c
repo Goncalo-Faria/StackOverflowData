@@ -1,4 +1,4 @@
-#include "interface.h"
+//#include "interface.h"
 #include "Bloco.h"
 //#include <stdlib.h>
 #include <string.h>
@@ -141,7 +141,7 @@ USER get_user_info(TAD community com, long id){
 
    
     x = create_user ( x -> bio , x -> Q) ;
-    free(y);
+    g_free(y);
 
     return x;
 }
