@@ -1,9 +1,8 @@
 #include "Bloco.h"
 //#include <stdlib.h>
 #include <string.h>
+#include <interface.h>
 
-typedef struct utilizador *Util ;
-typedef struct post *Post;
 
 typedef struct utilizador {
 
@@ -12,6 +11,7 @@ typedef struct utilizador {
 	unsigned int Q;
 	unsigned int A;
 	unsigned char bio [200];
+	GHashTable* bacia;
 //	unsigned int AGE;
 //	unsigned char loc[100];
 //	unsigned int UV;
@@ -26,16 +26,23 @@ typedef struct post {
     unsigned long fundador;
 	unsigned char nome[100];
 	unsigned int score;
-	GHashTable* bacia;
 
 	//Date data;
 
 }*Post;
 
+// Métodos privados.
+
+static void null_check ( void * x ){
+	if ( x )
+		g_free(x);
+}
+
+// Métodos publicos.
+
 void *createPost(){
 	Post x = g_malloc (sizeof (struct post));
 	strcpy((char*)x->nome,"Nop");
-	x->id = 0;
 	x->type = 0;
 	x->fundador = 0;
 	x->score = 0;
@@ -44,6 +51,11 @@ void *createPost(){
 	return x;
 }
 
+void destroyPost( void* x ){
+	Post y = (Post) x;
+	free_date(y->data) ;
+	g_free(y);
+}
 
 // create -- destroy -- getters (P e respostas)
 
@@ -53,9 +65,8 @@ void *createUtil(){
 	strcpy((char*)x->bio, "Nop");
 	x->Q = 0;
 	x->A = 0;
-	x->id = 0;
 
-	x->bacia = g_hash_table_new_full(g_int_hash ,  g_int_equal, NULL , NULL );// key é post.
+	x->bacia = g_hash_table_new_full(g_int_hash ,  g_int_equal, g_free , null_check );// key é post.
 
 	
 	return x;
@@ -80,111 +91,75 @@ void setDate ( Post x ,int d,int m ,int a){
 	x->date = createDate(d,m,a);
 }
 
-void destroyPost( void* x ){
-	Post y = (Post) x;
-	free_date(y->data) ;
-	g_free(y);
-}
-
-/*
-void destroyPost_key( void* x ){
-	unsigned int * y = (unsigned int *) x;
-	free(y);
-}
-*/
-
-
-
-/*
-
-// Create a Util with some info
-
-void *createUtil_p (char *n , int p , int r , int f ) {
-	Util x = g_malloc (sizeof (struc utilizador));
-	x -> nome = n;
-	x -> perguntas = p;
-	x -> respostas = r;
-	x -> fundador = f; 
-}
-
-// Create a post with some info
-void *createPost_p(int id , char* name){
-	Post x = g_malloc (sizeof (struct post));
-	x -> ID = id ; 
-	x -> nome = name;
-}
-
-*/
-
 // Util getters
 
-int getQ(Util x) {
-	return (x->perguntas);
+unsigned int getU_Q(Util x) {
+	return (x->Q);
 }
 
-int getA(Util x) {
-	return (x->respostas);
+unsigned int getU_A(Util x) {
+	return (x->A);
 }
 
-char* getUN(Util x){
+char* getU_name(Util x){
 	return (x->nome);
 }
 
-char* getB(Util x){
+char* getU_bio(Util x){
 	return (x->bio);
 }
 
 // Post getters
 
-long getF(Post x){
+unsigned long getP_fund(Post x){
 	return (x->fundador);
 }
 
-char* getN(Post x){
+char* getP_name(Post x){
 	return (x->nome);
 }
 
-int getS(Post x){
+unsigned int getP_Score(Post x){
 	return (x->score);
 }
 
-char getT(Post x){
+unsigned char getP_type(Post x){
 	return (x->type);
 }
 
 //Util setters
 
-void setQ(Util x, int q){
-	x -> perguntas = q;
+void incQ(Util x){
+	x ->Q++;
 }
 
-void setA(Util x, int a){
-	x -> respostas = a;
+void incA(Util x){
+	x->A++;
 }
 
-void setUN(Util x, char* un){
+void setU_name(Util x, char* un){
 	strcpy(x->nome, un);
 }
 
-void setB(Util x, char* b){
+void setU_bio(Util x, char* b){
 	strcpy(x->bio, b);
 }
 
 // Post setters
 
-void setF(Post x, long f){
+void setP_fund(Post x, long f){
 	x -> fundador = f;
 }
 
-void setN(Post x, char* n){
+void setP_name(Post x, char* n){
 	strncpy(x->nome, n);
 }
 
-void setS(Post x, int s){
+void setP_score(Post x, unsigned int s){
 	x -> score = s;
 }
 
-void setT(Post x, char t){
+void setP_type(Post x, unsigned char t){
 	x -> type = t;
 }
 

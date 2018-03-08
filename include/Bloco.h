@@ -1,6 +1,14 @@
 #ifndef bloco_h
 #define bloco_h
 
+
+typedef struct utilizador *Util ;
+typedef struct post *Post;
+
+
+
+
+
 // create a new post
 void *createPost();
 // create a new util
@@ -13,28 +21,52 @@ void destroyPost( void* x );
 
 void setDate ( Post x ,int d,int m ,int a);
 
-//Util Getters
-int getQ(Util x);
-int getA(Util x);
-char* getUN(Util x);
-char* getB(Util x);
 
-//Post Getters
-int getS(Post x);
-char* getN(Post x);
-long getF(Post x);
-char getT(Post x);
 
-//Util Setters
-void setB(Util x, char* b);
-void setUN(Util x, char* un);
-void setA(Util x, int a);
-void setQ(Util x, int q);
+// User getters
+unsigned int getU_Q(Util x);
 
-//Post Setters
-void setT(Post x, char t);
-void setS(Post x, int s);
-void setN(Post x, char* n);
-void setF(Post x, long f)
+unsigned int getU_A(Util x);
+
+char* getU_name(Util x);
+
+char* getU_bio(Util x);
+
+// Post getters
+
+unsigned long getP_fund(Post x);
+
+char* getP_name(Post x);
+
+unsigned int getP_Score(Post x);
+
+unsigned char getP_type(Post x);
+
+//Util setters
+
+void incQ(Util x);
+
+void incA(Util x);
+
+void setU_name(Util x, char* un);
+
+void setU_bio(Util x, char* b);
+
+// Post setters
+
+void setP_fund(Post x, long f);
+
+void setP_name(Post x, char* n);
+
+void setP_score(Post x, unsigned int s);
+
+void setP_type(Post x, unsigned char t);
+
+
+
+
+
+
+
 
 #endif

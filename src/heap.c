@@ -1,6 +1,6 @@
-#include <stdlib.h>
+//#include <stdlib.h>
 #include "heap.h"
-
+#include <glib.h>
 
 #define full(x) ( (x)->use == (x)->len )
 #define quarter(x) ( ( (x)->use * 4 ) <= (x)->len )
@@ -31,9 +31,9 @@ int maxQ_H(HEAP x){
 }
 
 HEAP create_H(void){
-    HEAP x = (HEAP)malloc( sizeof (struct heap) );
+    HEAP x = (HEAP)g_malloc( sizeof (struct heap) );
     x->use=0;
-    x->v = malloc( 2 * sizeof (ENTRY) );
+    x->v = g_malloc( 2 * sizeof (ENTRY) );
     x->len = 2;
     x->max = -1;
 
@@ -41,9 +41,9 @@ HEAP create_H(void){
 }
 
 HEAP limcreate_H(int lim){
-    HEAP x = (HEAP)malloc( sizeof (struct heap) );
+    HEAP x = (HEAP)g_malloc( sizeof (struct heap) );
     x->use=0;
-    x->v = malloc( 2 * sizeof (ENTRY) );
+    x->v = g_malloc( 2 * sizeof (ENTRY) );
     x->len = 2;
     x->max = lim;
     
@@ -62,10 +62,10 @@ void destroyC_H(HEAP x,  void (*ff) (void*)){
         for(i=0; i < x->use; i++ ){
             if(x->v[i]->data && r)
                 ff(x->v[i]->data);
-            free(x->v[i]);
+            g_free(x->v[i]);
         }
-        free( x->v );
-        free( x );
+        g_free( x->v );
+        g_free( x );
     }
 
 }
@@ -73,14 +73,14 @@ void destroyC_H(HEAP x,  void (*ff) (void*)){
 static void tabledouble(HEAP x ){
 
     x->len *= 2;
-    x->v = realloc(x->v, x->len * sizeof ( ENTRY )  );
+    x->v = g_realloc(x->v, x->len * sizeof ( ENTRY )  );
 
 }
 
 static void tablehalv(HEAP x){
 
     x->len = x->len / 2;
-    x->v = realloc(x->v, x->len * sizeof ( ENTRY )  );
+    x->v = g_realloc(x->v, x->len * sizeof ( ENTRY )  );
 
 }
 
@@ -147,7 +147,7 @@ void addR_Heap( HEAP x, int key , void* n , void (*ff) (void*) ){
 void add_Heap( HEAP x, int key , void* n ){
 
     if( full(x) ) tabledouble(x);
-    x->v[x->use] = malloc( sizeof(struct ent) );
+    x->v[x->use] = g_malloc( sizeof(struct ent) );
     x->v[x->use]->data = n;
     x->v[x->use++]->key = key;
 
@@ -166,7 +166,7 @@ void* rem_Heap( HEAP x, int *key){
     x->v[0]->data = NULL;
     
     Swap(x->v,0, --x->use);
-    free(x->v[x->use]);
+    g_free(x->v[x->use]);
 
     BubleDown(x->v , 0 , x->use);
     return n;
