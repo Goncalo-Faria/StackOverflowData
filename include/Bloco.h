@@ -1,6 +1,7 @@
 #ifndef bloco_h
 #define bloco_h
 
+#include "date.h"
 
 typedef struct utilizador *Util ;
 typedef struct post *Post;
@@ -45,6 +46,10 @@ unsigned int getP_score(Post x);
 
 unsigned char getP_type(Post x);
 
+Date getP_date_point( Post x );
+
+Date getP_date( Post x );
+
 //Util setters
 
 void inc_Q(Util x);
@@ -71,6 +76,8 @@ void setP_score(Post x, unsigned int s);
 void setP_type(Post x, unsigned char t);
 
 void setP_id(Post x, unsigned int o );
+
+void setP_date( Post x , int d, int m , int a );
 
 
 

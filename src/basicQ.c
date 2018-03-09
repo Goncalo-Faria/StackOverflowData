@@ -37,10 +37,10 @@ static void heapify (void* key, void* value, void* user_data){
         add_Heap( y , (-1) * num , key );
 }
 
-static void count ( void* key , void *value , void *datas ) {
+static void count ( void* key , void *value , void *user_data ) {
 
     Date x = (Date) key ;
-    Container y = (Container) datas;
+    Container y = (Container) user_data;
     LONG_pair k = (LONG_pair)y->spec; 
     Post p = (Post) value;
     /*
@@ -72,12 +72,16 @@ static void find_ans ( void *key , void*value , void* user_data ){
 
 }
 
-static Container createContainer(void){ 
+static Container createContainer(Date begin, Date end ){ 
 
-    Container g = g_malloc (sizeof (struct contain));
-    g->spec= NULL;
-    return g;
+    Container x = g_malloc (sizeof (struct contain));
+    x->dateB = begin;
+    x->dateE = end; 
+    x->spec= NULL;
+    return x;
+
 }
+
 //->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // -- 1 FEITO
 STR_pair info_from_post(TAD_community com, int id){
@@ -130,9 +134,7 @@ LONG_list top_most_active(TAD_community com, int N){
 // --3 FEITO
 LONG_pair total_posts(TAD_community com, Date begin, Date end) {
 
-    Container x = createContainer();
-    x->dateB = begin;
-    x->dateE = end; 
+    Container x = createContainer(begin,end);
     x->spec  = (void*)create_pairL(0,0);
 
     // nao esta defenido por incompetencia (LONG_PAIR) xD !!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -181,11 +183,8 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
     int num, i;
     LONG_list ll; 
     Post newp;
-    Container carrier = createContainer();
+    Container carrier = createContainer(begin,end);
     carrier->spec   = (void*)limcreate_H (N , NULL);
-
-    carrier->dateB = begin;
-    carrier->dateE = end;
 
     postTree_transversal( com , find_ans , (void*)carrier );
 

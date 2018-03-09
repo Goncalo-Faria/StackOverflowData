@@ -15,7 +15,7 @@ TAD_community init(void){
     x->user  = g_hash_table_new_full(g_int64_hash ,  g_int64_equal, g_free , destroyUtil);
     x->post  = g_hash_table_new_full(g_int_hash,  g_int_equal, g_free , destroyPost);
 
-    x->treeP = g_tree_new_full(date_compare, NULL  , free_date , NULL );
+    x->treeP = g_tree_new_full(date_compare, NULL  , NULL , NULL );
     return x;
 }
 

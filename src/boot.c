@@ -78,7 +78,6 @@ TAD_community load(TAD_community com, char* dump_path){
 static void parsePost ( TAD_community com , xmlNode* node ){
 
     xmlChar * hold;
-    Date s;
     char buffer[100];
     long num;
     int dia, mes, ano ;
@@ -106,8 +105,8 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             // GET POST DATE
             hold = xmlGetProp(node, (const xmlChar*)"CreationDate");
             sscanf( (const char*)hold,"%d-%d-%d%s",&ano,&mes,&dia,buffer);
-            s = createDate(dia,mes,ano);
             xmlFree(hold);
+            setP_date(x, dia,mes,ano);
 
             // GET POST TYPE
             hold = xmlGetProp(node, (const xmlChar*)"PostTypeId");
@@ -176,7 +175,7 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             setP_name( x, ( unsigned char* )hold );
             xmlFree(hold);
 
-            postTree_insert(com, s , x );
+            postTree_insert(com, getP_date_point(x) , x );
             postSet_insert(com , ident, x );
         }
 

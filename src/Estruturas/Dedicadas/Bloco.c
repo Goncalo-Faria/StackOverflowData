@@ -27,7 +27,7 @@ typedef struct post {
 	unsigned char *nome;
 	unsigned int score;
 
-	//Date data;
+	Date moment;
 
 }*Post;
 
@@ -48,12 +48,13 @@ void *createPost(){
 	x->score = 0;
 	x->id = 0;
 	//x->data = g_malloc (sizeof(struct date));
-	//x->data = createDate ( 0 , 0 , 0 );
+	x->moment = createDate ( 0 , 0 , 0 );
 	return x;
 }
 
 void destroyPost( void* x ){
 	Post y = (Post) x;
+	free_data(x->moment);
 	null_check(x->name);
 	g_free(y);
 }
@@ -157,6 +158,15 @@ unsigned char getP_type(Post x){
 	return (x->type);
 }
 
+Date getP_date_point( Post x ){
+	// memória dinâmica.
+	//return createDate( get_day(x->moment), get_month(x->moment), get_year(x->moment) ) ; 
+	return x->moment;
+}
+Date getP_date( Post x ){
+	// memória dinâmica.
+	return createDate( get_day(x->moment), get_month(x->moment), get_year(x->moment) ) ; 
+}
 //Util setters
 
 void inc_Q(Util x){
@@ -211,6 +221,12 @@ int belongs_toBacia ( Util x , unsigned int Parent_id, char flag ){ // O que aco
 
 void setP_id(Post x, unsigned int o ){
 	x->id = o;
+}
+
+void setP_date( Post x , int d, int m , int a ){
+	
+	free_date(x->moment);
+	x->moment = createDate(d,m,a);
 }
 
 void setP_fund(Post x, long f){
