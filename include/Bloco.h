@@ -49,9 +49,9 @@ void inc_Q(Util x);
 
 void inc_A(Util x);
 
-void setU_name(Util x, char* un);
+void setU_name(Util x, const unsigned char* un );
 
-void setU_bio(Util x, char* b);
+void setU_bio(Util x, const unsigned char* un);
 
 void add_toBacia(Util x, unsigned int * id , void * dados );
 
@@ -61,7 +61,7 @@ int belongs_toBacia ( Util x , unsigned int Parent_id, char flag );
 
 void setP_fund(Post x, long f);
 
-void setP_name(Post x, char* n);
+void setP_name(Post x, const unsigned char* un);
 
 void setP_score(Post x, unsigned int s);
 

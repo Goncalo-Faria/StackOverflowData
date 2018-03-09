@@ -70,31 +70,33 @@ static void find_ans ( void *key , void*value , void* user_data ){
 
 }
 
+static Container createContainer(void){ 
 
+    Container g = g_malloc (sizeof (struct contain));
+    g->spec= NULL;
+    return g;
+}
 //->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // -- 1 FEITO
 STR_pair info_from_post(TAD_community com, int id){
-    char* str1, *str2;
+    unsigned char* str1, *str2;
     Util y = NULL;
     Post x = NULL;
     STR_pair result;
     unsigned long userid;
-
-    str1=g_malloc( sizeof(char)*100 );
-    str2=g_malloc( sizeof(char)*100 );
     
     x = postSet_lookup(com, id);
-    strcpy(str1,(char*) getP_name(x) );
 
-    userid = getP_fund( x );
+    str1 = getP_name(x)
+    userid = getP_fund(x);
     
     y = userSet_lookup(com, userid);
-    strcpy(str2,(char*) getU_name(y) );
 
-    result = create_pair(str1,str2);
+    str2 = getU_name(y)
+    result = create_pair((char*)str1,(char*)str2);
 
-    free(str1);
-    free(str2);
+    g_free(str1);
+    g_free(str2);
 
     return result;
 }
@@ -126,7 +128,7 @@ LONG_list top_most_active(TAD_community com, int N){
 // --3 FEITO
 LONG_pair total_posts(TAD_community com, Date begin, Date end) {
 
-    Container x = g_malloc (sizeof (struct contain));
+    Container x = createContainer();
     x->dateB = begin;
     x->dateE = end; 
     x->spec  = (void*)create_longpair();
@@ -172,14 +174,14 @@ USER get_user_info(TAD community com, long id){
     return x;
 }
  */
-
+// createContainer
 
 // --6 FEITA
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
     int num, i;
     LONG_list ll; 
     Post newp;
-    Container carrier = g_malloc( sizeof( struct contain ) );
+    Container carrier = createContainer();
     carrier->spec   = (void*)limcreate_H (N , NULL);
 
     carrier->dateB = begin;
