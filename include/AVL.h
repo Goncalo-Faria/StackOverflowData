@@ -54,7 +54,8 @@ Tree balanceLeft(Tree t)
 //verifica se é AVL (tipo booleano)
 int isAVL (Tree t);
 
-
+//Destroi uma determinada AVL
+void destroy_AVL(AVL x);
 
 
 #endif /* avl_h */
