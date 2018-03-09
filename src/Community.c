@@ -8,6 +8,38 @@ typedef struct TCD_community{
     GTree * treeP;
 } * TAD_community;
 
+/*
+*/
+
+int date_compare ( const void* a /*x*/, const void* b /*y*/,void* user_data){
+
+    // user data será sempre null;
+    Date x = (Date)a , y = (Date)b;
+
+    if (get_year(x) > get_year(y) )
+        return -1;
+    else if( get_year(x) < get_year(y) )
+        return 1 ;
+    //-----------------------------------------
+    if( get_month(x) > get_month(y) )
+        return -1;
+    else if( get_month(x) < get_month(y) )
+        return 1;
+    //-----------------------------------------
+    if( get_day(x) > get_day(y) )
+        return -1;
+    else if( get_day(x) < get_day(y) )
+        return 1;
+
+    return 0;
+
+}
+
+void gen_free_date(void* d) {
+    free_date((Date)d);
+}
+
+
 TAD_community init(void){
 
     TAD_community x = g_malloc(sizeof(struct TCD_community));
@@ -24,6 +56,8 @@ TAD_community clean(TAD_community com){
     g_hash_table_destroy(com->user);
     g_hash_table_destroy(com->post);
     g_tree_destroy(com->treeP);
+
+    g_free( com );
 
     return com;
 }

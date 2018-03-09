@@ -27,58 +27,6 @@ int get_year(Date d) {
     return d->year;
 }
 
-void free_date(void* d) {
+void free_date(Date d) {
     free(d);
 }
-
-int date_compare ( const void* a /*x*/, const void* b /*y*/,void* user_data){
-
-    // user data será sempre null;
-
-    Date x = (Date)a , y = (Date)b;
-
-    if ( x->year > y->year  )
-        return -1;
-    else if( x->year  < y->year )
-        return 1 ;
-    //-----------------------------------------
-    if( x->month  > y->month  )
-        return -1;
-    else if( x->month < y->month  )
-        return 1;
-    //-----------------------------------------
-    if( x->day > y->day )
-        return -1;
-    else if( x->day < y->day )
-        return 1;
-
-    return 0;
-}
-
- /*
-
-int date_compare ( const void* a /x/, const void* b/y/,void* user_data){
-
-    // user data será sempre null;
-
-    Date x = (Date)a , y = (Date)b;
-
-    if (get_year(x) > get_year(y) )
-        return -1;
-    else if( get_year(x) < get_year(y) )
-        return 1 ;
-    //-----------------------------------------
-    if( get_month(x) > get_month(y) )
-        return -1;
-    else if( get_month(x) < get_month(y) )
-        return 1;
-    //-----------------------------------------
-    if( get_day(x) > get_day(y) )
-        return -1;
-    else if( get_day(x) < get_day(y) )
-        return 1;
-
-    return 0;
-}
-*/
-
