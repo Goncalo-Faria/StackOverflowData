@@ -3,37 +3,38 @@
 #include <common.h>
 #include "pair.h"
 
+// STR_pair definitions
 struct str_pair {
   char* fst;
   char* snd;
 };
 
-STR_pair create_pair(char* fst, char* snd) {
+STR_pair create_str_pair(char* fst, char* snd) {
   STR_pair p = malloc(sizeof(struct str_pair));
   p->fst = mystrdup(fst);
   p->snd = mystrdup(snd);
   return p;
 }
 
-void set_fst(STR_pair pair, char* str) {
+void set_fst_str(STR_pair pair, char* str) {
   free(pair->fst);
   pair->fst = mystrdup(str);
 }
 
-void set_snd(STR_pair pair, char* str) {
+void set_snd_str(STR_pair pair, char* str) {
   free(pair->snd);
   pair->snd = mystrdup(str);
 }
 
-char* get_fst(STR_pair pair) {
+char* get_fst_str(STR_pair pair) {
   return pair? mystrdup(pair->fst) : NULL;
 }
 
-char* get_snd(STR_pair pair) {
+char* get_snd_str(STR_pair pair) {
   return pair? mystrdup(pair->snd) : NULL;
 }
 
-void free_pair(STR_pair pair) {
+void free_str_pair(STR_pair pair) {
   if(pair) {
     free(pair->fst);
     free(pair->snd);
@@ -41,39 +42,37 @@ void free_pair(STR_pair pair) {
   }
 }
 
-
+// LONG_pair definitions
 struct long_pair {
   long fst;
   long snd;
 };
 
-LONG_pair create_pairL(long fst, long snd){
+LONG_pair create_long_pair(long fst, long snd) {
   LONG_pair p = malloc(sizeof(struct long_pair));
-  p->fst = fst;
-  p->snd = fst;
+  p->fst = fst; 
+  p->snd = snd;
   return p;
 }
 
-void set_fstL(LONG_pair pair, long a){
-  pair->fst = a;
+void set_fst_long(LONG_pair pair, long l) {
+  pair->fst = l;
 }
 
-void set_sndL(LONG_pair pair, long a){
-  pair->snd = a;
+void set_snd_long(LONG_pair pair, long l) {
+  pair->snd = l;
 }
 
-long get_fstL(LONG_pair pair){
+long get_fst_long(LONG_pair pair) {
   return pair->fst;
 }
 
-long get_sndL(LONG_pair pair){
+long get_snd_long(LONG_pair pair) {
   return pair->snd;
 }
 
-void free_pairL(LONG_pair pair){
-  free(pair);
+void free_long_pair(LONG_pair pair) {
+    free(pair);
 }
-
-
 
 
