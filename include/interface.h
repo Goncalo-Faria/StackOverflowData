@@ -1,8 +1,7 @@
-//#include "date.h"
+#include "date.h"
 #include "pair.h"
 #include "list.h"
 #include "user.h"
-#include "Community.h"
 
 typedef struct TCD_community * TAD_community;
 
