@@ -25,8 +25,8 @@ void postSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,voi
 unsigned int postSet_size(TAD_community com);
 // POST BALANCED TREE;
 // estás funções terão de ser substituidas assim que a AVL esteja terminada.
-int postTree_insert(TAD_community com, Date key, Post x);
-void postTree_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x);
+void postTree_insert(TAD_community com, Date key, Post x);
+void postTree_transversal( TAD_community com, int (*f)(void*, void*, void*) ,void* x);
 
 
 #endif

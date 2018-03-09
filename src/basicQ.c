@@ -37,25 +37,30 @@ static void heapify (void* key, void* value, void* user_data){
         add_Heap( y , (-1) * num , key );
 }
 
-static void count ( void* key , void *value , void *user_data ) {
+static int count ( void* key , void *value , void *user_data ) {
 
     Date x = (Date) key ;
-    Container y = (Container) user_data;
-    LONG_pair k = (LONG_pair)y->spec; 
+    Container box = (Container) user_data;
+    LONG_pair k = (LONG_pair)box->spec; 
     Post p = (Post) value;
     /*
     Se as datas forem iguais e tipo for 1 (quest) aumenta as quest e vice-versa para as respostas
     compara atraves do data_compare -> data.h
     */
 
-    if ( date_compare ( x , y->dateB , NULL ) <= 0 && date_compare ( x , y->dateE , NULL) >= 0 ) {
+    if ( date_compare ( x , box->dateB , NULL ) <= 0 && date_compare ( x , box->dateE , NULL) >= 0 ) {
         if ( getP_type( p )  == 1) inc_fstL(k);// é Questão.
         else inc_sndL(k);// não é Questão.
     }
+
+    // The tree is traversed in sorted order.
+    if ( date_compare ( x , box->dateE , NULL )<0 )
+        return 1;
+    return 0;
 }
 
 // REPARAR -> GONCAS
-static void find_ans ( void *key , void*value , void* user_data ){
+static int find_ans ( void *key , void*value , void* user_data ){
 
     Container box = (Container) user_data;
     HEAP x = (HEAP)box->spec;
@@ -69,6 +74,11 @@ static void find_ans ( void *key , void*value , void* user_data ){
         else 
             add_Heap( x , (-1) * num , post  );
         }
+
+    // The tree is traversed in sorted order.
+    if ( date_compare ( x , box->dateE , NULL )<0 )
+        return 1;
+    return 0;
 
 }
 
