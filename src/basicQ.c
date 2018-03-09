@@ -1,18 +1,19 @@
-#include "Bloco.h"
+//#include "Bloco.h"
 //#include <stdlib.h>
 #include <glib.h>
 #include <string.h>
 #include "heap.h"
 #include "Community.h"
-#include "interface.h"
+//#include "interface.h"
 
+#define inc_fst_long(x) set_fst_long( x , 1 + get_fst_long(x) )
+#define inc_snd_long(x) set_snd_long( x , 1 + get_snd_long(x) )
 
 // auxiliary structures.
 typedef struct contain {
     Date dateB;
     Date dateE;
-    long q;
-    long a;
+
     void* spec;
 }*Container;
 
@@ -22,7 +23,6 @@ STR_pair info_from_post(TAD_community com, int id);//#1
 LONG_list top_most_active(TAD_community com, int N);//#2
 LONG_pair total_posts(TAD_community com, Date begin, Date end);//#3
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end);//#6
-
 
 
 // Métodos privados-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -49,8 +49,8 @@ static int count ( void* key , void *value , void *user_data ) {
     */
 
     if ( date_compare ( x , box->dateB , NULL ) <= 0 && date_compare ( x , box->dateE , NULL) >= 0 ) {
-        if ( getP_type( p )  == 1) inc_fstL(k);// é Questão.
-        else inc_sndL(k);// não é Questão.
+        if ( getP_type( p )  == 1)  inc_fst_long(k);// é Questão.
+        else  inc_snd_long(k);// não é Questão.
     }
 
     // The tree is traversed in sorted order.
@@ -109,7 +109,7 @@ STR_pair info_from_post(TAD_community com, int id){
     y = userSet_lookup(com, userid);
 
     str2 = getU_name(y);
-    result = create_pair((char*)str1,(char*)str2);
+    result = create_str_pair((char*)str1,(char*)str2);
 
     g_free(str1);
     g_free(str2);
@@ -144,8 +144,8 @@ LONG_list top_most_active(TAD_community com, int N){
 // --3 FEITO
 LONG_pair total_posts(TAD_community com, Date begin, Date end) {
 
-    Container x = createContainer(begin,end);
-    x->spec  = (void*)create_pairL(0,0);
+    Container x = createContainer(begin,end);//set_snd_long
+    x->spec  = (void*)create_long_pair(0,0);
 
     // nao esta defenido por incompetencia (LONG_PAIR) xD !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

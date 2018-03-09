@@ -1,8 +1,9 @@
 #ifndef community_h
 #define community_h
 
+#include "interface.h"
 #include "Bloco.h"
-#include "date.h"
+//#include "date.h"
 
 typedef struct TCD_community * TAD_community;
 
@@ -28,5 +29,9 @@ unsigned int postSet_size(TAD_community com);
 void postTree_insert(TAD_community com, Date key, Post x);
 void postTree_transversal( TAD_community com, int (*f)(void*, void*, void*) ,void* x);
 
+
+
+
+int date_compare ( const void* a /*x*/, const void* b /*y*/,void* user_data);
 
 #endif

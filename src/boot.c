@@ -1,10 +1,10 @@
-#include "interface.h"
+//#include "interface.h"
 #include <libxml/parser.h>
 
 #include <stdio.h> // temporario
 #include <string.h>
 #include "Community.h"
-#include <Bloco.h>
+//#include <Bloco.h>
 #include <glib.h>
 
 
@@ -36,6 +36,8 @@ static void boot_User ( TAD_community com , char* dump_path );
 TAD_community load(TAD_community com, char* dump_path){
 
     boot_User(com,dump_path);
+
+    printf("USER::%d \n",userSet_size(com));
     /*
     ///////////////////////////////////////////////////////////////////
     
