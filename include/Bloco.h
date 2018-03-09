@@ -26,6 +26,8 @@ void destroyPost( void* x );
 
 
 // User getters
+GHashTable* get_Bacia(Util x)
+
 unsigned int getU_Q(Util x);
 
 unsigned int getU_A(Util x);
@@ -35,8 +37,11 @@ unsigned char* getU_name(Util x);
 unsigned char* getU_bio(Util x);
 // alloca memoria
 
+
 // Post getters
 unsigned int getP_id(Post x);
+
+unsigned int getP_answers(Post x);
 
 unsigned long getP_fund(Post x);
 
@@ -68,6 +73,8 @@ int belongs_toBacia ( Util x , unsigned int Parent_id, char flag );
 void setP_id(Post x, unsigned int o );
 
 void setP_fund(Post x, long f);
+
+void setP_answers(Post x , unsigned int a)
 
 void setP_name(Post x, const unsigned char* un);
 
