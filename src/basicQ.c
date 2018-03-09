@@ -186,7 +186,7 @@ LONG_list questions_with_tag(TAD community com, char* tag, Date begin, Date end)
 }
 */
 
-
+/*
 // --5 ESTA POR ACABAR 
 USER get_user_info(TAD community com, long id){
     int i=0;
@@ -226,6 +226,7 @@ USER get_user_info(TAD community com, long id){
 
     return (info);
 }
+*/
  
 
 
@@ -272,6 +273,7 @@ LONG_list most_answered_questions(TAD community com, int N, Date begin, Date end
     while(N>0){
         p = (Post)rem_Heap( (HEAP)carrier->spec ,&num);
         set_list(lista, N , getP_id (p))  ;
+        N--;
     }
 
     destroy_H (carrier->spec);
