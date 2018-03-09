@@ -29,15 +29,17 @@ unsigned int getU_Q(Util x);
 
 unsigned int getU_A(Util x);
 
-char* getU_name(Util x);
-
-char* getU_bio(Util x);
+unsigned char* getU_name(Util x);
+// alloca memoria
+unsigned char* getU_bio(Util x);
+// alloca memoria
 
 // Post getters
+unsigned int getP_id(Post x);
 
 unsigned long getP_fund(Post x);
 
-char* getP_name(Post x);
+unsigned char* getP_name(Post x);
 
 unsigned int getP_score(Post x);
 
@@ -58,6 +60,7 @@ void add_toBacia(Util x, unsigned int * id , void * dados );
 int belongs_toBacia ( Util x , unsigned int Parent_id, char flag );
 
 // Post setters
+void setP_id(Post x, unsigned int o );
 
 void setP_fund(Post x, long f);
 

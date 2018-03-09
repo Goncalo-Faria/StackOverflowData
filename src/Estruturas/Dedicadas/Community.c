@@ -27,25 +27,11 @@ TAD_community clean(TAD_community com){
     return com;
 }
 
-unsigned int postSet_size(TAD_community com){
 
-    return g_hash_table_size(com->post);
-}
-
-
-unsigned int userSet_size(TAD_community com){
-
-    return g_hash_table_size(com->user);
-}
-
-Util userSet_lookup( TAD_community com, unsigned long num ){
-
-    return (Util)g_hash_table_lookup(com->user , &num);
-}
-
-Post postSet_lookup( TAD_community com, unsigned int num ){
-
-    return (Post)g_hash_table_lookup(com->post , &num);
+// USER HASHTABLE;
+int userSet_insert(TAD_community com, unsigned long * key, Util x ){
+   
+    return g_hash_table_insert(com->user , (void*) key, (void*) x );
 }
 
 void userSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x ){
@@ -53,9 +39,24 @@ void userSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,voi
     g_hash_table_foreach( com->user, f , x );
 }
 
-void postTree_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x){ // eliminar
+Util userSet_lookup( TAD_community com, unsigned long num ){
 
-    g_tree_foreach (com->treeP ,  f   , x );
+    return (Util)g_hash_table_lookup(com->user , &num);
+}
+unsigned int userSet_size(TAD_community com){
+
+    return g_hash_table_size(com->user);
+}
+
+// POST HASHTABLE
+int postSet_insert(TAD_community com, unsigned int * key, Post x ){
+   
+    return g_hash_table_insert(com->post , (void*) key, (void*) x );
+}
+
+Post postSet_lookup( TAD_community com, unsigned int num ){
+
+    return (Post)g_hash_table_lookup(com->post , &num);
 }
 
 void postSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x ){
@@ -63,3 +64,19 @@ void postSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,voi
     g_hash_table_foreach( com->post, f , x );
 }
 
+unsigned int postSet_size(TAD_community com){
+
+    return g_hash_table_size(com->post);
+
+}
+// POST BALANCED TREE;
+
+int postTree_insert(TAD_community com, Date * key, Post x){
+
+    return g_tree_insert(com->treeP, (void*)key , (void*)x );
+}
+
+void postTree_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x){ // eliminar
+
+    g_tree_foreach (com->treeP ,  f   , x );
+}

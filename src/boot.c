@@ -173,11 +173,11 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             }         
             // GET POST TITLE
             hold = xmlGetProp(node, (const xmlChar*)"Title");
-            setP_name( x, ( char*)hold );
+            setP_name( x, ( unsigned char* )hold );
             xmlFree(hold);
 
-            g_tree_insert(com->treeP, s , x );
-            g_hash_table_insert(com->post , (void*)ident, x );
+            postTree_insert(com->treeP, s , x );
+            postSet_insert(com->post , ident, x );
         }
 
         parsePost(com , node->children);
@@ -195,8 +195,6 @@ static void parseUser ( TAD_community com , xmlNode* node ){
     while(node){
         if(node->type == XML_ELEMENT_NODE && !xmlStrcmp( node->name , (const xmlChar*)"row") )
         {   
-            //printf("%c%s\n",'-', node->name);
-            //printf("%d\n",++e);
             x = (Util)createUtil();
             ident = g_malloc ( sizeof( unsigned long ));
 
@@ -207,16 +205,15 @@ static void parseUser ( TAD_community com , xmlNode* node ){
             
             // GET UTIL BIO
             hold = xmlGetProp(node, (const xmlChar*)"AboutMe");
-            setU_bio(x, (char*)hold );
+            setU_bio(x, (unsigned char*)hold );
             xmlFree(hold);
 
             // get Display name
             hold = xmlGetProp(node, (const xmlChar*)"DisplayName");
-            setU_name(x, (char*)hold );
+            setU_name(x, (unsigned char*)hold );
             xmlFree(hold);
 
-            g_hash_table_insert(com->user , (void*)(ident), x );
-
+            userSet_insert( com, ident, x );
         }
 
         parsePost(com , node->children);
