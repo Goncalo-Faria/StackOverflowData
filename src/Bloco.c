@@ -86,19 +86,6 @@ void destroyUtil( void* x ){
 	g_free(y);
 }
 
-/*
-void destroyUtil_key( void* x ){
-	Util y = (Util) x;
-	free(y);
-}
-*/
-/*
-void setDate ( Post x ,int d,int m ,int a){
-	free_date(x->date);
-	x->date = createDate(d,m,a);
-}
-*/
-
 // Util getters
 
 unsigned int getU_Q(Util x) {
@@ -238,7 +225,7 @@ void setP_fund(Post x, long f){
 void setP_name(Post x, const unsigned char* un){
 
 	null_check(x->nome);
-	x->nome =  g_malloc(sizeof( unsigned char)*(strlen( (const char*) un ) + 1 )); 
+	x->nome = g_malloc(sizeof( unsigned char)*(strlen( (const char*) un ) + 1 )); 
 	strcpy(( char*)x->nome, (const char*)un);
 }
 

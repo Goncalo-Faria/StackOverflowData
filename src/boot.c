@@ -3,6 +3,7 @@
 
 #include <stdio.h> // temporario
 #include <string.h>
+#include <ctype.h>
 #include "Community.h"
 //#include <Bloco.h>
 #include <glib.h>
@@ -16,7 +17,10 @@
  * 
  * PostTypeId = 2 resposta;
  * */
+static int u;
 
+#define convert_to_lowercase(p,str) for( (p)=(str) ; *(p)!='\0'; (p)++) *(p) = tolower(*(p))
+typedef void (*parse_function) (TAD_community , const xmlNode*);
 
 // Métodos publicos.
 //TAD_community init();
@@ -25,9 +29,9 @@
 
 // Métodos privados.
 //static void parsePost( TAD_community com, xmlNode * node);
-static void parseUser( TAD_community com, xmlNode * node);
-static void boot_User ( TAD_community com , char* dump_path );
-
+static void parseUser( TAD_community com, const xmlNode * node);
+static void parser ( TAD_community com , char* dump_path, char* file_name , parse_function f  );
+static void parsePost ( TAD_community com , const xmlNode* node );
 //
 
 // recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
@@ -35,9 +39,12 @@ static void boot_User ( TAD_community com , char* dump_path );
 
 TAD_community load(TAD_community com, char* dump_path){
 
-    boot_User(com,dump_path);
-
+    u=0;
+    parser(com, dump_path, "Users", parseUser);
     printf("USER::%d \n",userSet_size(com));
+    //parser(com, dump_path, "Posts", parsePost);
+
+    //printf("USER::%d \n",postSet_size(com));
     /*
     ///////////////////////////////////////////////////////////////////
     
@@ -61,8 +68,8 @@ TAD_community load(TAD_community com, char* dump_path){
     */
     return com;
 }
-/*
-static void parsePost ( TAD_community com , xmlNode* node ){
+
+static void parsePost ( TAD_community com , const xmlNode* node ){
 
     xmlChar * hold;
     char buffer[100];
@@ -72,100 +79,93 @@ static void parsePost ( TAD_community com , xmlNode* node ){
     Util y = NULL;
     Post x = NULL;
     //unsigned long childCount = xmlChildElementCount(node),i;
-
-    while(node){
-        if(node->type == XML_ELEMENT_NODE && !xmlStrcmp( node->name , (const xmlChar*)"row") )
-        {   
+ 
             //printf("%c%s\n",'-', node->name);
             //printf("%d\n",++e);
-            x = (Post)createPost();
-            ident = g_malloc ( sizeof( unsigned int ) );
-            Qid   = g_malloc ( sizeof( unsigned int ) );
+    x = (Post)createPost();
+
+    ident = g_malloc ( sizeof( unsigned int ) );
+    Qid   = g_malloc ( sizeof( unsigned int ) );
 
             // GET POST ID <LONG>
-            hold = xmlGetProp(node, (const xmlChar*)"Id");
-            *ident = (unsigned int) atoi((const char*) hold );
-            xmlFree(hold);
+    hold = xmlGetProp(node, (const xmlChar*)"Id");
+    *ident = (unsigned int) atoi((const char*) hold );
+    xmlFree(hold);
 
-            setP_id(x, *ident );
+    setP_id(x, *ident );
 
             // GET POST DATE
-            hold = xmlGetProp(node, (const xmlChar*)"CreationDate");
-            sscanf( (const char*)hold,"%d-%d-%d%s",&ano,&mes,&dia,buffer);
-            xmlFree(hold);
-            setP_date(x, dia,mes,ano);
+    hold = xmlGetProp(node, (const xmlChar*)"CreationDate");
+    sscanf( (const char*)hold,"%d-%d-%d%s",&ano,&mes,&dia,buffer);
+    xmlFree(hold);
+    setP_date(x, dia,mes,ano);
 
             // GET POST TYPE
-            hold = xmlGetProp(node, (const xmlChar*)"PostTypeId");
-            setP_type ( x , (unsigned char) atoi((const char*) hold ) );
-            xmlFree(hold);
+    hold = xmlGetProp(node, (const xmlChar*)"PostTypeId");
+    setP_type ( x , (unsigned char) atoi((const char*) hold ) );
+    xmlFree(hold);
 
             // GET OWNER ID
-            hold = xmlGetProp(node, (const xmlChar*)"OwnerUserId");
-            num = (unsigned long) atol((const char*) hold );
-            setP_fund( x, num );
-            xmlFree(hold);
+    hold = xmlGetProp(node, (const xmlChar*)"OwnerUserId");
+    num = (unsigned long) atol((const char*) hold );
+    setP_fund( x, num );
+    xmlFree(hold);
 
 
-            // ADD SCORE.
-            hold = xmlGetProp(node, (const xmlChar*)"Score");
-            setP_score(x ,(unsigned int) atoi((const char*) hold ));
-            xmlFree(hold);
+    // ADD SCORE.
+    hold = xmlGetProp(node, (const xmlChar*)"Score");
+    setP_score(x ,(unsigned int) atoi((const char*) hold ));
+    //printf("%s\n",(char*)hold);
+    xmlFree(hold);
 
 
 
-            // GET OWNER REF
-            y = userSet_lookup(com , num);
+    // GET OWNER REF
+    y = userSet_lookup(com , num);
             
-            // COUNT POST TYPE 
-            if( getP_type(x) == 1)
-                inc_Q(y);
-            else 
-                inc_A(y);
+    // COUNT POST TYPE 
+    if( getP_type(x) == 1)
+        inc_Q(y);
+    else 
+        inc_A(y);
 
+    if( getP_type(x) == 1 ){ // Questão.
+        *Qid = *ident;
+        if ( !Q_belongs_hash(y ,*Qid) )// verifica se existe!
+            add_toBacia(y , Qid , NULL );
+    
+        else
+            g_free(Qid);
+    } else {
+        if ( !A_belongs_hash(y ,*ident) ){// verifica se existe!
 
-        
-            if( getP_type(x) == 1 ){ // Questão.
-                *Qid = *ident;
-                if ( !Q_belongs_hash(y ,*Qid) )// verifica se existe!
-                    add_toBacia(y , Qid , NULL );
-  
-             
-            else
-                g_free(Qid);
-            //
-            } else {
-                if ( !A_belongs_hash(y ,*ident) ){// verifica se existe!
-
-                    hold = xmlGetProp(node, (const xmlChar*)"ParentId");
-                    *Qid = (unsigned int) atoi((const char*) hold );
-                    xmlFree(hold);
-
-                    Aid  = g_malloc( sizeof( unsigned int) );
-                    *Aid = *ident; // valor da resposta.
-
-                    add_toBacia(y , Qid , Aid);
-                }
-                else 
-                    g_free(Qid);
-            }         
-            // GET POST TITLE
-            hold = xmlGetProp(node, (const xmlChar*)"Title");
-            setP_name( x, ( unsigned char* )hold );
+            hold = xmlGetProp(node, (const xmlChar*)"ParentId");
+            *Qid = (unsigned int) atoi((const char*) hold );
             xmlFree(hold);
 
-            postTree_insert(com, getP_date_point(x) , x );
-            postSet_insert(com , ident, x );
-        }
+            Aid  = g_malloc( sizeof( unsigned int) );
+            *Aid = *ident; // valor da resposta.
 
-        parsePost(com , node->children);
-        node = node->next;
+            add_toBacia(y , Qid , Aid);
+        }
+        else 
+            g_free(Qid);
+    }         
+    // GET POST TITLE
+    hold = xmlGetProp(node, (const xmlChar*)"Title");
+    
+    if(hold){
+        setP_name(x, (unsigned char*)hold );
+        xmlFree(hold);
     }
+
+    printf("%d",++u);
+    postTree_insert(com, getP_date_point(x) , x );
+    postSet_insert(com , ident, x );
+
 }
 
-*/
-
-static void parseUser ( TAD_community com , xmlNode* node ){
+static void parseUser ( TAD_community com , const xmlNode* node ){
 
     xmlChar * hold=NULL;
     Util x = NULL;
@@ -200,17 +200,19 @@ static void parseUser ( TAD_community com , xmlNode* node ){
     userSet_insert( com, ident, x );
     return;
 }
+//file
+//parsefunction
 
-static void boot_User ( TAD_community com , char* dump_path ){
+static void parser ( TAD_community com , char* dump_path, char* file_name , parse_function f ){
 
     xmlDoc *doc = NULL;
     xmlNode *root_element = NULL;
-     xmlNode *node = NULL;
+    xmlNode *node = NULL;
+    char* p;
     
-    char* docname = g_malloc( sizeof(char)* (strlen(dump_path) + 10) ); 
-
+    char* docname = g_malloc( sizeof(char)* ( strlen(dump_path) + strlen(file_name) + 6) ); 
     ////////////////////////////////////////////7
-    sprintf(docname,"%s/Users.xml",dump_path);
+    sprintf(docname,"%s/%s.xml",dump_path,file_name);
 
     //printf("%s\n",tmpstr);
     doc = xmlParseFile(docname);
@@ -226,7 +228,10 @@ static void boot_User ( TAD_community com , char* dump_path ){
         return;
     }
     node = root_element;
-    if (xmlStrcmp(node->name, (const xmlChar *) "users")) {
+    strcpy(docname,file_name);
+    convert_to_lowercase(p,docname);
+
+    if (xmlStrcmp(node->name, (const xmlChar *) docname) ) {
         perror("Documento do tipo errado.\n");
         xmlFreeDoc(doc);
         return;
@@ -235,7 +240,7 @@ static void boot_User ( TAD_community com , char* dump_path ){
     while (node != NULL) {
         if ((!xmlStrcmp(node->name, (const xmlChar *)"row"))){
             //perror("->alivde\n");
-            parseUser(com , node);
+            f(com , node);
             //printf("%d -> size \n ",userSet_size(com) );
         }
         node = node->next;

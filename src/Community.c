@@ -57,6 +57,8 @@ TAD_community clean(TAD_community com){
     g_hash_table_destroy(com->post);
     g_tree_destroy(com->treeP);
 
+    g_free( com );
+
     return com;
 }
 
