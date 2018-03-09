@@ -24,9 +24,9 @@
 //TAD_community load(TAD_community com, char* dump_path)
 
 // Métodos privados.
-static void parsePost( TAD_community com, xmlNode * node);
+//static void parsePost( TAD_community com, xmlNode * node);
 static void parseUser( TAD_community com, xmlNode * node);
-
+static void boot_User ( TAD_community com , char* dump_path );
 
 //
 
@@ -35,24 +35,8 @@ static void parseUser( TAD_community com, xmlNode * node);
 
 TAD_community load(TAD_community com, char* dump_path){
 
-    xmlDoc *doc = NULL;
-    xmlNode *root_element = NULL;
-
-    char* tmpstr = g_malloc( sizeof(char)* (strlen(dump_path) + 10) ); 
-    ////////////////////////////////////////////7
-    sprintf(tmpstr,"%s/Users.xml",dump_path);
-    doc = xmlReadFile(tmpstr, NULL, 0);
-
-    if( !doc )
-        perror("Could not parse the XML file\n");
-    
-    root_element = xmlDocGetRootElement(doc);
-
-    parseUser(com, root_element);
-
-    xmlFreeDoc(doc);
-    xmlCleanupParser();
-    xmlMemoryDump();
+    boot_User(com,dump_path);
+    /*
     ///////////////////////////////////////////////////////////////////
     
     sprintf(tmpstr,"%s/Posts.xml",dump_path);
@@ -72,9 +56,10 @@ TAD_community load(TAD_community com, char* dump_path){
     xmlCleanupParser();
     xmlMemoryDump();
     // x.............................................................
+    */
     return com;
 }
-
+/*
 static void parsePost ( TAD_community com , xmlNode* node ){
 
     xmlChar * hold;
@@ -136,22 +121,14 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             else 
                 inc_A(y);
 
-        /*
-                Passa para o parent id.
-        
-        */
+
         
             if( getP_type(x) == 1 ){ // Questão.
                 *Qid = *ident;
                 if ( !Q_belongs_hash(y ,*Qid) )// verifica se existe!
                     add_toBacia(y , Qid , NULL );
-
-            /**
-             * Se o user for o owner da Q info é null.
-             * 
-             * Caso contrário tem um apontador para o post id da resposta.
-             *   
-             */
+  
+             
             else
                 g_free(Qid);
             //
@@ -184,38 +161,88 @@ static void parsePost ( TAD_community com , xmlNode* node ){
     }
 }
 
+*/
+
 static void parseUser ( TAD_community com , xmlNode* node ){
 
-    xmlChar * hold;
+    xmlChar * hold=NULL;
     Util x = NULL;
     unsigned long *ident;
     //unsigned long childCount = xmlChildElementCount(node),i;
-
-    while(node){
-        if(node->type == XML_ELEMENT_NODE && !xmlStrcmp( node->name , (const xmlChar*)"row") )
-        {   
-            x = (Util)createUtil();
-            ident = g_malloc ( sizeof( unsigned long ));
+    //printf("erros\n");
+    x = (Util)createUtil();
+    ident = g_malloc ( sizeof( unsigned long ));
 
             // get user id
-            hold = xmlGetProp(node, (const xmlChar*)"Id");
-            *ident = (unsigned long) atol((const char*) hold );
-            xmlFree(hold);
+    hold = xmlGetProp(node, (const xmlChar*)"Id");
+    *ident = (unsigned long) atol((const char*) hold );
+    //printf("%d \n",(int)*ident);
+    xmlFree(hold);
             
             // GET UTIL BIO
-            hold = xmlGetProp(node, (const xmlChar*)"AboutMe");
-            setU_bio(x, (unsigned char*)hold );
-            xmlFree(hold);
+    hold = xmlGetProp(node, (const xmlChar*)"AboutMe");
+    
+    if(hold ){
+        setU_bio(x, (unsigned char*)hold );
+        //printf("%s \n",(char*)hold);
+        xmlFree(hold);
+    }
 
             // get Display name
-            hold = xmlGetProp(node, (const xmlChar*)"DisplayName");
-            setU_name(x, (unsigned char*)hold );
-            xmlFree(hold);
+    hold = xmlGetProp(node, (const xmlChar*)"DisplayName");
+    setU_name(x, (unsigned char*)hold );
+    xmlFree(hold);
 
-            userSet_insert( com, ident, x );
+
+
+    userSet_insert( com, ident, x );
+    return;
+}
+
+static void boot_User ( TAD_community com , char* dump_path ){
+
+    xmlDoc *doc = NULL;
+    xmlNode *root_element = NULL;
+     xmlNode *node = NULL;
+    
+    char* docname = g_malloc( sizeof(char)* (strlen(dump_path) + 10) ); 
+
+    ////////////////////////////////////////////7
+    sprintf(docname,"%s/Users.xml",dump_path);
+
+    //printf("%s\n",tmpstr);
+    doc = xmlParseFile(docname);
+
+    if( !doc )
+        perror("Erro no parse do documento XML.\n");
+    
+    root_element = xmlDocGetRootElement(doc);
+
+    if ( !root_element ) {
+        perror("Documento vazio.\n");
+        xmlFreeDoc(doc);
+        return;
+    }
+    node = root_element;
+    if (xmlStrcmp(node->name, (const xmlChar *) "users")) {
+        perror("Documento do tipo errado.\n");
+        xmlFreeDoc(doc);
+        return;
+    }
+    node = node->xmlChildrenNode;
+    while (node != NULL) {
+        if ((!xmlStrcmp(node->name, (const xmlChar *)"row"))){
+            //perror("->alivde\n");
+            parseUser(com , node);
+            //printf("%d -> size \n ",userSet_size(com) );
         }
-
-        parsePost(com , node->children);
         node = node->next;
     }
+
+    g_free(docname);
+    xmlFreeDoc(doc);
+
+    xmlCleanupParser();
+    xmlMemoryDump();
+    return;
 }
