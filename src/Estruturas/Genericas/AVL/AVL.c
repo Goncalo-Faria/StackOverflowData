@@ -1,13 +1,20 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "AVL.h"
+
+
+
+void null_check (void *x , Free_function f){
+    if (x) f(x);
+}
+
+typedef void (*Free_function) (void *); 
+typedef int (*Compare) (void * , void* , void*);
 
 
 typedef struct treenode {
     BalanceFactor bf;
     TreeEntry entry;
     void* key;
-    Date date;
     struct treenode *left;
     struct treenode *right;
 }*Tree;
@@ -21,36 +28,48 @@ typedef struct tentry{
 typedef struct avl {
     Tree root;
     unsigned int num_node;
-    void* compare; 
-    void* free_key; // if null don't use .
-    void* free_data;// if null don't use.
+    Compare compare; 
+    Free_function free_key; // if null don't use .
+    Free_function free_dados; // if null don't use.
 
 }*AVL;
 
       
-   
 
-AVL create_avl ( int (*compare) (void* , void*, void* ), void (*free_key) (void *), void (*free_data) (void*) ) {
+AVL create_avl ( int (*compare) (void* , void*, void* ), void (*free_key) (void *), void (*free_dados) (void*) ) {
     
-    AVL x = g_malloc( sizeof(struct avl) );
+    AVL x = malloc( sizeof(struct avl) );
     x->root = NULL;
-    x->free_data= free_data;
+    x->free_dados= free_dados;
     x->free_key= free_key;
     x->num_node=0;
     x->compare = compare; 
-
+    return x;
 }
 
 
-//Numa determinada AVL acrescenta me um TreeEntry 
+/*Numa determinada AVL 
+* Temos uma certa key e dados e fazemos uma tentry
+* Mete-mos a determinada tentry na Tree 
+* InsertTree insere um determinado nodo como tambem diz se a arvore cresceu ou nao
+*/
 AVL insertAVL (AVL a , void *key , void *dados){
     TreeEntry t = malloc (sizeof (struct tentry));
+    t->key = key;
+    t->dados = dados;
     Tree x = a->root;
-    int cresceu;
-    // passo como parametro o cresceu para ver se a arvore balanceada aumenta de tamanho ou nao
+    int cresceu = 0;
     insertTree (x , t , &cresceu);
+    free (t);
+    a->num_node++;
+    return a;
 
 }
+
+
+int get_num_node (AVL x){
+    return (x->num_node);
+}  
 
 /*
 Tree create_tree(void){
@@ -61,6 +80,33 @@ Tree create_tree(void){
     t->date = NULL;
 }
 */
+void destroy_AVL(AVL x){
+    Free_function f_key = x->free_key;
+    Free_function f_dados = x->free_dados;
+    Tree t = x->root;
+    if(t) {
+        destroy_Tree(t,f_key,f_dados); 
+    }
+        free(t);
+        null_check (x,free);
+    
+}
+
+
+
+
+void destroy_Tree (Tree t , Free_function f_key , Free_function f_dados){
+    if(t){
+         if (t->entry->key){
+              null_check ( t->entry->key ,f_key );
+              null_check ( t->entry->dados , f_dados);
+              free (t->entry); 
+          }
+    destroy_Tree (t->left,f_key,f_dados);
+    destroy_Tree (t->left,f_key,f_dados);
+     }
+}   
+
 
 Tree rotateLeft(Tree t)
 {
@@ -206,9 +252,6 @@ int isAVL (Tree t) {
             isAVL(t->right));
 }
 
-
-
-/*
 int nonAVL_treeHeight(Tree t) {
     int l, r;
     
@@ -222,8 +265,11 @@ int nonAVL_treeHeight(Tree t) {
     else return r+1;
     
 }
+  
 
 
+
+/*
 
 int treeHeight(Tree t) {
 
