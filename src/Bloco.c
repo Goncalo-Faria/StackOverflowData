@@ -162,7 +162,7 @@ void setP_fund(Post x, long f){
 }
 
 void setP_name(Post x, char* n){
-	strncpy(x->nome, n);
+	strcpy(x->nome, n);
 }
 
 void setP_score(Post x, unsigned int s){
