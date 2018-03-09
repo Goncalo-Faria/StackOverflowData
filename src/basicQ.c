@@ -1,9 +1,10 @@
-//#include "interface.h"
 #include "Bloco.h"
 //#include <stdlib.h>
+#include <glib.h>
 #include <string.h>
 #include "heap.h"
 #include "Community.h"
+#include "interface.h"
 
 
 // auxiliary structures.
@@ -19,8 +20,8 @@ typedef struct contain {
 // Métodos publicos.
 STR_pair info_from_post(TAD_community com, int id);//#1
 LONG_list top_most_active(TAD_community com, int N);//#2
-LONG_pair total_posts(TAD community com, Date begin, Date end);//#3
-LONG_list most_voted_answers(TAD community com, int N, Date begin, Date end);//#6
+LONG_pair total_posts(TAD_community com, Date begin, Date end);//#3
+LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end);//#6
 
 
 
@@ -39,8 +40,8 @@ static void heapify (void* key, void* value, void* user_data){
 static void count ( void* key , void *value , void *datas ) {
 
     Date x = (Date) key ;
-    Container y = (Container) datas
-    LONG_pair k = (LONG_pair) t->spec; 
+    Container y = (Container) datas;
+    LONG_pair k = (LONG_pair)y->spec; 
     Post p = (Post) value;
     /*
     Se as datas forem iguais e tipo for 1 (quest) aumenta as quest e vice-versa para as respostas
@@ -48,8 +49,8 @@ static void count ( void* key , void *value , void *datas ) {
     */
 
     if ( date_compare ( x , y->dateB , NULL ) <= 0 && date_compare ( x , y->dateE , NULL) >= 0 ) {
-        if ( getP_type( p )  == 1) inc_Fst(k)++;// é Questão.
-        else inc_Snd(k)++;// não é Questão.
+        if ( getP_type( p )  == 1) inc_fstL(k);// é Questão.
+        else inc_sndL(k);// não é Questão.
     }
 }
 
@@ -57,16 +58,17 @@ static void count ( void* key , void *value , void *datas ) {
 static void find_ans ( void *key , void*value , void* user_data ){
 
     Container box = (Container) user_data;
-    HEAP x = (HEAP)user_data->spec;
+    HEAP x = (HEAP)box->spec;
     Post post = (Post)value;
     int num = getP_score(post);
 
 
-    if ( data_compare ( box->dateB , (Date) key ) <= 0 && data_compare ( box->dateE, (Date) key ) >= 0 && getP_type(post) == 2 )// é resposta.
-        if ( maxQ_H (heap) )// se está na capacidade
+    if ( date_compare ( box->dateB , (Date) key ,NULL) <= 0 && date_compare ( box->dateE, (Date) key,NULL ) >= 0 && getP_type(post) == 2 ){// é resposta.
+        if ( maxQ_H (x) )// se está na capacidade
             addR_Heap( x , (-1) * num , post );
         else 
             add_Heap( x , (-1) * num , post  );
+        }
 
 }
 
@@ -87,12 +89,12 @@ STR_pair info_from_post(TAD_community com, int id){
     
     x = postSet_lookup(com, id);
 
-    str1 = getP_name(x)
+    str1 = getP_name(x);
     userid = getP_fund(x);
     
     y = userSet_lookup(com, userid);
 
-    str2 = getU_name(y)
+    str2 = getU_name(y);
     result = create_pair((char*)str1,(char*)str2);
 
     g_free(str1);
@@ -103,7 +105,7 @@ STR_pair info_from_post(TAD_community com, int id){
 
 // --2 FEITO
 LONG_list top_most_active(TAD_community com, int N){
-    int num;
+    int num,i;
 
     HEAP x = limcreate_H(N, NULL);// não elimina conteudo.
     LONG_list ll = create_list(N);
@@ -131,11 +133,9 @@ LONG_pair total_posts(TAD_community com, Date begin, Date end) {
     Container x = createContainer();
     x->dateB = begin;
     x->dateE = end; 
-    x->spec  = (void*)create_longpair();
+    x->spec  = (void*)create_pairL(0,0);
 
     // nao esta defenido por incompetencia (LONG_PAIR) xD !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    setFst(x->spec, 0 );
-    setSnd(x->spec, 0 );
 
     postTree_transversal( com ,count, (void*)x );
 
@@ -187,11 +187,11 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
     carrier->dateB = begin;
     carrier->dateE = end;
 
-    postTree_transversal( com ,find_ans , (void*)carrier );
+    postTree_transversal( com , find_ans , (void*)carrier );
 
     ll = create_list(N);
 
-    for ( i=0, i < N ; i++){
+    for ( i=0; i < N ; i++){
         newp = (Post)rem_Heap( (HEAP)carrier->spec , &num );
         set_list(ll , i , getP_id ( newp ) );
     }

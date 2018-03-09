@@ -176,8 +176,8 @@ static void parsePost ( TAD_community com , xmlNode* node ){
             setP_name( x, ( unsigned char* )hold );
             xmlFree(hold);
 
-            postTree_insert(com->treeP, s , x );
-            postSet_insert(com->post , ident, x );
+            postTree_insert(com, s , x );
+            postSet_insert(com , ident, x );
         }
 
         parsePost(com , node->children);

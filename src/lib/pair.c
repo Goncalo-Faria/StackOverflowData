@@ -42,5 +42,38 @@ void free_pair(STR_pair pair) {
 }
 
 
+struct long_pair {
+  long fst;
+  long snd;
+};
+
+LONG_pair create_pairL(long fst, long snd){
+  LONG_pair p = malloc(sizeof(struct long_pair));
+  p->fst = fst;
+  p->snd = fst;
+  return p;
+}
+
+void set_fstL(LONG_pair pair, long a){
+  pair->fst = a;
+}
+
+void set_sndL(LONG_pair pair, long a){
+  pair->snd = a;
+}
+
+long get_fstL(LONG_pair pair){
+  return pair->fst;
+}
+
+long get_sndL(LONG_pair pair){
+  return pair->snd;
+}
+
+void free_pairL(LONG_pair pair){
+  free(pair);
+}
+
+
 
 

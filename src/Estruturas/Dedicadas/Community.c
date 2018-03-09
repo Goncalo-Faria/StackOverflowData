@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <Community.c>
+#include <data.h>
 
 typedef struct TCD_community{
     GHashTable* user;
@@ -71,7 +72,7 @@ unsigned int postSet_size(TAD_community com){
 }
 // POST BALANCED TREE;
 
-int postTree_insert(TAD_community com, Date * key, Post x){
+int postTree_insert(TAD_community com, Date key, Post x){
 
     return g_tree_insert(com->treeP, (void*)key , (void*)x );
 }
