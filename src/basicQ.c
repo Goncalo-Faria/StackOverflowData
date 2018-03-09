@@ -165,7 +165,7 @@ LONG_list questions_with_tag(TAD community com, char* tag, Date begin, Date end)
 }
 */
 
-/*
+
 // --5 ESTA POR ACABAR 
 
 /*
@@ -185,14 +185,7 @@ USER get_user_info(TAD community com, long id){
 
     return x;
 }
-<<<<<<< HEAD
  */
-=======
-*/
- 
-
-
->>>>>>> 6122fe0c81bcaca3974863c6bf2dcb874b982b05
 // createContainer
 
 // --6 FEITA
@@ -223,16 +216,6 @@ LONG_list most_answered_questions(TAD community com, int N, Date begin, Date end
 
     
 
-<<<<<<< HEAD
-=======
-    postTree_transversals (com , more_answer , (void*) carrier );
-    // ja me mete em ordem decrescente
-    while(N>0){
-        p = (Post)rem_Heap( (HEAP)carrier->spec ,&num);
-        set_list(lista, N , getP_id (p))  ;
-        N--;
-    }
->>>>>>> 6122fe0c81bcaca3974863c6bf2dcb874b982b05
 
 
 }
