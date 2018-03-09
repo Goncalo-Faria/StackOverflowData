@@ -1,18 +1,19 @@
-#include "Bloco.h"
+//#include "Bloco.h"
 //#include <stdlib.h>
 #include <glib.h>
 #include <string.h>
 #include "heap.h"
 #include "Community.h"
-#include "interface.h"
+//#include "interface.h"
 
+#define inc_fst_long(x) set_fst_long( x , 1 + get_fst_long(x) )
+#define inc_snd_long(x) set_snd_long( x , 1 + get_snd_long(x) )
 
 // auxiliary structures.
 typedef struct contain {
     Date dateB;
     Date dateE;
-    long q;
-    long a;
+
     void* spec;
 }*Container;
 
@@ -24,18 +25,7 @@ LONG_pair total_posts(TAD_community com, Date begin, Date end);//#3
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end);//#6
 
 
-
 // Métodos privados-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-static Container createContainer(Date begin, Date end ){ 
-
-    Container x = g_malloc (sizeof (struct contain));
-    x->dateB = begin;
-    x->dateE = end; 
-    x->spec= NULL;
-    return x;
-
-}
-
 static void heapify (void* key, void* value, void* user_data){
     Util x = (Util)value;
     HEAP y = (HEAP)user_data;
@@ -59,8 +49,8 @@ static int count ( void* key , void *value , void *user_data ) {
     */
 
     if ( date_compare ( x , box->dateB , NULL ) <= 0 && date_compare ( x , box->dateE , NULL) >= 0 ) {
-        if ( getP_type( p )  == 1) inc_fstL(k);// é Questão.
-        else inc_sndL(k);// não é Questão.
+        if ( getP_type( p )  == 1)  inc_fst_long(k);// é Questão.
+        else  inc_snd_long(k);// não é Questão.
     }
 
     // The tree is traversed in sorted order.
@@ -70,29 +60,7 @@ static int count ( void* key , void *value , void *user_data ) {
 }
 
 // REPARAR -> GONCAS
-static int more_answer ( void *key , void*value , void* user_data ){
-
-    Container box = (Container) user_data;
-    HEAP x = (HEAP)box->spec;
-    Post post = (Post)value;
-    int num = getP_answers(post);
-
-
-    if ( date_compare ( box->dateB , (Date) key ,NULL) <= 0 && date_compare ( box->dateE, (Date) key,NULL ) >= 0 && getP_type(post) == 2 ){// é resposta.
-        if ( maxQ_H (x) )// se está na capacidade
-            addR_Heap( x , (-1) * num , post );
-        else 
-            add_Heap( x , (-1) * num , post  );
-        }
-
-    // The tree is traversed in sorted order.
-    if ( date_compare ( x , box->dateE , NULL )<0 )
-        return 1;
-    return 0;
-
-}
-
-static int more_votes ( void *key , void*value , void* user_data ){
+static int find_ans ( void *key , void*value , void* user_data ){
 
     Container box = (Container) user_data;
     HEAP x = (HEAP)box->spec;
@@ -111,6 +79,17 @@ static int more_votes ( void *key , void*value , void* user_data ){
     if ( date_compare ( x , box->dateE , NULL )<0 )
         return 1;
     return 0;
+
+}
+
+static Container createContainer(Date begin, Date end ){ 
+
+    Container x = g_malloc (sizeof (struct contain));
+    x->dateB = begin;
+    x->dateE = end; 
+    x->spec= NULL;
+    return x;
+
 }
 
 //->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -130,7 +109,7 @@ STR_pair info_from_post(TAD_community com, int id){
     y = userSet_lookup(com, userid);
 
     str2 = getU_name(y);
-    result = create_pair((char*)str1,(char*)str2);
+    result = create_str_pair((char*)str1,(char*)str2);
 
     g_free(str1);
     g_free(str2);
@@ -165,8 +144,8 @@ LONG_list top_most_active(TAD_community com, int N){
 // --3 FEITO
 LONG_pair total_posts(TAD_community com, Date begin, Date end) {
 
-    Container x = createContainer(begin,end);
-    x->spec  = (void*)create_pairL(0,0);
+    Container x = createContainer(begin,end);//set_snd_long
+    x->spec  = (void*)create_long_pair(0,0);
 
     // nao esta defenido por incompetencia (LONG_PAIR) xD !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -188,47 +167,25 @@ LONG_list questions_with_tag(TAD community com, char* tag, Date begin, Date end)
 
 
 // --5 ESTA POR ACABAR 
+
+/*
 USER get_user_info(TAD community com, long id){
-    int i=0;
-    Heap h =limcreate_H(10);
-    User info = g_malloc (sizeof (struct user));
-    long *post_history =NULL;
-    char *short_bio = NULL;
-    Util x = userSet_lookup ( com , id);
 
+ //USER create_user(char* short_bio, long* post_history);
 
-    // meu objetivo aqui recebo UM ID  de um USER e atraves disso consigo a sua bacia
-    // COMO apenas quero um bio e LONG* HISTORY fasso uma heap com as datas mais antigas e assim sucessivamente
-    // Depois so tenho que retirar 10 datas
-    // Caso em que nao tenho 10? , devolvo apenas o array com os ID recebidos
-    GHashTable *h = get_Bacia(x);
+    Heap x = limcreate_H ( )
+    User x  = NULL;
+    util y = NULL;
 
+    y = (Util)g_hash_table_lookup(com->util ,id);
 
-    strcpy (short_bio , x->bio);
+    // create_user (char* short_bio, long* post_history);
+    x = create_user ( x -> bio , x -> Q) ;
+    g_free(y);
 
-    // aqui tennho a minha heap h com as 10 datas mais antigas 
-    
-    // FAZERRRRRRRRRRRRRRRR
-
-    // verificar se os dados sao == NULL ou nao para saber se o post é do User ou nao
-
-
-    // começo de 10 pois é para estar ordenado por cronologia inversa
-    for (i=10; i > 0 ; i--){
-        *post_history = // remove da heap 1 a 1 ... (h , )
-        //usar o rem_heap -> remove o elemento que esta no topo da lista
-        post_history++;
-    }
-
-    destroyUtil(x);
-    destroy_H(h);
-    info = create_user(short_bio ,post_history);
-
-    return (info);
+    return x;
 }
- 
-
-
+ */
 // createContainer
 
 // --6 FEITA
@@ -237,7 +194,7 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
     LONG_list ll; 
     Post newp;
     Container carrier = createContainer(begin,end);
-    carrier->spec   = (void*)limcreate_H (N NULL);
+    carrier->spec   = (void*)limcreate_H (N , NULL);
 
     postTree_transversal( com , find_ans , (void*)carrier );
 
@@ -250,50 +207,21 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
 
     destroy_H(carrier->spec);
     g_free(carrier);
-    destroyPost(newp);
 
     return ll;
 }
-
-
-    // VERIFICAR SE O MORE_ANSWER ESTA CERTOOOOOOOOOOOOOOOOO'O''O'O'O'OO''O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'
-    // VERIFICAR SE O MORE_ANSWER ESTA CERTOOOOOOOOOOOOOOOOO'O''O'O'O'OO''O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'
+/*
 // --7 FALTA ACABAR
 LONG_list most_answered_questions(TAD community com, int N, Date begin, Date end){
-    int num;
-    LONG_list lista = create_list(N);
-    Post p = NULL;
 
-    Container carrier = createContainer(begin,end);
-    carrier->spec = (void*)limcreate_H (N,NULL);
+    
 
-    postTree_transversals (com , more_answer , (void*) carrier );
-    // ja me mete em ordem decrescente
-    while(N>0){
-        p = (Post)rem_Heap( (HEAP)carrier->spec ,&num);
-        set_list(lista, N , getP_id (p))  ;
-    }
 
-    destroy_H (carrier->spec);
-    g_free(carrier);
-    destroyPost(p);
-
-    return lista;
-}
-
-/*
-}
-
-// --8 FALTA ACBABAR
-LONG_list contains_word(TAD community com, char* word, int N){
-    LONG_list lista = create_list (N);
 
 }
+
+
+
 
 
 */
-
-
-
-
-
