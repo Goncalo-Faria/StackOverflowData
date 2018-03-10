@@ -38,6 +38,12 @@ unsigned char* getU_bio(Util x);
 // Post getters
 unsigned int getP_id(Post x);
 
+unsigned int * getP_id_point(Post x);
+
+unsigned int getP_parentId(Post x);
+
+unsigned int * getP_parentId_point(Post x);
+
 unsigned long getP_fund(Post x);
 
 unsigned char* getP_name(Post x);
@@ -64,8 +70,15 @@ void add_toBacia(Util x, unsigned int * id , void * dados );
 
 int belongs_toBacia ( Util x , unsigned int Parent_id, char flag );
 
+unsigned int * toBacia_lookup( Util x, unsigned int Parent_id );
+
+void bind_toBacia( Util x, Post y );
+
+
 // Post setters
 void setP_id(Post x, unsigned int o );
+
+void setP_parentId(Post x, unsigned int o );
 
 void setP_fund(Post x, long f);
 

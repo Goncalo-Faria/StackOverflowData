@@ -15,7 +15,7 @@ int main(){
   
     TAD_community x = init();
 
-    load( x , "practicedata" );
+    load( x , "android" );
 
     clean(x);
     return 1;
