@@ -52,7 +52,7 @@ void *createPost(){
 	x->id = g_malloc( sizeof(unsigned int ) );
 	x->parentId = NULL;
 	//x->data = g_malloc (sizeof(struct date));
-	//x->data = createDate ( 0 , 0 , 0 );
+	x->moment = createDate ( 0 , 0 , 0 );
 	return x;
 }
 
