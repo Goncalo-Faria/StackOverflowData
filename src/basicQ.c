@@ -82,6 +82,29 @@ static int find_ans ( void *key , void*value , void* user_data ){
 
 }
 
+static int more_answer ( void *key , void*value , void* user_data ){
+
+    Container box = (Container) user_data;
+    HEAP x = (HEAP)box->spec;
+    Post post = (Post)value;
+    int num = getP_answers(post);
+
+
+    if ( date_compare ( box->dateB , (Date) key ,NULL) <= 0 && date_compare ( box->dateE, (Date) key,NULL ) >= 0 && getP_type(post) == 2 ){// é resposta.
+        if ( maxQ_H (x) )// se está na capacidade
+            addR_Heap( x , (-1) * num , post );
+        else 
+            add_Heap( x , (-1) * num , post  );
+        }
+
+    // The tree is traversed in sorted order.
+    if ( date_compare ( x , box->dateE , NULL )<0 )
+        return 1;
+    return 0;
+
+}
+
+
 static Container createContainer(Date begin, Date end ){ 
 
     Container x = g_malloc (sizeof (struct contain));
@@ -165,28 +188,47 @@ LONG_list questions_with_tag(TAD community com, char* tag, Date begin, Date end)
 }
 */
 
-
+/* ACABARRRRRRRRRRRRRRRR
 // --5 ESTA POR ACABAR 
-
-/*
 USER get_user_info(TAD community com, long id){
+    int i=0;
+    Heap h =limcreate_H(10);
+    User info = g_malloc (sizeof (struct user));
+    long *post_history =NULL;
+    char *short_bio = NULL;
+    Util x = userSet_lookup ( com , id);
 
- //USER create_user(char* short_bio, long* post_history);
 
-    Heap x = limcreate_H ( )
-    User x  = NULL;
-    util y = NULL;
+    // meu objetivo aqui recebo UM ID  de um USER e atraves disso consigo a sua bacia
+    // COMO apenas quero um bio e LONG* HISTORY fasso uma heap com as datas mais antigas e assim sucessivamente
+    // Depois so tenho que retirar 10 datas
+    // Caso em que nao tenho 10? , devolvo apenas o array com os ID recebidos
+    GHashTable *h = get_Bacia(x);
 
-    y = (Util)g_hash_table_lookup(com->util ,id);
 
-    // create_user (char* short_bio, long* post_history);
-    x = create_user ( x -> bio , x -> Q) ;
-    g_free(y);
+    strcpy (short_bio , x->bio);
 
-    return x;
+    // aqui tennho a minha heap h com as 10 datas mais antigas 
+    
+    // FAZERRRRRRRRRRRRRRRR
+
+    // verificar se os dados sao == NULL ou nao para saber se o post é do User ou nao
+
+
+    // começo de 10 pois é para estar ordenado por cronologia inversa
+    for (i=10; i > 0 ; i--){
+        *post_history = // remove da heap 1 a 1 ... (h , )
+        //usar o rem_heap -> remove o elemento que esta no topo da lista
+        post_history++;
+    }
+
+    destroyUtil(x);
+    destroy_H(h);
+    info = create_user(short_bio ,post_history);
+
+    return (info);
 }
- */
-// createContainer
+*/
 
 // --6 FEITA
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
@@ -210,18 +252,46 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
 
     return ll;
 }
-/*
+
+
+// VERIFICAR SE O MORE_ANSWER ESTA CERTOOOOOOOOOOOOOOOOO'O''O'O'O'OO''O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'
+// VERIFICAR SE O MORE_ANSWER ESTA CERTOOOOOOOOOOOOOOOOO'O''O'O'O'OO''O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'
 // --7 FALTA ACABAR
 LONG_list most_answered_questions(TAD community com, int N, Date begin, Date end){
+    int num;
+    LONG_list lista = create_list(N);
+    Post p = NULL;
 
-    
+    Container carrier = createContainer(begin,end);
+    carrier->spec = (void*)limcreate_H (N,NULL);
 
+    postTree_transversals (com , more_answer , (void*) carrier );
+    // ja me mete em ordem decrescente
+    while(N>0){
+        p = (Post)rem_Heap( (HEAP)carrier->spec ,&num);
+        set_list(lista, N , getP_id (p))  ;
+        N++;
+    }
+    destroy_H (carrier->spec);
+    g_free(carrier);
+    destroyPost(p);
 
+    return lista;
+}
+
+/*
+}
+
+// --8 FALTA ACBABAR
+LONG_list contains_word(TAD community com, char* word, int N){
+    LONG_list lista = create_list (N);
 
 }
 
 
-
-
-
 */
+
+GONCASSSSS :DDDD , poes isto aqui para te irritar xd
+
+
+
