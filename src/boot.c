@@ -44,8 +44,8 @@ TAD_community load(TAD_community com, char* dump_path){
     printf("USER::%d \n",userSet_size(com));
     parser(com, dump_path, "Posts", parsePost);
     printf("USER::%d \n",postSet_size(com));
-    //parser(com, dump_path, "PostHistory", parseHistory);
-    
+    parser(com, dump_path, "PostHistory", parseHistory);
+    printf("FUCKING DONE\n");
     /*
     ///////////////////////////////////////////////////////////////////
     
@@ -128,7 +128,6 @@ static void parsePost ( TAD_community com , const xmlNode* node ){
     int dia, mes, ano ;
     unsigned int *ident;
     Post x = NULL;
-    perror("dwdw");
     x = (Post)createPost();
     ident = g_malloc ( sizeof( unsigned int ) );
 
@@ -224,7 +223,7 @@ static void parseHistory ( TAD_community com, const xmlNode* node){
     Post y = NULL;
     unsigned long userId;
     unsigned int postId;
-
+    printf("qdqdq\n");
     getAtr(hold,node,"UserId");
     userId = (unsigned long) atol((const char*) hold );
     xmlFree(hold);
