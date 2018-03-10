@@ -5,7 +5,7 @@
 #include "Bloco.h"
 //#include "date.h"
 
-typedef struct TCD_community * TAD_community;
+//typedef struct TCD_community * TAD_community;
 
 TAD_community init(void);
 TAD_community clean(TAD_community com);

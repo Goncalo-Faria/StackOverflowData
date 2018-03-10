@@ -6,7 +6,7 @@
 
 
 
-int main(){
+int main(void){
   /*
   Date d = createDate(1,2,2017);
   printf("Dia: %i\n", get_day(d));
@@ -18,6 +18,7 @@ int main(){
     load( x , "android" );
 
     clean(x);
+
     return 1;
 }
 

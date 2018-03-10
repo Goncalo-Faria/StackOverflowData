@@ -44,7 +44,7 @@ TAD_community load(TAD_community com, char* dump_path){
     printf("USER::%d \n",userSet_size(com));
     parser(com, dump_path, "Posts", parsePost);
     printf("USER::%d \n",postSet_size(com));
-    parser(com, dump_path, "PostHistory", parseHistory);
+    //parser(com, dump_path, "PostHistory", parseHistory);
     
     /*
     ///////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ static void parser ( TAD_community com , char* dump_path, char* file_name , pars
     ////////////////////////////////////////////7
     sprintf(docname,"%s/%s.xml",dump_path,file_name);
 
-    //printf("%s\n",tmpstr);
+    printf("%s\n",docname);
     doc = xmlParseFile(docname);
 
     if( !doc )
@@ -108,7 +108,7 @@ static void parser ( TAD_community com , char* dump_path, char* file_name , pars
         if ((!xmlStrcmp(node->name, (const xmlChar *)"row"))){
             //perror("->alivde\n");
             f(com , node);
-            //printf("%d -> size \n ",userSet_size(com) );
+            
         }
         node = node->next;
     }
@@ -128,15 +128,11 @@ static void parsePost ( TAD_community com , const xmlNode* node ){
     int dia, mes, ano ;
     unsigned int *ident;
     Post x = NULL;
-    //unsigned long childCount = xmlChildElementCount(node),i;
- 
-            //printf("%c%s\n",'-', node->name);
-            //printf("%d\n",++e);
+    perror("dwdw");
     x = (Post)createPost();
-
     ident = g_malloc ( sizeof( unsigned int ) );
 
-            // GET POST ID <LONG> getatr( hold , n , str )
+    // GET POST ID <LONG> getatr( hold , n , str )
     getAtr(hold,node,"Id");
     *ident = (unsigned int) atoi((const char*) hold );
     xmlFree(hold);
@@ -153,6 +149,14 @@ static void parsePost ( TAD_community com , const xmlNode* node ){
     getAtr(hold,node,"PostTypeId");
     setP_type ( x , (unsigned char) atoi((const char*) hold ) );
     xmlFree(hold);
+
+    if( getP_type(x)>2 ){
+        g_free(ident);
+        destroyPost(x);
+        return;
+    }
+
+
 
     if( getP_type(x) == 2 ){// ans
         getAtr(hold,node,"ParentId");

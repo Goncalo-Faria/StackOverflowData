@@ -87,7 +87,7 @@ static int more_answer ( void *key , void*value , void* user_data ){
     Container box = (Container) user_data;
     HEAP x = (HEAP)box->spec;
     Post post = (Post)value;
-    int num = getP_answers(post);
+    int num = 0;//getP_answers(post);
 
 
     if ( date_compare ( box->dateB , (Date) key ,NULL) <= 0 && date_compare ( box->dateE, (Date) key,NULL ) >= 0 && getP_type(post) == 2 ){// é resposta.
@@ -257,7 +257,7 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
 // VERIFICAR SE O MORE_ANSWER ESTA CERTOOOOOOOOOOOOOOOOO'O''O'O'O'OO''O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'
 // VERIFICAR SE O MORE_ANSWER ESTA CERTOOOOOOOOOOOOOOOOO'O''O'O'O'OO''O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'
 // --7 FALTA ACABAR
-LONG_list most_answered_questions(TAD community com, int N, Date begin, Date end){
+LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end){
     int num;
     LONG_list lista = create_list(N);
     Post p = NULL;
@@ -265,7 +265,7 @@ LONG_list most_answered_questions(TAD community com, int N, Date begin, Date end
     Container carrier = createContainer(begin,end);
     carrier->spec = (void*)limcreate_H (N,NULL);
 
-    postTree_transversals (com , more_answer , (void*) carrier );
+    postTree_transversal (com , more_answer , (void*) carrier );
     // ja me mete em ordem decrescente
     while(N>0){
         p = (Post)rem_Heap( (HEAP)carrier->spec ,&num);
@@ -291,7 +291,6 @@ LONG_list contains_word(TAD community com, char* word, int N){
 
 */
 
-GONCASSSSS :DDDD , poes isto aqui para te irritar xd
 
 
 

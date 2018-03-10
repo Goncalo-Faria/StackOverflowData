@@ -26,7 +26,6 @@ void destroyPost( void* x );
 
 
 // User getters
-GHashTable* get_Bacia(Util x)
 
 unsigned int getU_Q(Util x);
 
@@ -84,8 +83,6 @@ void setP_id(Post x, unsigned int o );
 void setP_parentId(Post x, unsigned int o );
 
 void setP_fund(Post x, long f);
-
-void setP_answers(Post x , unsigned int a)
 
 void setP_name(Post x, const unsigned char* un);
 
