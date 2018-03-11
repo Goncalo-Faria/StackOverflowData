@@ -1,6 +1,7 @@
 #include <date.h>
 #include <stdio.h>
 #include "interface.h"
+#include <glib.h>
 #include "Community.h"
 
 
@@ -16,6 +17,7 @@ int main(void){
     STR_pair q1;
     LONG_pair q3;
     LONG_list q2;
+    long *l;
     Date begin=createDate(16, 1, 2011) , end = createDate( 3 , 3 , 2013);
     int i,n;
 
@@ -52,25 +54,30 @@ int main(void){
     free_long_pair(q3);
     printf("______________________\n");
 
-    /*
+    
     printf("______________________\n");
     printf("|->Q5\n\n");
-    q5 = get_user_info(com, begin, end);
-    
-    printf("from :: 16 - 01 - 2011\n");
-    printf("to   :: 03 - 03 - 2013\n");
+    q5 = get_user_info(com, 9897);
 
-    printf("Number of Questions :: %ld \n", get_fst_long(q3) );
-    printf("Number of Questions :: %ld \n", get_snd_long(q3) );
+
+    printf("Short user bio :: \n%s \n",  get_bio(q5) );
+
+    printf("Last 10 posts :: \n");
+
+    l = get_10_latest_posts(q5);
+    for(i=0; i<10; i++ ){
+       printf(" POST %d :: %ld  \n", i+1,l[i] );
+    }
+    g_free(l);
     free_user(q5);
     printf("______________________\n");
-    */
+    
 
     clean(com);
 
     return 1;
 }
-//get_user_info
+//get_user_info( ,9897)
 
 
 

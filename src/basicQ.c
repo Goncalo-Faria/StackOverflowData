@@ -104,7 +104,7 @@ static int more_answer ( void *key , void*value , void* user_data ){
     int num = 0;//getP_answers(post);
 
 
-    if ( date_compare ( box->dateB , (Date) key ,NULL) <= 0 && date_compare ( box->dateE, (Date) key,NULL ) >= 0 && getP_type(post) == 2 ){// é resposta.
+    if ( date_compare ( box->dateB , (Date) key ,NULL) >= 0 && date_compare ( box->dateE, (Date) key,NULL ) <= 0 && getP_type(post) == 2 ){// é resposta.
         if ( maxQ_H (x) )// se está na capacidade
             addR_Heap( x , (-1) * num , post );
         else 
@@ -112,7 +112,7 @@ static int more_answer ( void *key , void*value , void* user_data ){
         }
 
     // The tree is traversed in sorted order.
-    if ( date_compare ( x , box->dateE , NULL )<0 )
+    if ( date_compare ( x , box->dateE , NULL )>0 )
         return 1;
     return 0;
 
@@ -156,7 +156,7 @@ LONG_list top_most_active(TAD_community com, int N){
     //
     for(i=0; i<N;i++){
 
-        if ( ! empty_H(pQ) ){
+        if ( ! empty_H(x) ){
 
             c = (unsigned long* ) rem_Heap( x , &num );
             set_list(ll, i , *c );
@@ -220,7 +220,7 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
 
     for ( i=0; i < N ; i++){
 
-        if ( ! empty_H(pQ) ){
+        if ( ! empty_H( (HEAP)carrier->spec ) ){
             newp = (Post)rem_Heap( (HEAP)carrier->spec , &num );
             set_list(ll , i , getP_id ( newp ) );
 
