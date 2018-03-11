@@ -4,18 +4,20 @@
 #include <string.h>
 #include "heap.h"
 #include "Community.h"
+//#include <stdio.h>
 //#include "interface.h"
 
+// macros
 #define inc_fst_long(x) set_fst_long( x , 1 + get_fst_long(x) )
 #define inc_snd_long(x) set_snd_long( x , 1 + get_snd_long(x) )
 
-// auxiliary structures.
+// Estruturas privadas
 typedef struct contain {
     Date dateB;
     Date dateE;
-
     void* spec;
 }*Container;
+//
 
 
 // Métodos publicos.
@@ -26,6 +28,18 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end);//#
 
 
 // Métodos privados-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+static Container createContainer(Date begin, Date end ){ 
+
+    Container x = g_malloc (sizeof (struct contain));
+    x->dateB = begin;
+    x->dateE = end; 
+    x->spec= NULL;
+    return x;
+
+}
+
+
 static void heapify (void* key, void* value, void* user_data){
     Util x = (Util)value;
     HEAP y = (HEAP)user_data;
@@ -48,13 +62,13 @@ static int count ( void* key , void *value , void *user_data ) {
     compara atraves do data_compare -> data.h
     */
 
-    if ( date_compare ( x , box->dateB , NULL ) <= 0 && date_compare ( x , box->dateE , NULL) >= 0 ) {
+    if ( date_compare ( x , box->dateB , NULL ) >= 0 && date_compare ( x , box->dateE , NULL) <= 0 ) {
         if ( getP_type( p )  == 1)  inc_fst_long(k);// é Questão.
         else  inc_snd_long(k);// não é Questão.
     }
 
     // The tree is traversed in sorted order.
-    if ( date_compare ( x , box->dateE , NULL )<0 )
+    if ( date_compare ( x , box->dateE , NULL )>0 )
         return 1;
     return 0;
 }
@@ -104,17 +118,6 @@ static int more_answer ( void *key , void*value , void* user_data ){
 
 }
 
-
-static Container createContainer(Date begin, Date end ){ 
-
-    Container x = g_malloc (sizeof (struct contain));
-    x->dateB = begin;
-    x->dateE = end; 
-    x->spec= NULL;
-    return x;
-
-}
-
 //->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // -- 1 FEITO
 STR_pair info_from_post(TAD_community com, int id){
@@ -148,14 +151,16 @@ LONG_list top_most_active(TAD_community com, int N){
     LONG_list ll = create_list(N);
     unsigned long* c;
 
-    userSet_transversal( com, heapify , (void*)x);
+    userSet_id_transversal( com, heapify , (void*)x);
     
     //
     for(i=0; i<N;i++){
         c = (unsigned long* ) rem_Heap( x , &num );
         set_list(ll, i , *c );
     }
-    
+   
+
+
     destroy_H(x);
     return ll;
 
@@ -164,7 +169,7 @@ LONG_list top_most_active(TAD_community com, int N){
 // recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
 // estou a assumir que recebo uma AVL;
 
-// --3 FEITO
+// --3 FEITO   -> 
 LONG_pair total_posts(TAD_community com, Date begin, Date end) {
 
     Container x = createContainer(begin,end);//set_snd_long
@@ -172,9 +177,11 @@ LONG_pair total_posts(TAD_community com, Date begin, Date end) {
 
     // nao esta defenido por incompetencia (LONG_PAIR) xD !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    postTree_transversal( com ,count, (void*)x );
+    postTree_transversal( com ,count , (void*)x );
 
     LONG_pair res = (LONG_pair) x->spec;
+
+
     g_free(x);
 
     return res;
@@ -188,47 +195,7 @@ LONG_list questions_with_tag(TAD community com, char* tag, Date begin, Date end)
 }
 */
 
-/* ACABARRRRRRRRRRRRRRRR
-// --5 ESTA POR ACABAR 
-USER get_user_info(TAD community com, long id){
-    int i=0;
-    Heap h =limcreate_H(10);
-    User info = g_malloc (sizeof (struct user));
-    long *post_history =NULL;
-    char *short_bio = NULL;
-    Util x = userSet_lookup ( com , id);
 
-
-    // meu objetivo aqui recebo UM ID  de um USER e atraves disso consigo a sua bacia
-    // COMO apenas quero um bio e LONG* HISTORY fasso uma heap com as datas mais antigas e assim sucessivamente
-    // Depois so tenho que retirar 10 datas
-    // Caso em que nao tenho 10? , devolvo apenas o array com os ID recebidos
-    GHashTable *h = get_Bacia(x);
-
-
-    strcpy (short_bio , x->bio);
-
-    // aqui tennho a minha heap h com as 10 datas mais antigas 
-    
-    // FAZERRRRRRRRRRRRRRRR
-
-    // verificar se os dados sao == NULL ou nao para saber se o post é do User ou nao
-
-
-    // começo de 10 pois é para estar ordenado por cronologia inversa
-    for (i=10; i > 0 ; i--){
-        *post_history = // remove da heap 1 a 1 ... (h , )
-        //usar o rem_heap -> remove o elemento que esta no topo da lista
-        post_history++;
-    }
-
-    destroyUtil(x);
-    destroy_H(h);
-    info = create_user(short_bio ,post_history);
-
-    return (info);
-}
-*/
 
 // --6 FEITA
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){

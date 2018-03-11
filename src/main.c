@@ -13,13 +13,15 @@ int main(void){
   return 0;
   */
     STR_pair q1;
+    LONG_pair q3;
     LONG_list q2;
+    Date begin=createDate(16, 1, 2011) , end = createDate( 3 , 3 , 2013);
     int i,n;
 
     TAD_community com = init();
 
     load( com , "android" );
-    
+
     printf("______________________\n");
     printf("|->Q1\n\n");
     q1 = info_from_post(com, 97086 );
@@ -28,12 +30,25 @@ int main(void){
     printf("Publicant name :: %s\n",get_snd_str(q1));
     free_str_pair(q1);
     
-    n=20;
     printf("______________________\n");
     printf("|->Q2\n\n");
+    n=20;
     q2 = top_most_active(com, n);
     for (i=0; i< n; i++)
         printf(">> %d <<\n",(int)get_list(q2, i) );  
+    free_list(q2);
+
+
+    printf("______________________\n");
+    printf("|->Q3\n\n");
+    q3 = total_posts(com, begin, end);
+    
+    printf("from :: 16 - 01 - 2011\n");
+    printf("to   :: 03 - 03 - 2013\n");
+
+    printf("Number of Questions :: %ld \n", get_fst_long(q3) );
+    printf("Number of Questions :: %ld \n", get_snd_long(q3) );
+    free_long_pair(q3);
     printf("______________________\n");
 
     clean(com);

@@ -255,6 +255,12 @@ unsigned int * toBacia_lookup( Util x, unsigned int Parent_id ){
 	return g_hash_table_lookup(x->bacia, &Parent_id);
 }
 
+void toBacia_transversal( Util x, void (*f)(void*, void*, void*) ,void* y){
+	
+	g_hash_table_foreach( x->bacia , f , y );
+	
+}
+
 void bind_toBacia( Util x, Post y ){
 
     int flag;

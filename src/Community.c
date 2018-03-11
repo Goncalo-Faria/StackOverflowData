@@ -22,19 +22,19 @@ int date_compare ( const void* a /*x*/, const void* b /*y*/,void* user_data){
     Date x = (Date)a , y = (Date)b;
 
     if (get_year(x) > get_year(y) )
-        return -1;
+        return 1;
     else if( get_year(x) < get_year(y) )
-        return 1 ;
+        return -1 ;
     //-----------------------------------------
     if( get_month(x) > get_month(y) )
-        return -1;
-    else if( get_month(x) < get_month(y) )
         return 1;
+    else if( get_month(x) < get_month(y) )
+        return -1;
     //-----------------------------------------
     if( get_day(x) > get_day(y) )
-        return -1;
-    else if( get_day(x) < get_day(y) )
         return 1;
+    else if( get_day(x) < get_day(y) )
+        return -1;
 
     return 0;
 
@@ -86,7 +86,7 @@ int userSet_insert_name(TAD_community com, unsigned char * key, Util x ){
     return g_hash_table_insert(com->userByName , (void*) key, (void*) x );
 }
 
-void userSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x ){
+void userSet_id_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x ){
     
     g_hash_table_foreach( com->userById, f , x );
 }
