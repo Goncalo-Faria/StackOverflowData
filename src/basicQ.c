@@ -70,28 +70,31 @@ static int count ( void* key , void *value , void *user_data ) {
     // The tree is traversed in sorted order.
     if ( date_compare ( x , box->dateE , NULL )>0 )
         return 1;
+
     return 0;
 }
 
-// REPARAR -> GONCAS
+
 static int find_ans ( void *key , void*value , void* user_data ){
 
     Container box = (Container) user_data;
     HEAP x = (HEAP)box->spec;
-    Post post = (Post)value;
-    int num = getP_score(post);
+    Post p = (Post)value;
+    Date pdate= (Date)key;
+    int num = getP_score(p);
 
 
-    if ( date_compare ( box->dateB , (Date) key ,NULL) <= 0 && date_compare ( box->dateE, (Date) key,NULL ) >= 0 && getP_type(post) == 2 ){// é resposta.
+    if ( date_compare ( pdate , box->dateB ,NULL) >= 0 && date_compare ( pdate , box->dateE ,NULL ) <= 0 && getP_type(p) == 2 ){// é resposta.
         if ( maxQ_H (x) )// se está na capacidade
-            addR_Heap( x , (-1) * num , post );
+            addR_Heap( x , (-1) * num , p );
         else 
-            add_Heap( x , (-1) * num , post  );
+            add_Heap( x , (-1) * num , p  );
         }
 
     // The tree is traversed in sorted order.
-    if ( date_compare ( x , box->dateE , NULL )<0 )
+    if ( date_compare ( pdate , box->dateE , NULL )>0 )
         return 1;
+
     return 0;
 
 }
@@ -211,8 +214,9 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
     int num, i;
     LONG_list ll; 
     Post newp;
+    HEAP x = limcreate_H (N , NULL);
     Container carrier = createContainer(begin,end);
-    carrier->spec   = (void*)limcreate_H (N , NULL);
+    carrier->spec = (void*) x;
 
     postTree_transversal( com , find_ans , (void*)carrier );
 
@@ -220,14 +224,15 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
 
     for ( i=0; i < N ; i++){
 
-        if ( ! empty_H( (HEAP)carrier->spec ) ){
-            newp = (Post)rem_Heap( (HEAP)carrier->spec , &num );
-            set_list(ll , i , getP_id ( newp ) );
+        if ( ! empty_H( x ) ){
+
+            newp = (Post)rem_Heap( x , &num );
+            set_list(ll , i , (long) getP_id ( newp ) );
 
         } else {
-
             set_list(ll , i , 0 );
         }
+
     }
 
     destroy_H(carrier->spec);

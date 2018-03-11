@@ -18,6 +18,7 @@ int main(void){
     LONG_pair q3;
     LONG_list q2;
     long *l;
+    LONG_list q6;
     Date begin=createDate(16, 1, 2011) , end = createDate( 3 , 3 , 2013);
     int i,n;
 
@@ -52,7 +53,6 @@ int main(void){
     printf("Number of Questions :: %ld \n", get_fst_long(q3) );
     printf("Number of Questions :: %ld \n", get_snd_long(q3) );
     free_long_pair(q3);
-    printf("______________________\n");
 
     
     printf("______________________\n");
@@ -70,14 +70,26 @@ int main(void){
     }
     g_free(l);
     free_user(q5);
+
     printf("______________________\n");
-    
+    printf("|->Q6\n\n");
+
+    n=20;
+    q6 = most_voted_answers(com, n , begin, end);
+
+
+    for (i=0; i< n; i++)
+        printf(">> %d <<\n",(int)get_list(q6, i) );
+        
+
+    g_free(q6);
+
+
 
     clean(com);
 
     return 1;
 }
-//get_user_info( ,9897)
 
 
 

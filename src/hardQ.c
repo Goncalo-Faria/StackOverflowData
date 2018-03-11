@@ -12,7 +12,7 @@ typedef struct record {
 /////
 
 // Métodos Publicos
-USER get_user_info(TAD_community com, long id);
+USER get_user_info(TAD_community com, long id);//#5
 
 
 // Métodos Privados.
