@@ -78,8 +78,18 @@ USER get_user_info(TAD_community com, long id){
     toBacia_transversal(x , collect_top10 , carrier );
 
     for( i=0; i<10;i++){// vai do novo para o velho. (cronologia inversa)
-        c = (unsigned long* ) rem_Heap( pQ , &num );
-        post_history[i]= (long)*c;
+        
+        if ( ! empty_H(pQ) ){
+        
+            c = (unsigned long* ) rem_Heap( pQ , &num );
+            post_history[i]= (long)*c;
+
+        } else {
+            
+            post_history[i] = 0;
+        
+        }
+
     }
 
     send = create_user( short_bio , post_history );

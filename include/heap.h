@@ -27,6 +27,10 @@ void destroyC_H(HEAP x,  void (*ff) (void*));
 
     Se receber ff == NULL é basicamente o destroy_H();
 */
+int empty_H(HEAP x);
+/*
+    Indica 1 se a heap estiver vazia e 0 caso contrário.
+*/
 
 int length_H(HEAP x);
 /*

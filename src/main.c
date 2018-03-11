@@ -12,6 +12,7 @@ int main(void){
   printf("Dia: %i\n", get_day(d));
   return 0;
   */
+    USER q5;
     STR_pair q1;
     LONG_pair q3;
     LONG_list q2;
@@ -51,29 +52,26 @@ int main(void){
     free_long_pair(q3);
     printf("______________________\n");
 
+    /*
+    printf("______________________\n");
+    printf("|->Q5\n\n");
+    q5 = get_user_info(com, begin, end);
+    
+    printf("from :: 16 - 01 - 2011\n");
+    printf("to   :: 03 - 03 - 2013\n");
+
+    printf("Number of Questions :: %ld \n", get_fst_long(q3) );
+    printf("Number of Questions :: %ld \n", get_snd_long(q3) );
+    free_user(q5);
+    printf("______________________\n");
+    */
+
     clean(com);
 
     return 1;
 }
+//get_user_info
 
-    
-    /*
-    GHashTable* hash = g_hash_table_new(g_int_hash,  g_int_equal);
-    int num1 = 4242, num2 =21212;
-    g_hash_table_insert(hash,(void*)&num1,"Cheese");// hash -> chava -> info;
-    g_hash_table_insert(hash,(void*)&num2,"Treats");// hash -> chave -> info
-
-    printf("There are %d keys in the hash table\n",
-        g_hash_table_size(hash));
-
-    printf("%d\n", sizeof(unsigned int) );
-
-    printf("Jazzy likes %s\n",g_hash_table_lookup(hash,&num1));
-
-    g_hash_table_destroy(hash);
-
-    return 0;
-    */
 
 
 

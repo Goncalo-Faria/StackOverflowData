@@ -155,8 +155,17 @@ LONG_list top_most_active(TAD_community com, int N){
     
     //
     for(i=0; i<N;i++){
-        c = (unsigned long* ) rem_Heap( x , &num );
-        set_list(ll, i , *c );
+
+        if ( ! empty_H(pQ) ){
+
+            c = (unsigned long* ) rem_Heap( x , &num );
+            set_list(ll, i , *c );
+
+        }  else {
+
+            set_list(ll, i , 0 );
+
+        }
     }
    
 
@@ -210,8 +219,15 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
     ll = create_list(N);
 
     for ( i=0; i < N ; i++){
-        newp = (Post)rem_Heap( (HEAP)carrier->spec , &num );
-        set_list(ll , i , getP_id ( newp ) );
+
+        if ( ! empty_H(pQ) ){
+            newp = (Post)rem_Heap( (HEAP)carrier->spec , &num );
+            set_list(ll , i , getP_id ( newp ) );
+
+        } else {
+
+            set_list(ll , i , 0 );
+        }
     }
 
     destroy_H(carrier->spec);
@@ -224,6 +240,7 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
 // VERIFICAR SE O MORE_ANSWER ESTA CERTOOOOOOOOOOOOOOOOO'O''O'O'O'OO''O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'
 // VERIFICAR SE O MORE_ANSWER ESTA CERTOOOOOOOOOOOOOOOOO'O''O'O'O'OO''O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'
 // --7 FALTA ACABAR
+/*
 LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end){
     int num;
     LONG_list lista = create_list(N);
@@ -245,6 +262,7 @@ LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end
 
     return lista;
 }
+*/
 
 /*
 }

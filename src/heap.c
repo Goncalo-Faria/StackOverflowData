@@ -5,6 +5,7 @@
 #define full(x) ( (x)->use == (x)->len )
 #define quarter(x) ( ( (x)->use * 4 ) <= (x)->len )
 
+
 typedef void (*freeFunc)(void*);
 
 typedef struct ent {
@@ -25,7 +26,9 @@ typedef struct heap {
 
 } * HEAP;
 
-
+int empty_H(HEAP x){
+    return (x->use == 0);
+}
 
 int length_H(HEAP x){
     return x->use;
