@@ -3,13 +3,14 @@
 #include <string.h>
 #include <interface.h>
 #include <glib.h>
+//#include <stdio.h>
 //#include "date.h"
 
 
 typedef struct utilizador {
 
-	//unsigned long id;
-	unsigned char *nome;
+	unsigned long* id;
+	unsigned char *name;
 	unsigned int Q;
 	unsigned int A;
 	unsigned char *bio;
@@ -26,7 +27,7 @@ typedef struct post {
 	unsigned int * id;
 	unsigned char type;// 1 Q ; 2 A;
     unsigned long fundador;
-	unsigned char *nome;
+	unsigned char *name;
 	unsigned int score;
 	unsigned int * parentId;
 
@@ -45,7 +46,7 @@ static void null_check ( void * x ){
 
 void *createPost(){
 	Post x = g_malloc (sizeof (struct post));
-	x->nome = NULL;
+	x->name = NULL;
 	x->type = 0;
 	x->fundador = 0;
 	x->score = 0;
@@ -59,8 +60,8 @@ void *createPost(){
 void destroyPost( void* x ){
 	Post y = (Post) x;
 	free_date(y->moment);
-	null_check(y->nome);
-	null_check(y->id);
+	null_check(y->name);
+	g_free(y->id);
 	null_check(y->parentId);
 	g_free(y);
 	
@@ -70,8 +71,9 @@ void destroyPost( void* x ){
 
 void *createUtil(){
 	Util x = g_malloc (sizeof (struct utilizador));
-	x->nome =NULL;
+	x->name =NULL;
 	x->bio =NULL;
+	x->id = g_malloc (sizeof (unsigned long ));
 	x->Q = 0;
 	x->A = 0;
 
@@ -84,7 +86,9 @@ void *createUtil(){
 void destroyUtil( void* x ){
 	Util y = (Util) x;
 
-	null_check(y->nome);
+	g_free(y->id);
+
+	null_check(y->name);
 	null_check(y->bio);
 
 	g_hash_table_destroy(y->bacia);
@@ -92,6 +96,15 @@ void destroyUtil( void* x ){
 }
 
 // Util getters
+unsigned long getU_id( Util x ){
+
+	unsigned long * tmp = x->id;
+	return *tmp;
+}
+
+unsigned long* getU_id_point( Util x ){
+	return x->id;
+}
 
 unsigned int getU_Q(Util x) {
 	return (x->Q);
@@ -105,12 +118,16 @@ unsigned char* getU_name(Util x){
 	// must eliminate
 	unsigned char* tmp=NULL;
 
-	if(x->nome ){
+	if(x->name ){
 
-		tmp = g_malloc(sizeof(unsigned char)*(strlen((const char*) x->nome ) + 1 )); 
-		strcpy((char*)tmp, (const char* )x->nome);
+		tmp = g_malloc(sizeof(unsigned char)*(strlen((const char*) x->name ) + 1 )); 
+		strcpy((char*)tmp, (const char* )x->name);
 	}
 	return tmp ;
+}
+
+unsigned char* getU_name_point(Util x){
+	return x->name;
 }
 
 unsigned char* getU_bio(Util x){
@@ -150,10 +167,10 @@ unsigned long getP_fund(Post x){
 unsigned char* getP_name(Post x){
 	unsigned char* tmp=NULL;
 
-	if(x->nome){
+	if(x->name){
 
-		tmp = g_malloc(sizeof(unsigned char)*(strlen( (const char*)x->nome ) + 1 )); 
-		strcpy(( char*)tmp,(const char*) x->nome);
+		tmp = g_malloc(sizeof(unsigned char)*(strlen( (const char*)x->name ) + 1 )); 
+		strcpy(( char*)tmp,(const char*) x->name);
 	}
 	return tmp ;
 }
@@ -185,11 +202,17 @@ void inc_A(Util x){
 	x->A++;
 }
 
+void setU_id( Util x, unsigned long num ){
+
+	unsigned long * tmp = x->id;
+	*tmp = num ;
+}
+
 void setU_name(Util x, const unsigned char* un ){
 	
-	null_check(x->nome);
-	x->nome =  g_malloc(sizeof( unsigned char)*(strlen((const char*)un ) + 1 )); 
-	strcpy(( char*)x->nome,(const char*) un);
+	null_check(x->name);
+	x->name =  g_malloc(sizeof( unsigned char)*(strlen((const char*)un ) + 1 )); 
+	strcpy(( char*)x->name,(const char*) un);
 }
 
 void setU_bio(Util x, const unsigned char* un){
@@ -233,15 +256,18 @@ unsigned int * toBacia_lookup( Util x, unsigned int Parent_id ){
 void bind_toBacia( Util x, Post y ){
 
     int flag;
-    unsigned int* son, tmpid = getP_id(y), tmppr = getP_parentId( y );
+    unsigned int* son, tmpid = getP_id(y),tmppr;
 
     if( y->type == 1 ){ // Questão. y post x user
-        
+        //printf("Works bro!\n");
         if ( !Q_belongs_hash(x , tmpid  ) )// verifica se existe!
             add_toBacia(x , y->id , NULL );
 
     } 
     if( y->type == 2 ){
+
+		//printf("\n YOU HAVE FOUND AN ANSWER \n\n");
+		tmppr = getP_parentId( y );
         flag = A_belongs_hash(x ,tmppr );
         if ( ! flag  )// não existe
             add_toBacia(x , y->parentId ,  y->id );
@@ -283,9 +309,9 @@ void setP_fund(Post x, long f){
 
 void setP_name(Post x, const unsigned char* un){
 
-	null_check(x->nome);
-	x->nome = g_malloc(sizeof( unsigned char)*(strlen( (const char*) un ) + 1 )); 
-	strcpy(( char*)x->nome, (const char*)un);
+	null_check(x->name);
+	x->name = g_malloc(sizeof( unsigned char)*(strlen( (const char*) un ) + 1 )); 
+	strcpy(( char*)x->name, (const char*)un);
 }
 
 void setP_score(Post x, unsigned int s){

@@ -3,7 +3,12 @@
 #include <date.h>
 
 typedef struct TCD_community{
-    GHashTable* user;
+    GHashTable* userById;
+
+
+    GHashTable* userByName;
+
+
     GHashTable* post;
     GTree * treeP;
 } * TAD_community;
@@ -44,8 +49,12 @@ TAD_community init(void){
 
     TAD_community x = g_malloc(sizeof(struct TCD_community));
 
-    x->user  = g_hash_table_new_full(g_int64_hash ,  g_int64_equal, g_free , destroyUtil);
-    x->post  = g_hash_table_new_full(g_int_hash,  g_int_equal, g_free , destroyPost);
+    x->userById  = g_hash_table_new_full(g_int64_hash ,  g_int64_equal, NULL , destroyUtil);
+    x->userByName  = g_hash_table_new_full(g_str_hash ,  g_str_equal, NULL , NULL);
+
+
+    x->post  = g_hash_table_new_full(g_int_hash,  g_int_equal, NULL , destroyPost);
+
 
     x->treeP = g_tree_new_full(date_compare, NULL  , NULL , NULL );
     return x;
@@ -53,7 +62,10 @@ TAD_community init(void){
 
 TAD_community clean(TAD_community com){
 
-    g_hash_table_destroy(com->user);
+    g_hash_table_destroy(com->userById);
+    g_hash_table_destroy(com->userByName);
+
+
     g_hash_table_destroy(com->post);
     g_tree_destroy(com->treeP);
 
@@ -64,23 +76,34 @@ TAD_community clean(TAD_community com){
 
 
 // USER HASHTABLE;
-int userSet_insert(TAD_community com, unsigned long * key, Util x ){
+int userSet_insert_id(TAD_community com, unsigned long * key, Util x ){
    
-    return g_hash_table_insert(com->user , (void*) key, (void*) x );
+    return g_hash_table_insert(com->userById , (void*) key, (void*) x );
+}
+
+int userSet_insert_name(TAD_community com, unsigned char * key, Util x ){
+   
+    return g_hash_table_insert(com->userByName , (void*) key, (void*) x );
 }
 
 void userSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x ){
     
-    g_hash_table_foreach( com->user, f , x );
+    g_hash_table_foreach( com->userById, f , x );
 }
 
-Util userSet_lookup( TAD_community com, unsigned long num ){
+Util userSet_id_lookup( TAD_community com, unsigned long num ){
 
-    return (Util)g_hash_table_lookup(com->user , &num);
+    return (Util)g_hash_table_lookup(com->userById , &num);
 }
+
+Util userSet_name_lookup( TAD_community com, unsigned char* name ){
+
+    return (Util)g_hash_table_lookup(com->userByName , name);
+}
+
 unsigned int userSet_size(TAD_community com){
 
-    return g_hash_table_size(com->user);
+    return g_hash_table_size(com->userById);
 }
 
 // POST HASHTABLE

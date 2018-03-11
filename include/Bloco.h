@@ -26,6 +26,9 @@ void destroyPost( void* x );
 
 
 // User getters
+unsigned long getU_id( Util x );
+
+unsigned long* getU_id_point( Util x );
 
 unsigned int getU_Q(Util x);
 
@@ -33,6 +36,9 @@ unsigned int getU_A(Util x);
 
 unsigned char* getU_name(Util x);
 // alloca memoria
+
+unsigned char* getU_name_point(Util x);
+
 unsigned char* getU_bio(Util x);
 // alloca memoria
 
@@ -63,6 +69,8 @@ Date getP_date( Post x );
 void inc_Q(Util x);
 
 void inc_A(Util x);
+
+void setU_id( Util x, unsigned long num );
 
 void setU_name(Util x, const unsigned char* un );
 

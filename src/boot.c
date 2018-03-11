@@ -40,15 +40,19 @@ static void parseHistory ( TAD_community com, const xmlNode* node);
 
 TAD_community load(TAD_community com, char* dump_path){
 
-    Util y;
-    unsigned char* bio,*name;
+    //Util y;
+    //Post x;
+
+    //unsigned char* bio,*name;
     parser(com, dump_path, "Users", parseUser);
     printf("USER::%d \n",userSet_size(com));
     parser(com, dump_path, "Posts", parsePost);
     printf("USER::%d \n",postSet_size(com));
+    parser(com, dump_path, "PostHistory", parseHistory);
+    printf("FUCKING DONE\n");
 
-
-    y = userSet_lookup( com, 175281 );
+    /*
+    y = userSet_lookup( com, 91872 );
     bio = getU_bio(y);
     name = getU_name(y);
     if(name){
@@ -58,11 +62,16 @@ TAD_community load(TAD_community com, char* dump_path){
     if(bio){
         printf("%s\n",(char*)bio);
     }
+    x = postSet_lookup(com, 97086);
+
+    name=  getP_name(x);
+    if(name){
+        printf("%s\n",(char*)name);
+        printf("type : %d \n",getP_type(x));
+    }
 
     printf("Este utilizador deixa-m especialmente preocupado.\n");
-
-    //parser(com, dump_path, "PostHistory", parseHistory);
-    //printf("FUCKING DONE\n");
+    */
     /*
     ///////////////////////////////////////////////////////////////////
     
@@ -148,18 +157,19 @@ static void parsePost ( TAD_community com , const xmlNode* node ){
     xmlChar * hold;
     char buffer[100];
     int dia, mes, ano ;
-    unsigned int *ident;
+    //unsigned int *ident;
     Post x = NULL;
     x = (Post)createPost();
-    ident = g_malloc ( sizeof( unsigned int ) );
+    //ident = g_malloc ( sizeof( unsigned int ) );
 
     // GET POST ID <LONG> getatr( hold , n , str )
+
     getAtr(hold,node,"Id");
-    *ident = (unsigned int) atoi((const char*) hold );
+    setP_id( x, (unsigned int) atoi((const char*) hold ) );
     xmlFree(hold);
 
-    setP_id(x, *ident );
-
+    // printf( " id: : %d \n",getP_id(x) );
+    //printf("cool\n");
             // GET POST DATE
     getAtr(hold,node,"CreationDate");
     sscanf( (const char*)hold,"%d-%d-%d%s",&ano,&mes,&dia,buffer);
@@ -172,12 +182,10 @@ static void parsePost ( TAD_community com , const xmlNode* node ){
     xmlFree(hold);
 
     if( getP_type(x)>2 ){
-        g_free(ident);
+        //printf("trigger\n");
         destroyPost(x);
         return;
     }
-
-
 
     if( getP_type(x) == 2 ){// ans
         getAtr(hold,node,"ParentId");
@@ -200,7 +208,7 @@ static void parsePost ( TAD_community com , const xmlNode* node ){
     }
 
     postTree_insert(com, getP_date_point(x) , x );
-    postSet_insert(com , ident, x );
+    postSet_insert(com , getP_id_point(x) , x );
 
 }
 
@@ -208,17 +216,17 @@ static void parseUser ( TAD_community com , const xmlNode* node ){
 
     xmlChar * hold=NULL;
     Util x = NULL;
-    unsigned long *ident;
     //unsigned long childCount = xmlChildElementCount(node),i;
     //printf("erros\n");
     x = (Util)createUtil();
-    ident = g_malloc ( sizeof( unsigned long ));
+    //ident = g_malloc ( sizeof( unsigned long ));
 
             // get user id
     
-    getAtr(hold,node,"Id");
-    *ident = (unsigned long ) atol((const char*) hold );
+    getAtr(hold,node,"Id");    
+    setU_id( x, (unsigned long ) atol((const char*) hold ) );
     xmlFree(hold);
+    
             // GET UTIL BIO
     getAtr(hold,node,"AboutMe");
     
@@ -233,7 +241,8 @@ static void parseUser ( TAD_community com , const xmlNode* node ){
     setU_name(x, (unsigned char*)hold );
     xmlFree(hold);
 
-    userSet_insert( com, ident, x );
+    userSet_insert_id( com, getU_id_point(x) , x );
+    userSet_insert_name( com, getU_name_point(x) , x );
     return;
 }
 
@@ -244,20 +253,41 @@ static void parseHistory ( TAD_community com, const xmlNode* node){
     Post y = NULL;
     unsigned long userId;
     unsigned int postId;
-    
-    getAtr(hold,node,"UserId");
-    userId = (unsigned long) atol((const char*) hold );
+    unsigned int hType;
+    unsigned char *name;
+
+
+    getAtr(hold,node,"PostHistoryTypeId");
+    hType = (unsigned int) atoi((const char*) hold );
     xmlFree(hold);
+
+    if(hType != 1)
+        return;
+
+    getAtr(hold,node,"UserId");
+    if(hold){
+        userId = (unsigned long) atol((const char*) hold );
+        xmlFree(hold);
+
+        x = userSet_id_lookup(com, userId);
+        if ( !x ) return;
+
+    } else {
+        getAtr(hold,node,"UserDisplayName");
+        name = (unsigned char*)hold; 
+        
+        x = userSet_name_lookup(com, name );
+        if ( !x ) return;
+        xmlFree(hold);
+        userId = getU_id(x);
+    }
 
     getAtr(hold,node,"PostId");
     postId = (unsigned int) atoi((const char*) hold );
     xmlFree(hold);
 
-    printf("userdid : %d || postid : %d \n",(int)userId,(int)postId);
-
-    x = userSet_lookup(com, userId);
-    if ( !x ) return;
     y = postSet_lookup(com, postId);
+
     if ( !y ) return;
 
     if( getP_type(y) == 1 ){
@@ -270,7 +300,7 @@ static void parseHistory ( TAD_community com, const xmlNode* node){
 
     setP_fund(y, userId);
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    bind_toBacia(x,y);
+    bind_toBacia(x,y);// está com problemas.!
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  
 
     return;

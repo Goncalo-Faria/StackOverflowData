@@ -14,9 +14,11 @@ TAD_community clean(TAD_community com);
 
 
 // USER HASHTABLE;
-int userSet_insert(TAD_community com, unsigned long * key, Util x );
+int userSet_insert_id(TAD_community com, unsigned long * key, Util x );
+int userSet_insert_name(TAD_community com, unsigned char * key, Util x );
 void userSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x );
-Util userSet_lookup( TAD_community com, unsigned long num );
+Util userSet_id_lookup( TAD_community com, unsigned long num );
+Util userSet_name_lookup( TAD_community com, unsigned char* name );
 unsigned int userSet_size(TAD_community com);
 
 // POST HASHTABLE
