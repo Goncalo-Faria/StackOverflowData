@@ -12,12 +12,18 @@ int main(void){
   printf("Dia: %i\n", get_day(d));
   return 0;
   */
-  
-    TAD_community x = init();
+    STR_pair ans;
 
-    load( x , "android" );
+    TAD_community com = init();
 
-    clean(x);
+    load( com , "android" );
+    
+    printf("->Q1\n");
+    ans = info_from_post(com, 97086 );
+    printf("%s\n",get_fst_str(ans) );
+    printf("%s\n",get_snd_str(ans));
+    free_str_pair(ans);
+    clean(com);
 
     return 1;
 }

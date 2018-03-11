@@ -250,7 +250,7 @@ static void parseHistory ( TAD_community com, const xmlNode* node){
 
     xmlChar * hold=NULL;
     Util x = NULL;
-    Post y = NULL;
+    Post y,tmp = NULL;
     unsigned long userId;
     unsigned int postId;
     unsigned int hType;
@@ -277,8 +277,8 @@ static void parseHistory ( TAD_community com, const xmlNode* node){
         name = (unsigned char*)hold; 
         
         x = userSet_name_lookup(com, name );
-        if ( !x ) return;
         xmlFree(hold);
+        if ( !x ) return;
         userId = getU_id(x);
     }
 
@@ -296,6 +296,12 @@ static void parseHistory ( TAD_community com, const xmlNode* node){
 
     if( getP_type(y) == 2 ){
         inc_A(x);
+        
+        // Acrescentar ao numero de respostas.
+        //tmp = postSet_lookup(com, getP_parentId(y) );
+
+
+
     }
 
     setP_fund(y, userId);

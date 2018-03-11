@@ -155,10 +155,12 @@ unsigned int getP_parentId(Post x){
 	unsigned int *y = x->parentId;
 	return ( *y );
 }
-
+/*
 unsigned int * getP_parentId_point(Post x){
 	return ( x->parentId );
 }
+
+*/
 
 unsigned long getP_fund(Post x){
 	return (x->fundador);
@@ -256,7 +258,7 @@ unsigned int * toBacia_lookup( Util x, unsigned int Parent_id ){
 void bind_toBacia( Util x, Post y ){
 
     int flag;
-    unsigned int* son, tmpid = getP_id(y),tmppr;
+    unsigned int tmpid = getP_id(y),tmppr;
 
     if( y->type == 1 ){ // Questão. y post x user
         //printf("Works bro!\n");
@@ -273,8 +275,8 @@ void bind_toBacia( Util x, Post y ){
             add_toBacia(x , y->parentId ,  y->id );
         
         if( flag == 2 ){
-           son = toBacia_lookup( x ,  tmppr );
-           *son = tmpid;
+			g_hash_table_remove( x->bacia , &tmppr );
+			add_toBacia(x , y->parentId ,  y->id  );
         }
         
     }
