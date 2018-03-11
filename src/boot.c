@@ -45,11 +45,11 @@ TAD_community load(TAD_community com, char* dump_path){
 
     //unsigned char* bio,*name;
     parser(com, dump_path, "Users", parseUser);
-    printf("USER::%d \n",userSet_size(com));
+    printf("Number of users loaded ::%d \n",userSet_size(com));
     parser(com, dump_path, "Posts", parsePost);
-    printf("USER::%d \n",postSet_size(com));
+    printf("Number of posts loaded ::%d \n",postSet_size(com));
     parser(com, dump_path, "PostHistory", parseHistory);
-    printf("FUCKING DONE\n");
+    printf("\n.. Loading Terminaterd ..\n");
 
     /*
     y = userSet_lookup( com, 91872 );
@@ -306,7 +306,7 @@ static void parseHistory ( TAD_community com, const xmlNode* node){
 
     setP_fund(y, userId);
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    bind_toBacia(x,y);// está com problemas.!
+    bind_toBacia(x,y);//
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  
 
     return;

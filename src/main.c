@@ -12,17 +12,30 @@ int main(void){
   printf("Dia: %i\n", get_day(d));
   return 0;
   */
-    STR_pair ans;
+    STR_pair q1;
+    LONG_list q2;
+    int i,n;
 
     TAD_community com = init();
 
     load( com , "android" );
     
-    printf("->Q1\n");
-    ans = info_from_post(com, 97086 );
-    printf("%s\n",get_fst_str(ans) );
-    printf("%s\n",get_snd_str(ans));
-    free_str_pair(ans);
+    printf("______________________\n");
+    printf("|->Q1\n\n");
+    q1 = info_from_post(com, 97086 );
+
+    printf("Publication name :: %s\n",get_fst_str(q1) );
+    printf("Publicant name :: %s\n",get_snd_str(q1));
+    free_str_pair(q1);
+    
+    n=20;
+    printf("______________________\n");
+    printf("|->Q2\n\n");
+    q2 = top_most_active(com, n);
+    for (i=0; i< n; i++)
+        printf(">> %d <<\n",(int)get_list(q2, i) );  
+    printf("______________________\n");
+
     clean(com);
 
     return 1;
