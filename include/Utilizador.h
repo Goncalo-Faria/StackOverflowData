@@ -2,6 +2,7 @@
 #define utilizador_h
 
 #include "date.h"
+#include "Publicacao.h"
 
 typedef struct utilizador *Util ;
 
