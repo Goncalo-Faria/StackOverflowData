@@ -40,11 +40,11 @@ Tree insertTree(Tree t, TreeEntry e, int *cresceu);
 */
 AVL create_avl ( int (*compare) (void* , void*, void* ), void (*free_key) (void *), void (*free_data) (void*) );
 
-//insere na AVL uma determinada key e dados (TreeEntry)
-AVL insertAVL (AVL a , void *key , void *dados);
-
-//retorna o numero de nodes da AVL
+//numero de nodes da AVL;
 int get_num_node (AVL x);
+
+//insere na AVL uma determinada key e dados (TreeEntry)
+void insertAVL (AVL a , void *key , void *dados);
 
 //aplica uma rotacao da Tree ha esquerda
 Tree rotateLeft(Tree t);
@@ -75,5 +75,22 @@ void null_check (void *x , Free_function f);
 */
 void destroy_Tree (Tree t , Free_function f_key , Free_function f_dados);
 
+
+// FUNCOES PARA TESTAR SE A MINAH FUNCAO ETSA CERTOasdasdas
+char balChar (BalanceFactor bal);
+
+void dumpKeys (Tree t, int level);
+
+Tree get_Tree (AVL x);
+
+TreeEntry get_TE (Tree x);
+
+Tree get_Tleft (Tree x);
+
+Tree get_Tright (Tree x);
+
+void* get_keyE (TreeEntry x);
+
+void* get_dadosE (TreeEntry x);
 
 #endif /* avl_h */
