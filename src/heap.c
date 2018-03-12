@@ -6,60 +6,6 @@
 #define quarter(x) ( ( (x)->use * 4 ) <= (x)->len )
 
 
-typedef void (*freeFunc)(void*);
-
-typedef struct ent {
-    
-    int key;
-    void * data;
-
-} *ENTRY ;
-
-typedef struct heap {
-    
-    ENTRY * v;
-    int len;
-    int use;
-    int max;
-
-    freeFunc dataCl;
-
-} * HEAP;
-
-int empty_H(HEAP x){
-    return (x->use == 0);
-}
-
-int length_H(HEAP x){
-    return x->use;
-}
-
-int maxQ_H(HEAP x){
-    return ( x->use == x->max );
-}
-
-HEAP create_H(void (*in_free) (void*) ){
-    HEAP x = (HEAP)g_malloc( sizeof (struct heap) );
-    x->use=0;
-    x->v = g_malloc( 2 * sizeof (ENTRY) );
-    x->len = 2;
-    x->max = -1;
-    x->dataCl = in_free;
-
-    return x;
-}
-
-HEAP limcreate_H(int lim, void (*in_free) (void*) ){
-    HEAP x = (HEAP)g_malloc( sizeof (struct heap) );
-    x->use=0;
-    x->v = g_malloc( 2 * sizeof (ENTRY) );
-    x->len = 2;
-    x->max = lim;
-    x->dataCl = in_free;
-    
-    return x;
-}
-
 void destroy_H(HEAP x){
 
     freeFunc ff = x->dataCl;
@@ -73,16 +19,7 @@ void destroy_H(HEAP x){
         }
         g_free( x->v );
         g_free( x );
-    }
-
-}
-
-static void tabledouble(HEAP x ){
-
-    x->len *= 2;
-    x->v = g_realloc(x->v, x->len * sizeof ( ENTRY )  );
-
-}
+  
 
 static void tablehalv(HEAP x){
 
