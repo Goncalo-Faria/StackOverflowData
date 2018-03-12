@@ -4,7 +4,7 @@
 #include <string.h>
 #include "heap.h"
 #include "Community.h"
-//#include <stdio.h>
+#include <stdio.h>
 //#include "interface.h"
 
 // macros
@@ -63,6 +63,8 @@ static int count ( void* key , void *value , void *user_data ) {
     */
 
     if ( date_compare ( x , box->dateB , NULL ) >= 0 && date_compare ( x , box->dateE , NULL) <= 0 ) {
+        //if ( getP_type(p) == 2 ) printf(" %d  \n",(int) getP_score(p));
+
         if ( getP_type( p )  == 1)  inc_fst_long(k);// é Questão.
         else  inc_snd_long(k);// não é Questão.
     }
@@ -81,14 +83,15 @@ static int find_ans ( void *key , void*value , void* user_data ){
     HEAP x = (HEAP)box->spec;
     Post p = (Post)value;
     Date pdate= (Date)key;
-    int num = getP_score(p);
 
 
     if ( date_compare ( pdate , box->dateB ,NULL) >= 0 && date_compare ( pdate , box->dateE ,NULL ) <= 0 && getP_type(p) == 2 ){// é resposta.
-        if ( maxQ_H (x) )// se está na capacidade
-            addR_Heap( x , (-1) * num , p );
+        if ( maxQ_H (x) ){// se está na capacidade
+            addR_Heap( x , (-1) * getP_score(p) , p );
+            //blueprint(x);
+        }
         else 
-            add_Heap( x , (-1) * num , p  );
+            add_Heap( x , (-1) *getP_score(p) , p  );
         }
 
     // The tree is traversed in sorted order.
@@ -98,7 +101,7 @@ static int find_ans ( void *key , void*value , void* user_data ){
     return 0;
 
 }
-
+/*
 static int more_answer ( void *key , void*value , void* user_data ){
 
     Container box = (Container) user_data;
@@ -120,6 +123,7 @@ static int more_answer ( void *key , void*value , void* user_data ){
     return 0;
 
 }
+*/
 
 //->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // -- 1 FEITO
@@ -227,6 +231,7 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
         if ( ! empty_H( x ) ){
 
             newp = (Post)rem_Heap( x , &num );
+            //printf("num :: %d\n",num);
             set_list(ll , i , (long) getP_id ( newp ) );
 
         } else {

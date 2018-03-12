@@ -194,7 +194,7 @@ static void parsePost ( TAD_community com , const xmlNode* node ){
     }
     // ADD SCORE.
     getAtr(hold,node,"Score");
-    setP_score(x ,(unsigned int) atoi((const char*) hold ));
+    setP_score(x ,(int) atoi((const char*) hold ));
     //printf("%s\n",(char*)hold);
     xmlFree(hold);
 

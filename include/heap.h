@@ -8,6 +8,8 @@
 
 typedef struct heap *HEAP; 
 
+void blueprint ( HEAP x );
+
 HEAP create_H(void (*in_free) (void*) );
 /*
     Esta função cria uma nova instância da Estrutura.

@@ -28,7 +28,7 @@ typedef struct post {
 	unsigned char type;// 1 Q ; 2 A;
     unsigned long fundador;
 	unsigned char *name;
-	unsigned int score;
+	int score;
 	unsigned int * parentId;
 
 	Date moment;
@@ -177,7 +177,7 @@ unsigned char* getP_name(Post x){
 	return tmp ;
 }
 
-unsigned int getP_score(Post x){
+int getP_score(Post x){
 	return (x->score);
 }
 
@@ -258,7 +258,7 @@ unsigned int * toBacia_lookup( Util x, unsigned int Parent_id ){
 void toBacia_transversal( Util x, void (*f)(void*, void*, void*) ,void* y){
 	
 	g_hash_table_foreach( x->bacia , f , y );
-	
+
 }
 
 void bind_toBacia( Util x, Post y ){
@@ -322,7 +322,7 @@ void setP_name(Post x, const unsigned char* un){
 	strcpy(( char*)x->name, (const char*)un);
 }
 
-void setP_score(Post x, unsigned int s){
+void setP_score(Post x, int s){
 	x->score = s;
 }
 

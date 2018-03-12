@@ -56,7 +56,7 @@ unsigned long getP_fund(Post x);
 
 unsigned char* getP_name(Post x);
 
-unsigned int getP_score(Post x);
+int getP_score(Post x);
 
 unsigned char getP_type(Post x);
 
@@ -96,7 +96,7 @@ void setP_fund(Post x, long f);
 
 void setP_name(Post x, const unsigned char* un);
 
-void setP_score(Post x, unsigned int s);
+void setP_score(Post x, int s);
 
 void setP_type(Post x, unsigned char t);
 
