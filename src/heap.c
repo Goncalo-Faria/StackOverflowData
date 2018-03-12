@@ -1,12 +1,43 @@
 //#include <stdlib.h>
 #include "heap.h"
 #include <glib.h>
+#include <stdio.h>
 
 #define full(x) ( (x)->use == (x)->len )
 #define quarter(x) ( ( (x)->use * 4 ) <= (x)->len )
 
 
 typedef void (*freeFunc)(void*);
+typedef int (*cmp)(void*,void*);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 typedef struct ent {
     
@@ -144,6 +175,8 @@ void addR_Heap( HEAP x, int key , void* n ){
     
     freeFunc ff = x->dataCl;
 
+    add_Heap( x ,  key , n );
+
     if ( ff )
         ff ( x->v[x->use-1]->data );
 
@@ -180,3 +213,12 @@ void* rem_Heap( HEAP x, int *key){
     BubleDown(x->v , 0 , x->use);
     return n;
 }
+
+void blueprint ( HEAP x ){
+    int i;
+    for( i=0; i<x->use; i++){
+        printf("> %d -> ",x->v[i]->key);
+        
+    }
+    printf("\n");
+} 
