@@ -104,16 +104,7 @@ void destroy_H(HEAP x){
         }
         g_free( x->v );
         g_free( x );
-    }
-
-}
-
-static void tabledouble(HEAP x ){
-
-    x->len *= 2;
-    x->v = g_realloc(x->v, x->len * sizeof ( ENTRY )  );
-
-}
+  
 
 static void tablehalv(HEAP x){
 

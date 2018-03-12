@@ -1,29 +1,12 @@
 #include <stdio.h>
 #include "AVL.h"
 
-
-
 void null_check (void *x , Free_function f){
     if (x) f(x);
 }
 
 typedef void (*Free_function) (void *); 
 typedef int (*Compare) (void * , void* , void*);
-
-
-typedef struct treenode {
-    BalanceFactor bf;
-    TreeEntry entry;
-    void* key;
-    struct treenode *left;
-    struct treenode *right;
-}*Tree;
-
-typedef struct tentry{
-    void* key;
-    void* dados;
-}* TreeEntry;
-
 
 typedef struct avl {
     Tree root;
@@ -34,11 +17,23 @@ typedef struct avl {
 
 }*AVL;
 
-      
+typedef struct treenode {
+    BalanceFactor bf;
+    TreeEntry entry;
+   // void* keyT -> ver melhor este
+    struct treenode *left;
+    struct treenode *right;
+}*Tree;
+
+typedef struct tentry{
+    void* key;
+    void* dados;
+}* TreeEntry;
+
 
 AVL create_avl ( int (*compare) (void* , void*, void* ), void (*free_key) (void *), void (*free_dados) (void*) ) {
     
-    AVL x = malloc( sizeof(struct avl) );
+    AVL x = calloc( 1 , sizeof(struct avl) );
     x->root = NULL;
     x->free_dados= free_dados;
     x->free_key= free_key;
@@ -53,23 +48,17 @@ AVL create_avl ( int (*compare) (void* , void*, void* ), void (*free_key) (void 
 * Mete-mos a determinada tentry na Tree 
 * InsertTree insere um determinado nodo como tambem diz se a arvore cresceu ou nao
 */
-AVL insertAVL (AVL a , void *key , void *dados){
-    TreeEntry t = malloc (sizeof (struct tentry));
+void insertAVL (AVL a , void *key , void *dados){
+    TreeEntry t = calloc (1,sizeof (struct tentry));
     t->key = key;
     t->dados = dados;
-    Tree x = a->root;
     int cresceu = 0;
-    insertTree (x , t , &cresceu);
-    free (t);
+    a->root = insertTree (a->root , t , &cresceu); 
+    Tree x = a->root;
+    //free (t);
     a->num_node++;
-    return a;
 
 }
-
-
-int get_num_node (AVL x){
-    return (x->num_node);
-}  
 
 /*
 Tree create_tree(void){
@@ -80,6 +69,8 @@ Tree create_tree(void){
     t->date = NULL;
 }
 */
+
+// NAO FICAVA MELHOR PASSAR AS FUNCOES DE DESTRUIR AQUI
 void destroy_AVL(AVL x){
     Free_function f_key = x->free_key;
     Free_function f_dados = x->free_dados;
@@ -91,9 +82,6 @@ void destroy_AVL(AVL x){
         null_check (x,free);
     
 }
-
-
-
 
 void destroy_Tree (Tree t , Free_function f_key , Free_function f_dados){
     if(t){
@@ -173,13 +161,14 @@ Tree balanceLeft(Tree t)
                 t->left->bf = EH;
                 t->right->bf = EH;
                 break;
+            case RH:
+                t->left->bf = LH;
+                t->right->bf = EH;
             case LH:
                 t->left->bf = EH;
                 t->right->bf = RH;
                 break;
-            case RH:
-                t->left->bf = EH;
-                t->right->bf = RH;
+            
         }
         t->bf = EH;
     }
@@ -187,19 +176,18 @@ Tree balanceLeft(Tree t)
     
 }
 
-
-
 //Acrescenta me um nodo, tambem diz se a arvore cresceu ou nao (pode ser util)
 Tree insertTree(Tree t, TreeEntry e, int *cresceu)
 {
     if (t==NULL){
-        t = (Tree)malloc(sizeof(struct treenode));
+        t = (Tree) calloc (1,sizeof(struct treenode));
         t->entry = e;
         t->right = t->left = NULL;
         t->bf = EH;
         *cresceu = 1;
     }
-    else if (e > t->entry) {
+    // estou a comparar em funcao das chaves
+    else if (e->key > t->entry->key ) {
         t->right=insertTree(t->right, e, cresceu);
         if (*cresceu) {
             switch (t->bf) {
@@ -217,7 +205,7 @@ Tree insertTree(Tree t, TreeEntry e, int *cresceu)
             }
         }
     }
-    // igual ao modulo direito
+    //igual ao modulo direito
     else {
         t->left=insertTree(t->left, e ,cresceu);
         if (*cresceu) {
@@ -227,7 +215,7 @@ Tree insertTree(Tree t, TreeEntry e, int *cresceu)
                     *cresceu = 0;
                     break;
                 case EH:
-                    t->bf = RH;
+                    t->bf = LH;
                     *cresceu = 1;
                     break;
                 case LH:
@@ -266,9 +254,7 @@ int nonAVL_treeHeight(Tree t) {
     
 }
   
-
-
-
+  
 /*
 
 int treeHeight(Tree t) {
@@ -278,6 +264,65 @@ int treeHeight(Tree t) {
 }
 
 */
+
+
+
+
+// funcoes para testeeeeeeeeeeeeEEEEEE
+
+char balChar (BalanceFactor bal){
+    if (bal == LH) return ('\\');
+    if (bal == RH) return ('/');
+    if (bal == EH) return ('|');
+    return ('?');
+}
+
+void dumpKeys (Tree t, int level){
+    int l;
+    if (t) {
+        dumpKeys (t->right, level+1);
+        for (l=0;l<level;l++) printf ("%5c",' ');
+        printf ("%d %c %s\n",(int *)t->entry->key, balChar(t->bf) , (char *)t->entry->dados);
+        dumpKeys (t->left, level+1);
+    }
+}
+
+
+
+
+Tree get_Tree (AVL x){
+    return x->root;
+}
+
+TreeEntry get_TE (Tree x){
+    return x->entry;
+}
+
+
+int get_num_node (AVL x){
+    return (x->num_node);
+}      
+
+
+Tree get_Tleft (Tree x){
+    return x->left;
+}
+
+Tree get_Tright (Tree x){
+    return x->right;
+}
+
+
+void* get_keyE (TreeEntry x){
+    return x->key;
+}
+
+void* get_dadosE (TreeEntry x){
+    return x->dados;
+}
+
+
+
 
 
 

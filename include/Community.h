@@ -2,7 +2,8 @@
 #define community_h
 
 #include "interface.h"
-#include "Bloco.h"
+#include "Publicacao.h"
+#include "Utilizador.h"
 //#include "date.h"
 
 //typedef struct TCD_community * TAD_community;
