@@ -177,13 +177,13 @@ void bind_toBacia( Util x, Post y ){
     int flag;
     unsigned int tmpid = getP_id(y),tmppr;
 
-    if( y->type == 1 ){ // Questão. y post x user
+    if( getP_type(y) == 1 ){ // Questão. y post x user
         //printf("Works bro!\n");
         if ( !Q_belongs_hash(x , tmpid  ) )// verifica se existe!
             add_toBacia(x , getP_id_point(y) , NULL );
 
     } 
-    if( y->type == 2 ){
+    if( getP_type(y) == 2 ){
 
 		//printf("\n YOU HAVE FOUND AN ANSWER \n\n");
 		tmppr = getP_parentId( y );
@@ -192,7 +192,7 @@ void bind_toBacia( Util x, Post y ){
             add_toBacia(x , getP_parentId_point(y) ,  getP_id_point(y) );
         
         if( flag == 2 ){
-			g_hash_table_remove( x->bacia , &tmppr )
+			g_hash_table_remove( x->bacia , &tmppr );
 			add_toBacia(x , getP_parentId_point(y) ,  getP_id_point(y) );
         }
         
