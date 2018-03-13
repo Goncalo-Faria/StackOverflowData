@@ -1,59 +1,39 @@
-//#include <stdlib.h>
+//#include <glib.h>
+
+#include <stdlib.h>
 #include "heap.h"
-#include <glib.h>
 #include <stdio.h>
+
 
 #define full(x) ( (x)->use == (x)->len )
 #define quarter(x) ( ( (x)->use * 4 ) <= (x)->len )
 
 
 typedef void (*freeFunc)(void*);
-typedef int (*cmp)(void*,void*);
+typedef void* ENTRY;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+typedef int (*Fcompare)(void*, void*, void*);
+// negative value if a < b ; zero if a = b ; positive value if a > b
+/*
 typedef struct ent {
     
-    int key;
+    unsigned long key;
     void * data;
 
 } *ENTRY ;
+*/
 
 typedef struct heap {
     
     ENTRY * v;
-    int len;
-    int use;
-    int max;
-
+    unsigned long len;
+    unsigned long use;
+    unsigned long type;
+    
     freeFunc dataCl;
+    Fcompare cmp;
+
+    void* user_data;
 
 } * HEAP;
 
@@ -61,62 +41,75 @@ int empty_H(HEAP x){
     return (x->use == 0);
 }
 
-int length_H(HEAP x){
+unsigned long length_H(HEAP x){
     return x->use;
 }
 
-int maxQ_H(HEAP x){
-    return ( x->use == x->max );
-}
-
-HEAP create_H(void (*in_free) (void*) ){
-    HEAP x = (HEAP)g_malloc( sizeof (struct heap) );
-    x->use=0;
-    x->v = g_malloc( 2 * sizeof (ENTRY) );
-    x->len = 2;
-    x->max = -1;
+HEAP create_H( freeFunc in_free , Fcompare ff , void* usr_d ){
+    HEAP x = (HEAP)malloc( sizeof (struct heap) );
+    x->use = 0;
+    x->v = malloc( 1 * sizeof (ENTRY) );
+    x->len = 1;
+    x->cmp = ff;
     x->dataCl = in_free;
+    x->type = 1;
 
-    return x;
+    x->user_data = usr_d;
+
+    return x ;
 }
 
-HEAP limcreate_H(int lim, void (*in_free) (void*) ){
-    HEAP x = (HEAP)g_malloc( sizeof (struct heap) );
-    x->use=0;
-    x->v = g_malloc( 2 * sizeof (ENTRY) );
+/*
+HEAP limcreate_H(unsigned long lim, void (*in_free) (void*) ){
+    HEAP x = (HEAP)malloc( 2 * sizeof (ENTRY) );
     x->len = 2;
     x->max = lim;
     x->dataCl = in_free;
     
     return x;
 }
+*/
 
 void destroy_H(HEAP x){
 
     freeFunc ff = x->dataCl;
 
-    int i,r = !(ff == NULL);
+    unsigned long i;
+    int r = !(ff == NULL);
     if(x){
-        for(i=0; i < x->use; i++ ){
-            if(x->v[i]->data && r)
-                ff(x->v[i]->data);
-            g_free(x->v[i]);
+        if(x->type){
+            for(i=0; i < x->use; i++ ){
+                if(x->v[i] && r)
+                    ff(x->v[i]);
+                //free(x->v[i]);
+            }
+            free( x->v );
         }
-        g_free( x->v );
-        g_free( x );
-  
+        free( x );
+    }
+
+}
+
+static void tabledouble(HEAP x ){
+
+    x->len *= 2;
+    x->v = realloc(x->v, x->len * sizeof ( ENTRY )  );
+
+}
 
 static void tablehalv(HEAP x){
 
     x->len = x->len / 2;
-    x->v = g_realloc(x->v, x->len * sizeof ( ENTRY )  );
+    x->v = realloc(x->v, x->len * sizeof ( ENTRY )  );
 
 }
 
-static void Swap (ENTRY *v, int i , int j){
+static void Swap (ENTRY *v, unsigned long i , unsigned long j){
 		
 	ENTRY t;
     
+    if( i==j )
+        return;
 	// t = v[i];
     //
     t  = v[i];
@@ -134,82 +127,92 @@ static void Swap (ENTRY *v, int i , int j){
     
 } 
 
-static void BubleUp (ENTRY * v , int i ){
+static void BubleUp (ENTRY * v , unsigned long i  , Fcompare h, void* user_data){
+
 
 	if( ! i )
 		return;
 
-	if(v[i]->key < v[ pai(i) ]->key){
+	if(  h ( v[i] ,v[ pai(i)], user_data)<0 ) {//v[i]->key < v[ pai(i) ]->key)
 		Swap(v, i , pai(i) );
-		BubleUp(v , pai(i) );
+		BubleUp(v , pai(i),h , user_data);
 	}
 
 }
 
-static void BubleDown (ENTRY * v , int i, int N ){
+static void BubleDown (ENTRY * v , unsigned long i, unsigned long N,  Fcompare h, void* user_data ){
 
-	int f = esq(i); 
-	if(f > N-1 )
+	unsigned long f = esq(i); 
+	
+
+    if(f > N-1 || N < 1)
 		return ;
 
     if ( f + 1 < N )
-		f = v[f]->key < v[f+1]->key ? f : f+1 ;
+		f =  h( v[f] , v[f+1],  user_data) < 0 ? f : f+1 ;// v[f]->key < v[f+1]->key 
 
-	if( v[f]->key < v[i]->key ){
+	if( h ( v[f] , v[i], user_data) < 0  ){ //  v[f]->key < v[i]->key
 	    Swap (v,f,i ) ;
-	    BubleDown (v , f , N ) ;	
+	    BubleDown (v , f , N , h , user_data) ;	
 	}
 
 }
 
-void addR_Heap( HEAP x, int key , void* n ){
-    
-    freeFunc ff = x->dataCl;
 
-    add_Heap( x ,  key , n );
-
-    if ( ff )
-        ff ( x->v[x->use-1]->data );
-
-    x->v[x->use-1]->data = n;
-    x->v[x->use-1]->key  = key;
-
-    BubleUp(x->v , x->use-1 );
-}
-
-void add_Heap( HEAP x, int key , void* n ){
+void add_Heap( HEAP x , void* n ){
 
     if( full(x) ) tabledouble(x);
-    x->v[x->use] = g_malloc( sizeof(struct ent) );
-    x->v[x->use]->data = n;
-    x->v[x->use++]->key = key;
-
-    BubleUp(x->v , x->use-1 );
+    x->v[x->use++] = n;
+    BubleUp(x->v , x->use-1, x->cmp, x->user_data);
 }
 
-void* rem_Heap( HEAP x, int *key){
+void* rem_Heap( HEAP x){
 
     void *n;
-
     if ( quarter(x) ) tablehalv(x);
-
-    *key = x->v[0]->key ;
-    n    = x->v[0]->data;
-
-    x->v[0]->data = NULL;
     
-    Swap(x->v,0, --x->use);
-    g_free(x->v[x->use]);
-
-    BubleDown(x->v , 0 , x->use);
-    return n;
+    if ( x->use >0 ){
+        n    = x->v[0];
+        x->v[0]= NULL;
+        Swap(x->v,0, --x->use);
+        BubleDown(x->v , 0 , x->use, x->cmp, x->user_data);
+        return n;
+    }
+    return NULL;
 }
 
-void blueprint ( HEAP x ){
-    int i;
-    for( i=0; i<x->use; i++){
-        printf("> %d -> ",x->v[i]->key);
-        
-    }
-    printf("\n");
-} 
+ENTRY* getDestroy_H ( HEAP x , unsigned long * size){
+    ENTRY *v = x->v;
+    Fcompare h = x->cmp;
+
+    unsigned long i;
+    *size = x->use;
+    //destroy_H(x);
+
+    
+    for(i = 0 ; i<*size ; i++ ){
+        Swap( v, 0 , *size - i -1 );
+        BubleDown(v , 0 , *size - i -1 ,h , x->user_data);
+    } 
+
+    return v;
+}
+
+
+HEAP heapify_H( ENTRY * v , unsigned long n , Fcompare h, void* usr_d ){
+    HEAP x = malloc ( sizeof (struct heap ) ) ;
+    long i;
+    x->dataCl = NULL;
+    x->len = x->use = n;
+    x->cmp = h;
+    x->type = 0;
+    x->v = v;
+    x->user_data = usr_d;
+
+    // floyd algo.
+
+    for ( i = n/2 ; i >= 0 ; i--)
+        BubleDown(x->v, i, n , h , x->user_data);
+
+    return x;
+}

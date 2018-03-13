@@ -6,7 +6,8 @@
 #include "Utilizador.h"
 //#include "date.h"
 
-//typedef struct TCD_community * TAD_community;
+typedef struct TCD_community * TAD_community;
+typedef int (*Fcompare)(void*, void*, void*);
 
 TAD_community init(void);
 TAD_community clean(TAD_community com);

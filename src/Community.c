@@ -75,6 +75,13 @@ TAD_community clean(TAD_community com){
 }
 
 
+int reverseCompare (void* a, void* b , void* fun ){
+
+   Fcompare the_func= (Fcompare) fun;
+   return (-1) * fun( a , b , NULL);
+}
+
+
 // USER HASHTABLE;
 int userSet_insert_id(TAD_community com, unsigned long * key, Util x ){
    
