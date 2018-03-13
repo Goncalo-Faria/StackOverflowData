@@ -1,3 +1,15 @@
+/*
+    An implementation based on the paper ..
+
+    Min-Max Heaps and
+    Generalized Priority Queue
+
+    by 
+    M. D. ATKINSON, J.-R. SACK, N. SANTORO, and T. STROTHOTT
+    
+    1986
+*/
+
 #include <glib.h>
 #include "heap.h"
 #include <math.h>
