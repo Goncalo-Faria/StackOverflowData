@@ -1,6 +1,8 @@
 #ifndef publicacao_h
 #define publicacao_h
 
+#include "date.h"
+
 typedef struct post *Post;
 
 // create a new post
