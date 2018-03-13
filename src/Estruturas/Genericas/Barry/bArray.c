@@ -148,11 +148,7 @@ void sort_A( bArray x){
     x->v = getDestroy_H( y , &num ); 
 }
 
-
-
-// NAO É ASSIM , SO UM PROTOTIPO
-
-long get_start( bArray x ,void* from) {
+static long get_start( bArray x ,void* from) {
     long inicio,fim,meio;
     long res=0;
 
@@ -165,16 +161,16 @@ long get_start( bArray x ,void* from) {
 
             meio = (inicio + fim)/2;
             
-            if ( comp (x->v[meio] , from) == 0) {
+            if ( comp (x->v[meio] , from,NULL) == 0) {
                 res = meio;
                 break;
             }
             
-            else if ( comp (x->v[meio] , from) >0) {
+            else if ( comp (x->v[meio] , from,NULL) >0) {
                 fim = meio-1;
             }
             
-            else if ( comp (x->v[meio] , from) < 0 ) {
+            else if ( comp (x->v[meio] , from,NULL) < 0 ) {
                 inicio = meio +1;
                 // res = fim-1;
             }
@@ -185,11 +181,11 @@ long get_start( bArray x ,void* from) {
     /* caso nao encontre e o elemento mais proximo seja o da posicao 0 return 0;
      * caso nao ecnontre e o elemento mais perto !=0 entao -> -1
      */
-    if ( comp (v[res] , from ) != 0 && res ) return res-1;
+    if ( comp (v[res] , from ,NULL) != 0 && res ) return res-1;
     return  res;
 }
  
-long get_end( bArray x ,void* from) {
+static long get_end( bArray x ,void* from) {
     long inicio,fim,meio;
     long res=0;
 
@@ -202,16 +198,16 @@ long get_end( bArray x ,void* from) {
 
             meio = (inicio + fim)/2;
             
-            if ( comp (x->v[meio] , from) == 0) {
+            if ( comp (x->v[meio] , from , NULL) == 0) {
                 res = meio;
                 break;
             }
             
-            else if ( comp (x->v[meio] , from) >0) {
+            else if ( comp (x->v[meio] , from , NULL) >0) {
                 fim = meio-1;
             }
             
-            else if ( comp (x->v[meio] , from) < 0 ) {
+            else if ( comp (x->v[meio] , from, NULL) < 0 ) {
                 inicio = meio +1;
             }
             
@@ -221,7 +217,7 @@ long get_end( bArray x ,void* from) {
     /* caso nao encontre e o elemento mais proximo seja o da posicao 0 return 0;
      * caso nao ecnontre e o elemento mais perto !=0 entao -> -1
      */
-    if ( comp (v[res] , from ) != 0 && res!= x->use ) return res+1;
+    if ( comp (v[res] , from ,NULL) != 0 && res!= x->use ) return res+1;
     return  res;
 
 }
