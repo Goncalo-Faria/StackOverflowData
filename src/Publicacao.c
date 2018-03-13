@@ -1,7 +1,8 @@
-#include "Publicacao.h"
+//#include "Publicacao.h"
 #include <string.h>
-#include <interface.h>
+#include "interface.h"
 #include <glib.h>
+#include "Community.h"
 //#include <stdio.h>
 //#include "date.h"
 
@@ -48,7 +49,6 @@ void destroyPost( void* x ){
 	
 }
 
-
 int post_compare( void *a, void* b, void* user_data){
 
     Date x = getP_date_point ( (Post) a );
@@ -56,7 +56,6 @@ int post_compare( void *a, void* b, void* user_data){
 
     return date_compare( x, y, user_data);
 }
-
 
 // Post getters
 unsigned int getP_id(Post x){

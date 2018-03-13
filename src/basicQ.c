@@ -39,16 +39,42 @@ static Container createContainer(Date begin, Date end ){
 
 }
 
+static int int_cmp(void* a , void* b , void* user_data){
+    int* x = (int*) a;
+    int* y = (int*) b;
+
+    return ( *y - *x );
+}
+
+static int np_cmp ( void* a, void* b, void* user_data){
+    Util x = (Util) a;
+    Util y = (Util) b;
+
+    int anum , bnum;
+    
+    anum = (int)(getU_Q(x) + getU_A(x));
+    bnum = (int)(getU_Q(y) + getU_A(y));
+
+    return int_cmp( &anum , &bnum, user_data);
+
+}
+static int score_cmp( void* a, void* b, void* user_data ){
+    Post x = (Post) a;
+    Post y = (Post) b;
+
+    int anum , bnum;
+    
+    anum = (int)(getP_score(x) );
+    bnum = (int)(getP_score(y) );
+
+    return int_cmp( &anum , &bnum, user_data);
+   
+}
 
 static void heapify (void* key, void* value, void* user_data){
-    Util x = (Util)value;
     HEAP y = (HEAP)user_data;
-    int  num = getU_Q( x ) + getU_A( x );
 
-    if( maxQ_H(y) )// está na capacidade
-        addR_Heap( y, (-1) * num , key );
-    else 
-        add_Heap( y , (-1) * num , key );
+    add_Heap( y , value );
 }
 
 static int count ( void* key , void *value , void *user_data ) {
@@ -85,14 +111,9 @@ static int find_ans ( void *key , void*value , void* user_data ){
     Date pdate= (Date)key;
 
 
-    if ( date_compare ( pdate , box->dateB ,NULL) >= 0 && date_compare ( pdate , box->dateE ,NULL ) <= 0 && getP_type(p) == 2 ){// é resposta.
-        if ( maxQ_H (x) ){// se está na capacidade
-            addR_Heap( x , (-1) * getP_score(p) , p );
-            //blueprint(x);
-        }
-        else 
-            add_Heap( x , (-1) *getP_score(p) , p  );
-        }
+    if ( date_compare ( pdate , box->dateB ,NULL) >= 0 && date_compare ( pdate , box->dateE ,NULL ) <= 0 && getP_type(p) == 2 )// é resposta.
+            add_Heap( x , p  );
+        
 
     // The tree is traversed in sorted order.
     if ( date_compare ( pdate , box->dateE , NULL )>0 )
@@ -150,23 +171,24 @@ STR_pair info_from_post(TAD_community com, int id){
     return result;
 }
 
+
+
 // --2 FEITO
 LONG_list top_most_active(TAD_community com, int N){
-    int num,i;
+    unsigned long i;
 
-    HEAP x = limcreate_H(N, NULL);// não elimina conteudo.
+    HEAP x = create_H(NULL, np_cmp , NULL );// não elimina conteudo.
     LONG_list ll = create_list(N);
-    unsigned long* c;
+    Util c;
 
-    userSet_id_transversal( com, heapify , (void*)x);
-    
+    userSet_id_transversal( com, heapify , (void*)x);    
     //
     for(i=0; i<N;i++){
 
         if ( ! empty_H(x) ){
 
-            c = (unsigned long* ) rem_Heap( x , &num );
-            set_list(ll, i , *c );
+            c = rem_Heap( x );
+            set_list(ll, i ,(long) getU_id( c ) );
 
         }  else {
 
@@ -215,10 +237,10 @@ LONG_list questions_with_tag(TAD community com, char* tag, Date begin, Date end)
 
 // --6 FEITA
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
-    int num, i;
+    unsigned long i;
     LONG_list ll; 
     Post newp;
-    HEAP x = limcreate_H (N , NULL);
+    HEAP x = create_H(NULL, score_cmp , NULL );//
     Container carrier = createContainer(begin,end);
     carrier->spec = (void*) x;
 
@@ -230,7 +252,7 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
 
         if ( ! empty_H( x ) ){
 
-            newp = (Post)rem_Heap( x , &num );
+            newp = (Post)rem_Heap(x);
             //printf("num :: %d\n",num);
             set_list(ll , i , (long) getP_id ( newp ) );
 

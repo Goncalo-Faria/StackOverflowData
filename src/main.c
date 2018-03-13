@@ -14,6 +14,8 @@ int main(void){
   return 0;
   */
     USER q5;
+    Util usq2;
+    Post q6p;
     STR_pair q1;
     LONG_pair q3;
     LONG_list q2;
@@ -21,6 +23,7 @@ int main(void){
     LONG_list q6;
     Date begin=createDate(16, 1, 2011) , end = createDate( 3 , 3 , 2013);
     int i,n;
+    Date pdate;
 
     TAD_community com = init();
 
@@ -38,8 +41,11 @@ int main(void){
     printf("|->Q2\n\n");
     n=20;
     q2 = top_most_active(com, n);
-    for (i=0; i< n; i++)
-        printf(">> %d <<\n",(int)get_list(q2, i) );  
+    for (i=0; i< n; i++){
+        printf(">> %d <<  ",(int)get_list(q2, i) );  
+        usq2 = userSet_id_lookup(com,get_list(q2, i));
+        printf(" %d \n ", getU_A(usq2) + getU_Q(usq2) );
+    }
     free_list(q2);
 
 
@@ -51,7 +57,7 @@ int main(void){
     printf("to   :: 03 - 03 - 2013\n");
 
     printf("Number of Questions :: %ld \n", get_fst_long(q3) );
-    printf("Number of Questions :: %ld \n", get_snd_long(q3) );
+    printf("Number of Answers :: %ld \n", get_snd_long(q3) );
     free_long_pair(q3);
 
     
@@ -66,10 +72,14 @@ int main(void){
 
     l = get_10_latest_posts(q5);
     for(i=0; i<10; i++ ){
-       printf(" POST %d :: %ld  \n", i+1,l[i] );
+        printf(" POST %d :: %ld   ", i+1,l[i] );
+        q6p = postSet_lookup(com,l[i]);
+        pdate = getP_date_point(q6p);
+        printf(" - %d - %d - %d - \n", get_day(pdate),get_month(pdate),get_year(pdate));
     }
     g_free(l);
     free_user(q5);
+
 
     printf("______________________\n");
     printf("|->Q6\n\n");
@@ -78,9 +88,11 @@ int main(void){
     q6 = most_voted_answers(com, n , begin, end);
 
 
-    for (i=0; i< n; i++)
-        printf(">> %d <<\n",(int)get_list(q6, i) );
-        
+    for (i=0; i< n; i++){
+        printf(">> %d <<  ",(int)get_list(q6, i) );
+        q6p = postSet_lookup( com , (unsigned int)get_list(q6, i));
+        printf(" < %d > \n", getP_score(q6p) );
+    }
 
     g_free(q6);
 
