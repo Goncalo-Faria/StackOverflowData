@@ -132,32 +132,7 @@ void setU_bio(Util x, const unsigned char* un){
 }
 
 
-void add_toBacia(Util x, unsigned int * id , void * dados ){
-    
-    g_hash_table_insert( x->bacia , (void*) id , dados );
-}
 
-int belongs_toBacia ( Util x , unsigned int Parent_id, char flag ){ // O que acontece na eventualidade de 2 ter uma resposta no post que criou? em datas diferentes.
-    
-	GHashTable* set = x->bacia;
-	// flag == 1; meens Q.
-    // flag == 2; meens A.
-    if( flag == 1 && g_hash_table_contains ( set , &Parent_id ) )
-        // é uma questão e existe.
-        return 1;
-
-    if( flag == 2 && g_hash_table_contains ( set , &Parent_id  ) ){
-		// é uma Resposta.
-        if ( g_hash_table_lookup(set, &Parent_id) )
-            //isto significa que existe questão.
-            return 1;
-		return 2;
-		}
-
-    return 0;
-
-
-}
 
 void add_toBacia(Util x, unsigned int * id , void * dados ){
     
