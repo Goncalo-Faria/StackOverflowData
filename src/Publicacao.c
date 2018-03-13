@@ -62,12 +62,10 @@ unsigned int getP_parentId(Post x){
 	unsigned int *y = x->parentId;
 	return ( *y );
 }
-/*
+
 unsigned int * getP_parentId_point(Post x){
 	return ( x->parentId );
 }
-
-*/
 
 unsigned long getP_fund(Post x){
 	return (x->fundador);
