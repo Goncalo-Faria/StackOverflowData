@@ -12,7 +12,10 @@ void *createPost();
 void destroyPost( void* x );
 
 
+int post_compare( void *a, void* b, void* user_data);
+
 // Post getters
+
 unsigned int getP_id(Post x);
 
 unsigned int * getP_id_point(Post x);

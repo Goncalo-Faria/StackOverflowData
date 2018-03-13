@@ -48,6 +48,16 @@ void destroyPost( void* x ){
 	
 }
 
+
+int post_compare( void *a, void* b, void* user_data){
+
+    Date x = getP_date_point ( (Post) a );
+    Date y = getP_date_point ( (Post) b );
+
+    return date_compare( x, y, user_data);
+}
+
+
 // Post getters
 unsigned int getP_id(Post x){
 	unsigned int *y = x->id;

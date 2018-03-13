@@ -32,8 +32,6 @@ static void collect_top10 (void* key, void* value, void* user_data){
     TAD_community com = (TAD_community)carrier->snd;
     unsigned long* used; 
     Post pub;
-    Date pdate;
-    int num;
 
     if(child){
         // é uma resposta.
@@ -45,27 +43,20 @@ static void collect_top10 (void* key, void* value, void* user_data){
 
     pub = postSet_lookup(com ,*used );
 
-    pdate = getP_date(pub);
-    
-    num = get_day(pdate) + get_month(pdate)*31 + (get_year(pdate) - 2000 )*365 ; 
+    add_Heap( x , pub ); // mais tempo fica no topo.
 
-    if( maxQ_H(x) )// está na capacidade
-        addR_Heap( x , (-1) * num , used); // mais tempo fica no topo.
-    else
-        add_Heap( x , (-1) * num , used); // mais tempo fica no topo.
-
-    free_date(pdate);
 }
+
 
 ////////
 
 USER get_user_info(TAD_community com, long id){
     
-    int i,num;
-    unsigned long* c;
+    int i;
+    Post the_post;
     USER send;
     Record carrier;
-    HEAP pQ = limcreate_H(10, NULL);
+    HEAP pQ = create_H(NULL , reverseCompare, (void*) post_compare );
     long post_history[10];
     char *short_bio = NULL;
     Util x = userSet_id_lookup( com ,(unsigned long) id);
@@ -81,8 +72,8 @@ USER get_user_info(TAD_community com, long id){
         
         if ( ! empty_H(pQ) ){
         
-            c = (unsigned long* ) rem_Heap( pQ , &num );
-            post_history[i]= (long)*c;
+            the_post = (Post )rem_Heap( pQ );
+            post_history[i]= (long) getP_id(the_post)  ;
 
         } else {
             

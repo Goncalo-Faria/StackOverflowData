@@ -37,5 +37,6 @@ void postTree_transversal( TAD_community com, int (*f)(void*, void*, void*) ,voi
 
 
 int date_compare ( const void* a /*x*/, const void* b /*y*/,void* user_data);
+int reverseCompare (void* a, void* b , void* fun );
 
 #endif

@@ -78,7 +78,7 @@ TAD_community clean(TAD_community com){
 int reverseCompare (void* a, void* b , void* fun ){
 
    Fcompare the_func= (Fcompare) fun;
-   return (-1) * fun( a , b , NULL);
+   return (-1) * the_func( a , b , NULL);
 }
 
 
