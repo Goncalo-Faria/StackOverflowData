@@ -15,6 +15,7 @@
 #include <math.h>
 
 #define nivel(i) (log2((double)(i+1)))
+#define full(x) ( (x)->use == (x)->len )
 
 typedef void (*freeFunc)(void*);
 typedef void* ENTRY;
@@ -223,7 +224,7 @@ void* rem_Beap( BEAP x){
     return NULL;
 }
 
-void addInplace( BEAP x , void *n ){
+void addInplace_Beap( BEAP x , void *n ){
 
     Fcompare h  = x->cmp;
     freeFunc eco = x->dataCl;

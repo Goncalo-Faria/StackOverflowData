@@ -11,14 +11,7 @@ typedef void* ENTRY;
 typedef int (*Fcompare)(void*, void*, void*);
 
 // negative value if a < b ; zero if a = b ; positive value if a > b
-/*
-typedef struct ent {
-    
-    unsigned long key;
-    void * data;
 
-} *ENTRY ;
-*/
 
 typedef struct heap * HEAP;
 
