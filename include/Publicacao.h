@@ -28,6 +28,8 @@ unsigned long getP_fund(Post x);
 
 unsigned char* getP_name(Post x);
 
+unsigned int getP_ansCount(Post x);
+
 unsigned int getP_score(Post x);
 
 unsigned char getP_type(Post x);
@@ -43,6 +45,8 @@ void setP_id(Post x, unsigned int o );
 void setP_parentId(Post x, unsigned int o );
 
 void setP_fund(Post x, long f);
+
+void incP_ansCount( Post x );
 
 void setP_name(Post x, const unsigned char* un);
 

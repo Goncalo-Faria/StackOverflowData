@@ -9,11 +9,13 @@
 typedef struct post {
 
 	unsigned int * id;
-	unsigned char type;// 1 Q ; 2 A;
     unsigned long fundador;
 	unsigned char *name;
 	unsigned int score;
-	unsigned int * parentId;
+
+	// Either. 
+	unsigned char type;// 1 Q ; 2 A;
+	void* special; // parent Id. // answer count. 
 
 	Date moment;
 
@@ -33,7 +35,7 @@ void *createPost(){
 	x->fundador = 0;
 	x->score = 0;
 	x->id = g_malloc( sizeof(unsigned int ) );
-	x->parentId = NULL;
+	x->special = NULL;
 	//x->data = g_malloc (sizeof(struct date));
 	x->moment = createDate ( 0 , 0 , 0 );
 	return x;
@@ -44,7 +46,7 @@ void destroyPost( void* x ){
 	free_date(y->moment);
 	null_check(y->name);
 	g_free(y->id);
-	null_check(y->parentId);
+	null_check(y->special);
 	g_free(y);
 	
 }
@@ -68,12 +70,25 @@ unsigned int * getP_id_point(Post x){
 }
 
 unsigned int getP_parentId(Post x){
-	unsigned int *y = x->parentId;
-	return ( *y );
+	unsigned int *y ;
+	if(  x->type == 2 ){//answer
+		y = x->special;
+		return ( *y );
+	}
+	return ( 0 );
+}
+
+unsigned int getP_ansCount(Post x){
+	unsigned int* y;
+	if( x->type == 1 ){//questão.
+		y = x->special;
+		return (*y);
+	}
+	return 0;
 }
 
 unsigned int * getP_parentId_point(Post x){
-	return ( x->parentId );
+	return ( (unsigned int*)x->special );
 }
 
 unsigned long getP_fund(Post x){
@@ -121,11 +136,33 @@ void setP_parentId(Post x, unsigned int o ){
 	unsigned int* y;
 	
 	
-	if(!x->parentId){
-		x->parentId = g_malloc( sizeof(unsigned int) );
+	if( !x->special ){// é null
+		y  = g_malloc( sizeof(unsigned int) );
+		*y = o;
+		x->special= y;
 	}
-	y = x->parentId;
-	*y = o;
+	else {
+ 		y  = x->special;
+		*y = (unsigned int)o;
+	}
+
+}
+
+void incP_ansCount( Post x ) {
+	unsigned int * y;
+	
+	if( x->type == 1 ){
+		if( !x->special){
+		
+		y  = g_malloc( sizeof( unsigned int ) );
+		*y = 1;
+		x->special = y;
+		}
+		else {
+			y = x->special;
+			*y = *y + 1;
+		}
+	}
 }
 
 void setP_date( Post x , int d, int m , int a ){

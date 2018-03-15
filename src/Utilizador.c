@@ -104,11 +104,11 @@ unsigned char* getU_bio(Util x){
 
 //Util setters
 
-void inc_Q(Util x){
+void incU_Q(Util x){
 	x->Q++;
 }
 
-void inc_A(Util x){
+void incU_A(Util x){
 	x->A++;
 }
 
