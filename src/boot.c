@@ -296,9 +296,11 @@ static void parseHistory ( TAD_community com, const xmlNode* node){
 
     if( getP_type(y) == 2 ){
         incU_A(x);
-        
         // Acrescentar ao numero de respostas.
-        //tmp = postSet_lookup(com, getP_parentId(y) );
+        tmp = postSet_lookup(com, getP_parentId(y) );
+        if( ! tmp )
+            incP_ansCount(tmp);
+        
     }
 
     setP_fund(y, userId);

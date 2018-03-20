@@ -257,6 +257,7 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end){
             set_list(ll , i , (long) getP_id ( newp ) );
 
         } else {
+            
             set_list(ll , i , 0 );
         }
 

@@ -38,5 +38,6 @@ void addInplace_Beap( BEAP x , void *n );
 
 int empty_B(BEAP x);
 unsigned long length_B(BEAP x);
+unsigned long Capacity_B(BEAP x);
 
 #endif

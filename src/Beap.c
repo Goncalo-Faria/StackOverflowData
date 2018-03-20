@@ -14,6 +14,8 @@
 #include "heap.h"
 #include <math.h>
 
+#include <stdio.h>
+
 #define nivel(i) (log2((double)(i+1)))
 #define full(x) ( (x)->use == (x)->len )
 
@@ -82,6 +84,8 @@ static unsigned long minorS(ENTRY* v , unsigned long p , unsigned long N, Fcompa
 
     unsigned long f = esq(p);
 
+    //printf("g.. %ld  %ld \n",p,N);
+
     if(f > N-1 ) // não têm filhos.
 		return p;
 
@@ -96,6 +100,7 @@ static unsigned long minorS(ENTRY* v , unsigned long p , unsigned long N, Fcompa
 static unsigned long majorS(ENTRY* v , unsigned long p , unsigned long N, Fcompare h , void* user_data ){
 
     unsigned long f = esq(p);
+    //printf("g.. %ld  %ld \n",p,N);
 
     if(f > N-1 ) // não têm filhos.
 		return p;
@@ -112,6 +117,8 @@ static void TrickleDownMin (ENTRY * v , unsigned long i , unsigned long N, Fcomp
 
 	unsigned long f = esq(i); 
     unsigned long minorLeft, minorRight;
+
+    //printf("min... %ld  %ld \n",i,N);
 
 	if(f > N-1 ) // não tem filhos.
 		return ;
@@ -135,7 +142,9 @@ static void TrickleDownMax (ENTRY * v , unsigned long i , unsigned long N, Fcomp
 	unsigned long f = esq(i); 
     unsigned long majorLeft, majorRight;
 
-	if(f > N-1 ) // não tem filhos.
+    //printf("max... %ld  %ld \n",i,N);
+
+	if(f > N -1 ) // não tem filhos.
 		return ;
 
 	if ( f + 1 < N ){// tem ambos os filhos.
@@ -154,18 +163,26 @@ static void TrickleDownMax (ENTRY * v , unsigned long i , unsigned long N, Fcomp
 
 static void TrickleDown(ENTRY* v , unsigned long i , unsigned long N, Fcompare h , void* user_data){
 
-    if( !(((int)nivel(i))%2)  ) // calcula o nível.
-        TrickleDownMin(v, i , N , h, user_data);
-    else
-        TrickleDownMax(v, i , N , h, user_data);
-    
+    //printf("3232 %ld  %ld  %d \n",i,N, (((int)nivel(i))%2) );
+    if( N ){
+
+        if( (((int)nivel(i))%2)  ) // calcula o nível.p
+            TrickleDownMin(v, i , N , h, user_data);
+        else
+            TrickleDownMax(v, i , N , h, user_data);
+    }
 }
 
 ////////
 
 unsigned long length_B(BEAP x){
+    return x->use;
+}
+
+unsigned long Capacity_B(BEAP x){
     return x->len;
 }
+
 
 int empty_B(BEAP x){
     return (x->use == 0);
@@ -181,13 +198,14 @@ BEAP create_B( unsigned long N , freeFunc in_free , Fcompare ff, ENTRY* g , void
     x->dataCl = in_free;
 
     x->user_data = usr_d;
-
+    
     for( i=0; i<N; i++)
         x->v[i] = g[i];
+
     
 
     for (i= N/2 ; i>=0 ; i-- )
-        TrickleDown(x->v, i ,N,x->cmp, x->user_data);
+        TrickleDown( x->v, i, N, x->cmp, x->user_data);
 
     return x ;
 }
@@ -229,6 +247,10 @@ void addInplace_Beap( BEAP x , void *n ){
     Fcompare h  = x->cmp;
     freeFunc eco = x->dataCl;
     int i;
+    
+    int *a,*b = findmax(x,&i) ;
+    a = n;
+    printf(" max %d ,  adder %d \n", *b,*a);
 
     if(  h(findmax(x,&i) , n, x->user_data) > 0   ){// é maior que o maximo
         if( eco )

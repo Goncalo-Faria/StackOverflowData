@@ -173,6 +173,7 @@ ENTRY* getDestroy_H ( HEAP x , unsigned long * size){
         BubleDown(v , 0 , *size - i -1 ,h , x->user_data);
     } 
 
+    destroy_H(x);
     return v;
 }
 

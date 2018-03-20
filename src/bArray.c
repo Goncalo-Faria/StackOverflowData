@@ -37,19 +37,22 @@ typedef struct brray {
 
 // Métodos públicos.
 
-bArray init_A(unsigned long n, freeFunc dados, cmpFunc compare, void* use);
+bArray init_A(unsigned long n, freeFunc dados, cmpFunc compare, void* user_data);
 int add_to_A(bArray x , void* ele );
 void destroy_A( bArray x);
 void sort_A( bArray x);
+void for_each( bArray x ,  appFunc functor, void * user_data );
 void for_each_from_to ( bArray x , void* begin , void* end, appFunc functor, void * user_data );
-BEAP Generalized_Priority_Queue( bArray ll, unsigned long Qsize );
-BEAP from_to_Priority_Queue ( bArray x , void* begin , void* end, unsigned long Qsize);
+
+
+BEAP Generalized_Priority_Queue( bArray ll, unsigned long Qsize, cmpFunc alt_cmp);
+BEAP from_to_Priority_Queue ( bArray x , void* begin , void* end, unsigned long Qsize, cmpFunc alt_cmp);
 
 
 // Métodos privados.
 static void fmap ( bArray ll , unsigned long start ,unsigned long n, appFunc functor, void * user_data );
 static long find( bArray x ,void* from, int flag );
-static BEAP GenP ( bArray ll, unsigned long start , unsigned long Qsize , unsigned long num_elem );
+static BEAP GenP ( bArray ll, unsigned long start , unsigned long Qsize , unsigned long num_elem, cmpFunc alt_cmp );
 
 // >>>>><
 
@@ -102,17 +105,32 @@ void sort_A( bArray x){
 }
 
 void for_each_from_to ( bArray x , void* begin , void* end, appFunc functor, void * user_data ){
-    
-    long s = get_start(x,begin);
-    long e = get_end(x,end);
+    long s,e;
 
-    if( s == -1 || e== -1 )
-        return ;
+    if( x->ord ){
+        s = get_start(x,begin);
+        e = get_end(x,end);
+        // tem que estar ordenado.
 
-    fmap( x ,(unsigned long) s , (unsigned long) (e - s)  ,functor, user_data );
+        if(!begin)
+            s = 0;
+        if(!end)
+            e = x->use-1;
+
+        if( s == -1 || e== -1 )
+            return ;
+
+        fmap( x ,(unsigned long) s , (unsigned long) (e - s)  ,functor, user_data );
+    }
 }
 
-BEAP from_to_Priority_Queue ( bArray x , void* begin , void* end, unsigned long Qsize){
+void for_each( bArray x ,  appFunc functor, void * user_data ){
+
+    for_each_from_to ( x , NULL , NULL , functor, user_data );
+
+}
+
+BEAP from_to_Priority_Queue ( bArray x , void* begin , void* end, unsigned long Qsize, cmpFunc alt_cmp ){
 
 
     long s = get_start(x,begin);
@@ -121,13 +139,13 @@ BEAP from_to_Priority_Queue ( bArray x , void* begin , void* end, unsigned long 
     if( s == -1 || e== -1 )
         return NULL;
 
-    return GenP( x , (unsigned long) s , Qsize ,(unsigned long) e - s  );
+    return GenP( x , (unsigned long) s , Qsize ,(unsigned long) e - s, alt_cmp  );
 
 }
 
-BEAP Generalized_Priority_Queue( bArray ll, unsigned long Qsize ) {
+BEAP Generalized_Priority_Queue( bArray ll, unsigned long Qsize, cmpFunc alt_cmp ) {
 
-    return ( GenP( ll, 0 , Qsize , ll->use ) ) ;
+    return ( GenP( ll, 0 , Qsize , ll->use, alt_cmp ) ) ;
 }
 
 static void fmap ( bArray ll , unsigned long start ,unsigned long n, appFunc functor, void * user_data ){
@@ -151,11 +169,18 @@ static long find( bArray x ,void* from, int flag ) {
     long res=0;
     cmpFunc comp = (cmpFunc) x->a;
 
-    if (!x->size  || !x->ord ) return -1;
+    if (!x->size  || !x->ord || !from ) return -1;
     else{
-        inicio=0;
+
+
+        inicio = 0;
         fim = x->use-1;
         
+        if( comp (x->v[fim] , from, x->user_data) && (flag == -1) > 0 )
+            return -1;
+        
+        
+
         while (inicio < fim){
 
             meio = (inicio + fim)/2;
@@ -174,13 +199,13 @@ static long find( bArray x ,void* from, int flag ) {
                 // res = fim-1;
             }
             
-            else break;
+            
         }
     }
     /* caso nao encontre e o elemento mais proximo seja o da posicao 0 return 0;
      * caso nao ecnontre e o elemento mais perto !=0 entao -> -1
      */
-
+    res = meio;
     if (  flag == -1)
         while(  !( comp (x->v[res] , from ,x->user_data) > 0 )  && res>0 ) res--;
     else    
@@ -190,13 +215,16 @@ static long find( bArray x ,void* from, int flag ) {
 
 }
 
-static BEAP GenP ( bArray ll, unsigned long start , unsigned long Qsize , unsigned long num_elem ) {
+static BEAP GenP ( bArray ll, unsigned long start , unsigned long Qsize , unsigned long num_elem, cmpFunc alt_cmp ) {
 
     BEAP x;
     unsigned long i;
     long r = ll->use - start;
     void **the_v = ll->v ;
     
+    if( !alt_cmp )
+        alt_cmp = ll->a;
+
     if( start + Qsize > ll->use ){// barco fora
         return NULL;
     }
@@ -205,7 +233,7 @@ static BEAP GenP ( bArray ll, unsigned long start , unsigned long Qsize , unsign
 
     if( num_elem >= r ){
         num_elem = r; 
-        x = create_B( Qsize  , ll->b, ll->a, ll->v + start, ll->user_data );
+        x = create_B( Qsize  , ll->b, alt_cmp , ll->v + start, ll->user_data );
     } else {
         return NULL;
     }
