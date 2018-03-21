@@ -15,13 +15,16 @@ typedef int (*Fcompare)(void*, void*, void*);
 
 typedef struct heap * HEAP;
 
+// Max heap.
 
 HEAP create_H( freeFunc in_free , Fcompare ff , void* usr_d );
+HEAP create_fixed_H( ENTRY * v , unsigned long n ,freeFunc in_free ,Fcompare h, void* usr_d );
 void destroy_H(HEAP x);
 ENTRY* getDestroy_H ( HEAP x , unsigned long * size);
 
 void add_Heap( HEAP x, void* n );
 void* rem_Heap( HEAP x);
+void add_in_Place_H( HEAP x, void* n);
 
 HEAP heapify_H( ENTRY * v , unsigned long n , Fcompare h, void* usr_d );
 int empty_H(HEAP x);
