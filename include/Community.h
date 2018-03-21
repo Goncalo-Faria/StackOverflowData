@@ -6,37 +6,32 @@
 #include "Utilizador.h"
 //#include "date.h"
 
-typedef struct TCD_community * TAD_community;
-typedef int (*Fcompare)(void*, void*, void*);
+typedef struct TCD_community *TAD_community;
+typedef int (*Fcompare)(void *, void *, void *);
 
 TAD_community init(void);
 TAD_community clean(TAD_community com);
 
-
-
-
 // USER HASHTABLE;
-int userSet_insert_id(TAD_community com, unsigned long * key, Util x );
-int userSet_insert_name(TAD_community com, unsigned char * key, Util x );
-void userSet_id_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x );
-Util userSet_id_lookup( TAD_community com, unsigned long num );
-Util userSet_name_lookup( TAD_community com, unsigned char* name );
+int userSet_insert_id(TAD_community com, unsigned long *key, Util x);
+int userSet_insert_name(TAD_community com, unsigned char *key, Util x);
+void userSet_id_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x);
+Util userSet_id_lookup(TAD_community com, unsigned long num);
+Util userSet_name_lookup(TAD_community com, unsigned char *name);
 unsigned int userSet_size(TAD_community com);
 
 // POST HASHTABLE
-int postSet_insert(TAD_community com, unsigned int * key, Post x );
-Post postSet_lookup( TAD_community com, unsigned int num );
-void postSet_transversal( TAD_community com, void (*f)(void*, void*, void*) ,void* x );
+int postSet_insert(TAD_community com, unsigned int *key, Post x);
+Post postSet_lookup(TAD_community com, unsigned int num);
+void postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x);
 unsigned int postSet_size(TAD_community com);
+
 // POST BALANCED TREE;
 // estás funções terão de ser substituidas assim que a AVL esteja terminada.
 void postTree_insert(TAD_community com, Date key, Post x);
-void postTree_transversal( TAD_community com, int (*f)(void*, void*, void*) ,void* x);
+void postTree_transversal(TAD_community com, int (*f)(void *, void *, void *), void *x);
 
-
-
-
-int date_compare ( const void* a /*x*/, const void* b /*y*/,void* user_data);
-int reverseCompare (void* a, void* b , void* fun );
+int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data);
+int reverseCompare(void *a, void *b, void *fun);
 
 #endif
