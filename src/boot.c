@@ -39,6 +39,14 @@ static void parseHistory(TAD_community com, const xmlNode *node);
 // recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
 // estou a assumir que recebo uma AVL;
 
+
+static void adder(void* key, void* value, void* user_data ){
+    TAD_community com = (TAD_community) user_data;
+
+    insert_array( com, (Post)value );
+} 
+
+
 TAD_community load(TAD_community com, char *dump_path)
 {
     //Util y;
@@ -49,6 +57,13 @@ TAD_community load(TAD_community com, char *dump_path)
     printf("Number of users loaded ::%d \n", userSet_size(com));
     parser(com, dump_path, "Posts", parsePost);
     printf("Number of posts loaded ::%d \n", postSet_size(com));
+
+    //->
+    turnOn_array( com,(unsigned long)postSet_size(com));
+    postSet_transversal(com ,adder , com);
+    finalize_array(com);
+    //->
+
     parser(com, dump_path, "PostHistory", parseHistory);
     printf("\n.. Loading Terminaterd ..\n");
 
@@ -216,7 +231,6 @@ static void parsePost(TAD_community com, const xmlNode *node)
         xmlFree(hold);
     }
 
-    postTree_insert(com, getP_date_point(x), x);
     postSet_insert(com, getP_id_point(x), x);
 }
 

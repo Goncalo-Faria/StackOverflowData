@@ -53,7 +53,9 @@ void destroyPost(void *x)
 	g_free(y);
 }
 
-int post_compare(void *a, void *b, void *user_data)
+
+//COMPARADORES
+int post_compare(void *a, void *b, void *user_data)// não vai ser preciso.
 {
 
 	Date x = getP_date_point((Post)a);
@@ -62,6 +64,19 @@ int post_compare(void *a, void *b, void *user_data)
 	return date_compare(x, y, user_data);
 }
 
+int score_cmp(void *a, void *b, void *user_data)
+{
+    Post x = (Post)a;
+    Post y = (Post)b;
+
+    int anum, bnum;
+
+    anum = (int)(x->score);
+    bnum = (int)(y->score);
+
+    return int_cmp(&anum, &bnum, user_data);
+}
+////
 // Post getters
 unsigned int getP_id(Post x)
 {

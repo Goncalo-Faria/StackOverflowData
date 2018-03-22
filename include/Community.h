@@ -4,6 +4,9 @@
 #include "interface.h"
 #include "Publicacao.h"
 #include "Utilizador.h"
+
+#include "heap.h"
+
 //#include "date.h"
 
 typedef struct TCD_community *TAD_community;
@@ -31,7 +34,28 @@ unsigned int postSet_size(TAD_community com);
 void postTree_insert(TAD_community com, Date key, Post x);
 void postTree_transversal(TAD_community com, int (*f)(void *, void *, void *), void *x);
 
+void turnOn_array(TAD_community com, unsigned long n);
+void insert_array(TAD_community com, Post x);
+void finalize_array(TAD_community com);
+
+void arraySeg_transversal(TAD_community com, Date begin, Date end,
+                          void (*functor)(void *, void *, void *),
+                          void *user_data);
+
+HEAP array_Priority_Queue(TAD_community com,
+                          unsigned long Qsize,
+                          Fcompare q_cmp,
+                          void (*filter)(void *, void *),
+                          void *user_data);
+
+HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end,
+                             unsigned long Qsize,
+                             Fcompare q_cmp,
+                             void (*filter)(void *, void *),
+                             void *user_data);
+
 int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data);
+int int_cmp(void *a, void *b, void *user_data);
 int reverseCompare(void *a, void *b, void *fun);
 
 #endif

@@ -1,15 +1,17 @@
 #include <glib.h>
-#include <Community.h>
+#include "Community.h"
 #include <date.h>
+#include "bArray.h"
 
 typedef struct TCD_community
 {
     GHashTable *userById;
 
     GHashTable *userByName;
-
+    bArray PostArray;
     GHashTable *post;
     GTree *treeP;
+
 } * TAD_community;
 
 /*
@@ -39,6 +41,29 @@ int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data)
     return 0;
 }
 
+static int post_src(void *a, void *b, void *garb)
+{ // Post, date.
+    Post x = (Post)a;
+
+    return date_compare(getP_date_point(x), (Date)b, NULL);
+}
+static int post_ord(const void *a, const void *b)
+{
+
+    Post an = *(Post *)a;
+    Post bn = *(Post *)b;
+
+    return (-1) * date_compare(getP_date_point(an), getP_date_point(bn), NULL);
+}
+
+int int_cmp(void *a, void *b, void *user_data)
+{
+    int *x = (int *)a;
+    int *y = (int *)b;
+
+    return (*y - *x);
+}
+
 void gen_free_date(void *d)
 {
     free_date((Date)d);
@@ -55,6 +80,8 @@ TAD_community init(void)
     x->post = g_hash_table_new_full(g_int_hash, g_int_equal, NULL, destroyPost);
 
     x->treeP = g_tree_new_full(date_compare, NULL, NULL, NULL);
+
+    x->PostArray = NULL;
     return x;
 }
 
@@ -67,6 +94,9 @@ TAD_community clean(TAD_community com)
     g_hash_table_destroy(com->post);
     g_tree_destroy(com->treeP);
 
+    if (com->PostArray)
+        destroy_A(com->PostArray);
+
     g_free(com);
 
     return com;
@@ -77,6 +107,39 @@ int reverseCompare(void *a, void *b, void *fun)
 
     Fcompare the_func = (Fcompare)fun;
     return (-1) * the_func(a, b, NULL);
+}
+
+void turnOn_array(TAD_community com, unsigned long n)
+{
+    com->PostArray = init_A(n, NULL);
+}
+void insert_array(TAD_community com, Post x)
+{
+    add_to_A(com->PostArray, (void *)x);
+}
+
+void finalize_array(TAD_community com)
+{
+    sort_A(com->PostArray, post_ord);
+}
+
+
+HEAP array_Priority_Queue(TAD_community com, unsigned long Qsize, Fcompare q_cmp, void (*filter)(void *, void *), void *user_data)
+{
+
+    return Generalized_Priority_Queue(com->PostArray, Qsize, q_cmp, filter, user_data);
+}
+
+HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end, unsigned long Qsize, Fcompare q_cmp, void (*filter)(void *, void *), void *user_data)
+{
+
+    return from_to_Priority_Queue(com->PostArray, begin, end, Qsize, q_cmp, post_src, filter, user_data);
+}
+
+void arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *, void *), void *user_data)
+{
+
+    for_each_from_to(com->PostArray, begin, end, functor, post_src, user_data);
 }
 
 // USER HASHTABLE;

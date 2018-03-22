@@ -12,6 +12,8 @@ void *createPost();
 void destroyPost(void *x);
 
 int post_compare(void *a, void *b, void *user_data);
+int score_cmp(void *a, void *b, void *user_data);
+
 
 // Post getters
 

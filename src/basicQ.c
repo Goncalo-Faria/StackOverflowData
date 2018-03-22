@@ -2,7 +2,6 @@
 //#include <stdlib.h>
 #include <glib.h>
 #include <string.h>
-#include "heap.h"
 #include "Community.h"
 #include <stdio.h>
 //#include "interface.h"
@@ -22,7 +21,6 @@ typedef struct contain
 
 // Métodos publicos.
 STR_pair info_from_post(TAD_community com, int id);                           //#1
-LONG_list top_most_active(TAD_community com, int N);                          //#2
 LONG_pair total_posts(TAD_community com, Date begin, Date end);               //#3
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end); //#6
 
@@ -38,39 +36,6 @@ static Container createContainer(Date begin, Date end)
     return x;
 }
 
-static int int_cmp(void *a, void *b, void *user_data)
-{
-    int *x = (int *)a;
-    int *y = (int *)b;
-
-    return (*y - *x);
-}
-
-static int np_cmp(void *a, void *b, void *user_data)
-{
-    Util x = (Util)a;
-    Util y = (Util)b;
-
-    int anum, bnum;
-
-    anum = (int)(getU_Q(x) + getU_A(x));
-    bnum = (int)(getU_Q(y) + getU_A(y));
-
-    return int_cmp(&anum, &bnum, user_data);
-}
-static int score_cmp(void *a, void *b, void *user_data)
-{
-    Post x = (Post)a;
-    Post y = (Post)b;
-
-    int anum, bnum;
-
-    anum = (int)(getP_score(x));
-    bnum = (int)(getP_score(y));
-
-    return int_cmp(&anum, &bnum, user_data);
-}
-
 static void heapify(void *key, void *value, void *user_data)
 {
     HEAP y = (HEAP)user_data;
@@ -78,10 +43,10 @@ static void heapify(void *key, void *value, void *user_data)
     add_Heap(y, value);
 }
 
-static int count(void *key, void *value, void *user_data)
+static int count(void *value, void *user_data)
 {
 
-    Date x = (Date)key;
+    Date x = (Date)getP_date_point((Post)value);
     Container box = (Container)user_data;
     LONG_pair k = (LONG_pair)box->spec;
     Post p = (Post)value;
@@ -107,23 +72,12 @@ static int count(void *key, void *value, void *user_data)
     return 0;
 }
 
-static int find_ans(void *key, void *value, void *user_data)
+static int is_A(void *value, void *user_data)
 {
 
-    Container box = (Container)user_data;
-    HEAP x = (HEAP)box->spec;
-    Post p = (Post)value;
-    Date pdate = (Date)key;
-
-    if (date_compare(pdate, box->dateB, NULL) >= 0 && date_compare(pdate, box->dateE, NULL) <= 0 && getP_type(p) == 2) // é resposta.
-        add_Heap(x, p);
-
-    // The tree is traversed in sorted order.
-    if (date_compare(pdate, box->dateE, NULL) > 0)
-        return 1;
-
-    return 0;
+    return (2 == getP_type((Post)value));
 }
+
 /*
 static int more_answer ( void *key , void*value , void* user_data ){
 
@@ -174,37 +128,6 @@ STR_pair info_from_post(TAD_community com, int id)
     return result;
 }
 
-// --2 FEITO
-LONG_list top_most_active(TAD_community com, int N)
-{
-    unsigned long i;
-
-    HEAP x = create_H(NULL, np_cmp, NULL); // não elimina conteudo.
-    LONG_list ll = create_list(N);
-    Util c;
-
-    userSet_id_transversal(com, heapify, (void *)x);
-    //
-    for (i = 0; i < N; i++)
-    {
-
-        if (!empty_H(x))
-        {
-
-            c = rem_Heap(x);
-            set_list(ll, i, (long)getU_id(c));
-        }
-        else
-        {
-
-            set_list(ll, i, 0);
-        }
-    }
-
-    destroy_H(x);
-    return ll;
-}
-
 // recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
 // estou a assumir que recebo uma AVL;
 
@@ -217,7 +140,9 @@ LONG_pair total_posts(TAD_community com, Date begin, Date end)
 
     // nao esta defenido por incompetencia (LONG_PAIR) xD !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    postTree_transversal(com, count, (void *)x);
+    //post_compare
+
+    arraySeg_transversal(com, begin, end, count, (void *)x);
 
     LONG_pair res = (LONG_pair)x->spec;
 
@@ -229,8 +154,6 @@ LONG_pair total_posts(TAD_community com, Date begin, Date end)
 // --4 precisamos da tag
 /*
 LONG_list questions_with_tag(TAD community com, char* tag, Date begin, Date end) {
-
-
 }
 */
 
@@ -239,35 +162,32 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end)
 {
     unsigned long i;
     LONG_list ll;
+    Date d;
     Post newp;
-    HEAP x = create_H(NULL, score_cmp, NULL); //
-    Container carrier = createContainer(begin, end);
-    carrier->spec = (void *)x;
+    HEAP x; //
 
-    postTree_transversal(com, find_ans, (void *)carrier);
+    x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, score_cmp, is_A, NULL);
 
     ll = create_list(N);
 
     for (i = 0; i < N; i++)
     {
-
         if (!empty_H(x))
         {
-
             newp = (Post)rem_Heap(x);
             //printf("num :: %d\n",num);
-            set_list(ll, i, (long)getP_id(newp));
+            d = getP_date_point(newp);
+
+            if (date_compare(d, begin, NULL) >= 0 && date_compare(d, end, NULL) <= 0) // no futuro poderá ser removida. <assim que o find for melhorado>
+                set_list(ll, i, (long)getP_id(newp));
         }
         else
         {
-
             set_list(ll, i, 0);
         }
     }
 
-    destroy_H(carrier->spec);
-    g_free(carrier);
-
+    destroy_H(x);
     return ll;
 }
 

@@ -1,7 +1,8 @@
 #include <glib.h>
 #include <string.h>
-#include "heap.h"
 #include "Community.h"
+
+#include "bArray.h"
 
 // Estruturas  privadas
 typedef struct record
@@ -12,7 +13,8 @@ typedef struct record
 /////
 
 // Métodos Publicos
-USER get_user_info(TAD_community com, long id); //#5
+USER get_user_info(TAD_community com, long id);                  //#5
+LONG_list top_most_active(TAD_community com, int N);             //#2
 
 // Métodos Privados.
 static Record createRecord(void *fs, void *sn)
@@ -93,4 +95,73 @@ USER get_user_info(TAD_community com, long id)
     g_free(carrier);
     destroy_H(pQ);
     return send;
+}
+static int yes( void* a , void* b ){
+    return 1;
+}
+
+static void make_pq( void* key , void* value ,void* user_data){
+    Record x = (Record) user_data;
+    char * flag = (char*)(x->snd);
+    bArray rd1;
+    HEAP rd2;
+
+    if( !*flag ){// ainda está no array.
+        rd1 = (bArray) x->fst; 
+        if( !is_full(rd1) ){//não está cheio o array
+            add_to_A(rd1, value);      
+
+        } else { // está cheio o array
+            rd2 = Generalized_Priority_Queue(rd1 , length_A(rd1), np_cmp, yes, NULL);
+            destroy_A(x);
+            *flag = 1 ;
+            x->fst = rd2;
+        }
+
+    } else { // já está na heap.
+        rd2 = (HEAP) x->fst;
+        add_in_Place_H(rd2,value);
+    }
+
+}
+// --2 FEITO
+LONG_list top_most_active(TAD_community com, int N)
+{
+    unsigned long i;
+    char* flag = malloc(sizeof(char));
+    Record x;
+    LONG_list ll;
+    Util c;
+    HEAP hp;
+    bArray extreme;
+
+    *flag = 0;
+    x = createRecord( init_A((unsigned long) N, NULL), flag );
+
+    userSet_id_transversal(com, make_pq , (void *)x);
+    ll= create_list(N);
+    //
+    //x contem    se x->snd ==1  HEAP
+    //x contem    se x->snd ==0  bArray
+
+    //
+
+    for (i = 0; i < N; i++)
+    {
+
+        if (!empty_H(x))
+        {
+
+            c = rem_Heap(x);
+            set_list(ll, i, (long)getU_id(c));
+        }
+        else
+        {
+
+            set_list(ll, i, 0);
+        }
+    }
+
+    destroy_H(x);
+    return ll;
 }

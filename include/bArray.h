@@ -7,7 +7,11 @@ typedef void (*freeFunc)(void *);
 /*
     Dados.
 */
-typedef int (*appFunc)(void *, void *);
+typedef int (*filterFunc)(void *, void *);
+/*
+    Dados /->userdata 
+*/
+typedef void (*appFunc)(void *, void *);
 /*
     Dados /->userdata 
 */
@@ -23,11 +27,27 @@ int add_to_A(bArray x, void *ele);
 void destroy_A(bArray x);
 void sort_A(bArray x, int (*cmp)(const void *, const void *));
 
-void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
-void for_each(bArray x, appFunc functor, void *user_data);
-HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp);
+int is_full(bArray x);
+unsigned long length_A( bArray x );
 
-HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord);
+void for_each_from_to(bArray x, void *begin, void *end,
+                      appFunc functor,
+                      cmpFunc alt_cmp,
+                      void *user_data);
+
+void for_each(bArray x, appFunc functor, void *user_data);
+
+HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize,
+                                cmpFunc q_cmp,
+                                filterFunc functor,
+                                void *user_data);
+
+HEAP from_to_Priority_Queue(bArray x, void *begin, void *end,
+                            unsigned long Qsize,
+                            cmpFunc q_cmp,
+                            cmpFunc ord,
+                            filterFunc functor,
+                            void *user_data);
 
 /*
 exemplo de como fazer a função de comparar para o sort ->

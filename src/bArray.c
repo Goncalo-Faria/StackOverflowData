@@ -9,19 +9,6 @@
 #define get_start(x, from, cmp) find(x, from, cmp, -1)
 #define get_end(x, from, cmp) find(x, from, cmp, 1)
 
-typedef void (*freeFunc)(void *);
-/*
-    Dados.
-*/
-typedef int (*appFunc)(void *, void *);
-/*
-    Dados /->userdata 
-*/
-typedef int (*cmpFunc)(void *, void *, void *);
-/*
-    Compare function.
-*/
-
 typedef struct brray
 {
 
@@ -44,15 +31,23 @@ void destroy_A(bArray x);
 void sort_A(bArray x, int (*cmp)(const void *, const void *));
 void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
 void for_each(bArray x, appFunc functor, void *user_data);
-HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord);
-HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp);
+HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord,filterFunc functor,void* user_data);
+HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp,filterFunc functor,void* user_data);
 
 // Privados
 static void fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data);
 static long find(bArray x, void *from, cmpFunc comp, int flag);
-static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp);
+static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp,filterFunc functor,void* user_data);
 
 // >>>>><
+
+int is_full(bArray x){
+    return full(x);
+}
+
+unsigned long length_A( bArray x ){
+    return x->use;
+}
 
 bArray init_A(unsigned long n, freeFunc dados)
 {
@@ -130,37 +125,35 @@ void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, Fcompar
 
 void for_each(bArray x, appFunc functor, void *user_data)
 {
-    
+
     for_each_from_to(x, NULL, NULL, functor, NULL, user_data);
 }
 
-HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord)
+HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord, filterFunc functor, void *user_data)
 {
-    long s,e;
+    long s, e;
     if (!x->ord)
         return NULL;
 
-    if(begin)
+    if (begin)
         s = get_start(x, begin, ord);
     else
         s = 0;
 
-    if(end)
+    if (end)
         e = get_end(x, end, ord);
-    else 
-        e = x->use-1;
+    else
+        e = x->use - 1;
 
     if (s == -1 || e == -1)
         return NULL;
-    
 
-    return GenP(x, (unsigned long)s, Qsize, (unsigned long)e - s, q_cmp);
+    return GenP(x, (unsigned long)s, Qsize, (unsigned long)e - s, q_cmp, functor,user_data);
 }
 
-HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp)
+HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp, filterFunc functor, void *user_data)
 {
-
-    return (GenP(ll, 0, Qsize, ll->use, q_cmp));
+    return GenP(ll, 0, Qsize, ll->use, q_cmp, functor, user_data);
 }
 
 static void fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data)
@@ -183,7 +176,7 @@ static long find(bArray x, void *from, cmpFunc comp, int flag)
 {
     long inicio, fim, meio;
     long res = 0;
-    
+
     if (!x->size || !x->ord || !from)
         return -1;
     else
@@ -230,7 +223,7 @@ static long find(bArray x, void *from, cmpFunc comp, int flag)
     return res;
 }
 
-static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp)
+static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp, filterFunc functor,void* user_data)
 {
 
     HEAP x;
@@ -254,7 +247,8 @@ static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned l
     x = create_fixed_H(the_v, Qsize, NULL, alt_cmp, NULL);
 
     for (i = Qsize; i < num_elem; i++)
-        add_in_Place_H(x, the_v[i]);
+        if( functor( the_v[i], user_data) )
+            add_in_Place_H(x, the_v[i]);
 
     return x;
 }
