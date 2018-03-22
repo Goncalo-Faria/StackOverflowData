@@ -1,8 +1,9 @@
 #include <glib.h>
 
 //#include <stdlib.h>
+//#include <string.h>
 #include "heap.h"
-#include <stdio.h>
+//#include <stdio.h>
 
 #define full(x) ((x)->use == (x)->len)
 #define quarter(x) (((x)->use * 4) <= (x)->len)
@@ -11,7 +12,6 @@
 
 typedef struct heap
 {
-
     ENTRY *v;
     unsigned long len;
     unsigned long use;
@@ -186,12 +186,13 @@ void add_in_Place_H(HEAP x, void *n)
     }
 }
 
+/*
 ENTRY *getDestroy_H(HEAP x, unsigned long *size)
 {
     ENTRY *v = x->v;
     Fcompare h = x->cmp;
-
     unsigned long i;
+
     *size = x->use;
     //destroy_H(x);
 
@@ -201,10 +202,11 @@ ENTRY *getDestroy_H(HEAP x, unsigned long *size)
         BubleDown(v, 0, *size - i - 1, h, x->user_data);
     }
 
-    destroy_H(x);
+    destroy_H(x); //ele ve o tipo antes.
     return v;
 }
-
+*/
+/*
 HEAP heapify_H(ENTRY *v, unsigned long n, Fcompare h, void *usr_d)
 {
     HEAP x = g_malloc(sizeof(struct heap));
@@ -223,6 +225,7 @@ HEAP heapify_H(ENTRY *v, unsigned long n, Fcompare h, void *usr_d)
 
     return x;
 }
+*/
 
 HEAP create_fixed_H(ENTRY *v, unsigned long n, freeFunc in_free, Fcompare h, void *usr_d)
 {
@@ -231,12 +234,10 @@ HEAP create_fixed_H(ENTRY *v, unsigned long n, freeFunc in_free, Fcompare h, voi
     x->dataCl = in_free;
     x->len = x->use = n;
     x->cmp = h;
-    x->type = 1;
-
-    x->v = malloc(sizeof(void *) * x->len);
-    mempcpy(x->v, v, sizeof(void *) * x->len);
-
+    x->type = 1; // must be erased
     x->user_data = usr_d;
+
+    x->v = g_memdup(v, sizeof(void *) * x->len); // duplicate
 
     // floyd algo.
 

@@ -1,10 +1,13 @@
 #include <bArray.h>
 #include <glib.h>
 
+#include <stdlib.h>
+//#include <stdio.h>
+
 #define full(x) (x->use == x->size)
 
-#define get_start(x, from) find(x, from, -1)
-#define get_end(x, from) find(x, from, 1)
+#define get_start(x, from, cmp) find(x, from, cmp, -1)
+#define get_end(x, from, cmp) find(x, from, cmp, 1)
 
 typedef void (*freeFunc)(void *);
 /*
@@ -25,40 +28,36 @@ typedef struct brray
     void **v;
     unsigned long size;
     unsigned long use;
-    cmpFunc a;
+    //cmpFunc a;
     freeFunc b;
 
-    void *user_data;
+    //void *user_data;
 
     int ord;
 
 } * bArray;
 
 // Métodos públicos.
-
-bArray init_A(unsigned long n, freeFunc dados, cmpFunc compare, void *user_data);
+bArray init_A(unsigned long n, freeFunc dados);
 int add_to_A(bArray x, void *ele);
 void destroy_A(bArray x);
-void sort_A(bArray x);
+void sort_A(bArray x, int (*cmp)(const void *, const void *));
+void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
 void for_each(bArray x, appFunc functor, void *user_data);
-void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, void *user_data);
+HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord);
+HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp);
 
-HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc alt_cmp);
-HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc alt_cmp);
-
-// Métodos privados.
+// Privados
 static void fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data);
-static long find(bArray x, void *from, int flag);
+static long find(bArray x, void *from, cmpFunc comp, int flag);
 static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp);
 
 // >>>>><
 
-bArray init_A(unsigned long n, freeFunc dados, cmpFunc compare, void *use)
+bArray init_A(unsigned long n, freeFunc dados)
 {
     bArray x = (bArray)g_malloc(sizeof(struct brray));
-    x->a = compare;
     x->b = dados;
-    x->user_data = use;
 
     x->v = (void **)g_malloc(sizeof(void *) * n);
     x->size = n;
@@ -72,6 +71,7 @@ int add_to_A(bArray x, void *ele)
 {
 
     freeFunc ff = x->b;
+    x->ord = 0;
     if (!full(x))
     {
         x->v[x->use++] = ele;
@@ -96,39 +96,30 @@ void destroy_A(bArray x)
     g_free(x);
 }
 
-int static inv(void *a, void *b, void *user_data)
+void sort_A(bArray x, int (*cmp)(const void *, const void *))
 {
 
-    Fcompare ur_data = (Fcompare)user_data;
-
-    return (-1) * ur_data(a, b, NULL);
-}
-
-void sort_A(bArray x)
-{
-
-    HEAP y = heapify_H(x->v, x->size, inv, (void *)x->a);
-    unsigned long num;
-
-    x->v = getDestroy_H(y, &num);
-
+    qsort(x->v, x->use, sizeof(void **), cmp);
     x->ord = 1;
 }
 
-void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, void *user_data)
+void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, Fcompare alt_cmp, void *user_data)
 {
     long s, e;
 
     if (x->ord)
     {
-        s = get_start(x, begin);
-        e = get_end(x, end);
         // tem que estar ordenado.
 
         if (!begin)
             s = 0;
+        else
+            s = get_start(x, begin, alt_cmp);
+
         if (!end)
             e = x->use - 1;
+        else
+            e = get_end(x, end, alt_cmp);
 
         if (s == -1 || e == -1)
             return;
@@ -139,26 +130,37 @@ void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, void *u
 
 void for_each(bArray x, appFunc functor, void *user_data)
 {
-
-    for_each_from_to(x, NULL, NULL, functor, user_data);
+    
+    for_each_from_to(x, NULL, NULL, functor, NULL, user_data);
 }
 
-HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc alt_cmp)
+HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord)
 {
+    long s,e;
+    if (!x->ord)
+        return NULL;
 
-    long s = get_start(x, begin);
-    long e = get_end(x, end);
+    if(begin)
+        s = get_start(x, begin, ord);
+    else
+        s = 0;
+
+    if(end)
+        e = get_end(x, end, ord);
+    else 
+        e = x->use-1;
 
     if (s == -1 || e == -1)
         return NULL;
+    
 
-    return GenP(x, (unsigned long)s, Qsize, (unsigned long)e - s, alt_cmp);
+    return GenP(x, (unsigned long)s, Qsize, (unsigned long)e - s, q_cmp);
 }
 
-HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc alt_cmp)
+HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp)
 {
 
-    return (GenP(ll, 0, Qsize, ll->use, alt_cmp));
+    return (GenP(ll, 0, Qsize, ll->use, q_cmp));
 }
 
 static void fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data)
@@ -177,12 +179,11 @@ static void fmap(bArray ll, unsigned long start, unsigned long n, appFunc functo
         functor(ll->v[i], user_data);
 }
 
-static long find(bArray x, void *from, int flag)
+static long find(bArray x, void *from, cmpFunc comp, int flag)
 {
     long inicio, fim, meio;
     long res = 0;
-    cmpFunc comp = (cmpFunc)x->a;
-
+    
     if (!x->size || !x->ord || !from)
         return -1;
     else
@@ -191,26 +192,23 @@ static long find(bArray x, void *from, int flag)
         inicio = 0;
         fim = x->use - 1;
 
-        if (comp(x->v[fim], from, x->user_data) && (flag == -1) > 0)
-            return -1;
-
         while (inicio < fim)
         {
 
             meio = (inicio + fim) / 2;
 
-            if (comp(x->v[meio], from, x->user_data) == 0)
+            if (comp(x->v[meio], from, NULL) == 0)
             {
                 res = meio;
                 break;
             }
 
-            else if (comp(x->v[meio], from, x->user_data) < 0)
+            else if (comp(x->v[meio], from, NULL) < 0)
             {
                 fim = meio - 1;
             }
 
-            else if (comp(x->v[meio], from, x->user_data) > 0)
+            else if (comp(x->v[meio], from, NULL) > 0)
             {
                 inicio = meio + 1;
                 // res = fim-1;
@@ -221,11 +219,12 @@ static long find(bArray x, void *from, int flag)
      * caso nao ecnontre e o elemento mais perto !=0 entao -> -1
      */
     res = meio;
+
     if (flag == -1)
-        while (!(comp(x->v[res], from, x->user_data) > 0) && res > 0)
+        while (!(comp(x->v[res], from, NULL) > 0) && res > 0)
             res--;
     else
-        while (!(comp(x->v[res], from, x->user_data) < 0) && res > 0)
+        while (!(comp(x->v[res], from, NULL) < 0) && res > 0)
             res++;
 
     return res;
@@ -237,30 +236,25 @@ static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned l
     HEAP x;
     unsigned long i;
     long r = ll->use - start;
-    void **the_v = ll->v;
+    ENTRY *the_v = ll->v;
 
     if (!alt_cmp)
-        alt_cmp = ll->a;
+        return NULL;
 
-    if (start + Qsize > ll->use)
+    if (start + Qsize > ll->use || Qsize <= 0)
     { // barco fora
         return NULL;
     }
 
     the_v = the_v + start;
 
-    if (num_elem >= r)
-    {
+    if (num_elem >= r) // os que quero sao maior que os disponiveis.
         num_elem = r;
-        x = create_fixed_H(ll->v + start, Qsize, ll->b, alt_cmp, ll->user_data);
-    }
-    else
-    {
-        return NULL;
-    }
+
+    x = create_fixed_H(the_v, Qsize, NULL, alt_cmp, NULL);
 
     for (i = Qsize; i < num_elem; i++)
-        add_in_Place_H(x, ll->v[i]);
+        add_in_Place_H(x, the_v[i]);
 
     return x;
 }
