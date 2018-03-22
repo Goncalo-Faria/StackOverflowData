@@ -44,17 +44,6 @@ Post createPost()
 	return x;
 }
 
-Post create_array ( Post x , unsigned long t , char **strings  ) {
-	int i;
-	bArray a = initA( t , g_free );
-	for (i=0; i <t ; i++) {
-		add_to_A( t , (char *) *string );
-		(**strings)++;
-	}
-	x->tags = a;
-	return p;
-}
-
 
 void destroyPost(void *x)
 {

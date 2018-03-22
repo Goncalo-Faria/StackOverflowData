@@ -218,8 +218,10 @@ USER get_user_info(TAD_community com, long id)
     long post_history[10];
     char *short_bio = NULL;
     int i;
+
     Post the_post;
     USER send;
+    Record rd;
 
     *flag = 0;
 
@@ -232,24 +234,32 @@ USER get_user_info(TAD_community com, long id)
     
     short_bio = (char *)getU_bio(x);
 
-    dt = createRecord( (void*)init_A(10, NULL) , (void *)com);
     // x->bio;
     toBacia_transversal(x, collect_top10, carrier);//
 
+    rd = (Record)carrier->fst;
+
+    if( (*(char*)carrier->snd) == 1 ){    
+        hp = (HEAP)rd->fst;
+
+    } else {
+        extreme = (bArray)rd->fst;
+        hp = Generalized_Priority_Queue( extreme , length_A(extreme), post_cmp, yes, NULL);
+        destroy_A(extreme);
+    }
     //->>>>
 
     for (i = 0; i < 10; i++)
     { // vai do novo para o velho. (cronologia inversa)
 
-        if (!empty_H(pQ))
+        if (!empty_H(hp))
         {
 
-            the_post = (Post)rem_Heap(pQ);
+            the_post = (Post)rem_Heap(hp);
             post_history[i] = (long)getP_id(the_post);
         }
         else
         {
-
             post_history[i] = 0;
         }
     }
@@ -257,7 +267,11 @@ USER get_user_info(TAD_community com, long id)
     send = create_user(short_bio, post_history);
 
     g_free(short_bio);
+
+    g_free(carrier->fst);
     g_free(carrier);
-    destroy_H(pQ);
+    
+    destroy_H(hp);
+    
     return send;
 }
