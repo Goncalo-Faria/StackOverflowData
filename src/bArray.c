@@ -254,7 +254,7 @@ static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned l
 
     for (i = Qsize; i < num_elem; i++)
         if (functor(the_v[i], user_data))
-            add_in_Place_H(x, the_v[i]);
+            x = add_in_Place_H(x, the_v[i]);
 
     return x;
 }

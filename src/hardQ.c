@@ -65,7 +65,7 @@ static void collect_top10(void *key, void *value, void *user_data)
         rd1 = (bArray)rd->fst;
         if (!is_full(rd1))
         { //não está cheio o array
-            add_to_A(rd1, pub);
+            rd1 = add_to_A(rd1, pub);
         }
         else
         { // está cheio o array
@@ -77,7 +77,7 @@ static void collect_top10(void *key, void *value, void *user_data)
     } else {//heap
 
         rd2 = (HEAP)rd->fst;
-        add_in_Place_H(rd2, pub);
+        rd2 = add_in_Place_H(rd2, pub);
 
     }
 }
@@ -142,7 +142,7 @@ static void make_pq(void *key, void *value, void *user_data)
         rd1 = (bArray)x->fst;
         if (!is_full(rd1))
         { //não está cheio o array
-            add_to_A(rd1, value);
+            rd1 = add_to_A(rd1, value);
         }
         else
         { // está cheio o array
@@ -155,7 +155,7 @@ static void make_pq(void *key, void *value, void *user_data)
     else
     { // já está na heap.
         rd2 = (HEAP)x->fst;
-        add_in_Place_H(rd2, value);
+        rd2 = add_in_Place_H(rd2, value);
     }
 }
 // --2 FEITO
@@ -172,7 +172,7 @@ LONG_list top_most_active(TAD_community com, int N)
     *flag = 0;
     x = createRecord(init_A((unsigned long)N, NULL), flag);
 
-    userSet_id_transversal(com, make_pq, (void *)x);
+    x = userSet_id_transversal(com, make_pq, (void *)x);
     ll = create_list(N);
     //
 
@@ -238,7 +238,7 @@ USER get_user_info(TAD_community com, long id)
     short_bio = (char *)getU_bio(x);
 
     // x->bio;
-    toBacia_transversal(x, collect_top10, carrier);//
+    carrier = toBacia_transversal(x, collect_top10, carrier);//
 
     rd = (Record)carrier->fst;
 
