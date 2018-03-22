@@ -29,7 +29,7 @@ static void null_check ( void * x ){
 
 // create -- destroy -- getters (P e respostas)
 
-void *createUtil(){
+Util *createUtil(){
 	Util x = g_malloc (sizeof (struct utilizador));
 	x->name =NULL;
 	x->bio =NULL;
@@ -121,42 +121,46 @@ unsigned char* getU_bio(Util x){
 
 //Util setters
 
-void incU_Q(Util x){
+Util incU_Q(Util x){
 	x->Q++;
+	return x;
 }
 
-void incU_A(Util x){
+Util incU_A(Util x){
 	x->A++;
+	return x;
 }
 
-void setU_id( Util x, unsigned long num ){
+Util setU_id( Util x, unsigned long num ){
 
 	unsigned long * tmp = x->id;
 	*tmp = num ;
+	return x;
 }
 
-void setU_name(Util x, const unsigned char* un ){
+Util setU_name(Util x, const unsigned char* un ){
 	
 	null_check(x->name);
 	x->name =  g_malloc(sizeof( unsigned char)*(strlen((const char*)un ) + 1 )); 
 	strcpy(( char*)x->name,(const char*) un);
+	return x;
 }
 
-void setU_bio(Util x, const unsigned char* un){
+Util setU_bio(Util x, const unsigned char* un){
 	null_check(x->bio);
 	x->bio =  g_malloc(sizeof(unsigned char)*(strlen((const char*) un ) + 1 )); 
 	strcpy(( char*)x->bio,(const char*) un);
+	return x;
 }
 
 
-
-
-void add_toBacia(Util x, unsigned int * id , void * dados ){
-    
+Util add_toBacia(Util x, unsigned int * id , void * dados ){    
     g_hash_table_insert( x->bacia , (void*) id , dados );
+    return x;
 }
 
-int belongs_toBacia ( Util x , unsigned int Parent_id, char flag ){ // O que acontece na eventualidade de 2 ter uma resposta no post que criou? em datas diferentes.
+// O que acontece na eventualidade de 2 ter uma resposta no post que criou? em datas diferentes.
+int belongs_toBacia ( Util x , unsigned int Parent_id, char flag ){ 
     
 	GHashTable* set = x->bacia;
 	// flag == 1; meens Q.
@@ -189,7 +193,7 @@ void toBacia_transversal( Util x, void (*f)(void*, void*, void*) ,void* y){
 	
 }
 
-void bind_toBacia( Util x, Post y ){
+Util bind_toBacia( Util x, Post y ){
 
     int flag;
     unsigned int tmpid = getP_id(y),tmppr;
@@ -214,4 +218,5 @@ void bind_toBacia( Util x, Post y ){
         }
         
     }
+    return x;
 }

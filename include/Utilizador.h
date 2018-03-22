@@ -10,7 +10,7 @@ typedef struct utilizador *Util;
 #define A_belongs_hash(user, id) belongs_toBacia(user, id, 2)
 
 // create a new util
-void *createUtil();
+Util *createUtil();
 
 //destroy some specify post
 void destroyUtil(void *x);
@@ -38,17 +38,17 @@ unsigned char *getU_bio(Util x);
 
 //Util setters
 
-void incU_Q(Util x);
+Util incU_Q(Util x);
 
-void incU_A(Util x);
+Util incU_A(Util x);
 
-void setU_id(Util x, unsigned long num);
+Util setU_id(Util x, unsigned long num);
 
-void setU_name(Util x, const unsigned char *un);
+Util setU_name(Util x, const unsigned char *un);
 
-void setU_bio(Util x, const unsigned char *un);
+Util setU_bio(Util x, const unsigned char *un);
 
-void add_toBacia(Util x, unsigned int *id, void *dados);
+Util add_toBacia(Util x, unsigned int *id, void *dados);
 
 //Functions
 
@@ -60,6 +60,6 @@ void toBacia_transversal(Util x, void (*f)(void *, void *, void *), void *y);
 
 unsigned int *toBacia_lookup(Util x, unsigned int Parent_id);
 
-void bind_toBacia(Util x, Post y);
+Util bind_toBacia(Util x, Post y);
 
 #endif

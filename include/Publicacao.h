@@ -14,6 +14,8 @@ void destroyPost(void *x);
 int post_compare(void *a, void *b, void *user_data);
 int score_cmp(void *a, void *b, void *user_data);
 
+//cria o especifico arrays com as tags
+Post create_array ( Post p , unsigned long x , char **strings);
 
 // Post getters
 
@@ -40,22 +42,22 @@ Date getP_date_point(Post x);
 Date getP_date(Post x);
 
 // Post setters
-void setP_id(Post x, unsigned int o);
+Post setP_id(Post x, unsigned int o);
 
-void setP_parentId(Post x, unsigned int o);
+Post setP_parentId(Post x, unsigned int o);
 
-void setP_fund(Post x, long f);
+Post setP_fund(Post x, long f);
 
-void incP_ansCount(Post x);
+Post incP_ansCount(Post x);
 
-void setP_name(Post x, const unsigned char *un);
+Post setP_name(Post x, const unsigned char *un);
 
-void setP_score(Post x, unsigned int s);
+Post setP_score(Post x, unsigned int s);
 
-void setP_type(Post x, unsigned char t);
+Post setP_type(Post x, unsigned char t);
 
-void setP_id(Post x, unsigned int o);
+Post setP_id(Post x, unsigned int o);
 
-void setP_date(Post x, int d, int m, int a);
+Post setP_date(Post x, int d, int m, int a);
 
 #endif

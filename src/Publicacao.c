@@ -3,6 +3,7 @@
 #include "interface.h"
 #include <glib.h>
 #include "Community.h"
+#include "bArray.h"
 //#include <stdio.h>
 //#include "date.h"
 
@@ -12,11 +13,10 @@ typedef struct post
 	unsigned long fundador;
 	unsigned char *name;
 	unsigned int score;
-
 	// Either.
 	unsigned char type; // 1 Q ; 2 A;
 	void *special;		// parent Id. // answer count.
-
+	bArray *tags;
 	Date moment;
 
 } * Post;
@@ -29,7 +29,7 @@ static void null_check(void *x)
 
 // Métodos publicos.
 
-void *createPost()
+Post createPost()
 {
 	Post x = g_malloc(sizeof(struct post));
 	x->name = NULL;
@@ -40,8 +40,21 @@ void *createPost()
 	x->special = NULL;
 	//x->data = g_malloc (sizeof(struct date));
 	x->moment = createDate(0, 0, 0);
+	x->tags = NULL;
 	return x;
 }
+
+Post create_array ( Post x , unsigned long t , char **strings  ) {
+	int i;
+	bArray a = initA( t , g_free );
+	for (i=0; i <t ; i++) {
+		add_to_A( t , (char *) *string );
+		(**strings)++;
+	}
+	x->tags = a;
+	return p;
+}
+
 
 void destroyPost(void *x)
 {
@@ -158,13 +171,14 @@ Date getP_date(Post x)
 
 // Post setters
 
-void setP_id(Post x, unsigned int o)
+Post setP_id(Post x, unsigned int o)
 {
 	unsigned int *y = x->id;
 	*y = o;
+	return x;
 }
 
-void setP_parentId(Post x, unsigned int o)
+Post setP_parentId(Post x, unsigned int o)
 {
 	unsigned int *y;
 
@@ -179,9 +193,10 @@ void setP_parentId(Post x, unsigned int o)
 		y = x->special;
 		*y = (unsigned int)o;
 	}
+	return x;
 }
 
-void incP_ansCount(Post x)
+Post incP_ansCount(Post x)
 {
 	unsigned int *y;
 
@@ -200,34 +215,44 @@ void incP_ansCount(Post x)
 			*y = *y + 1;
 		}
 	}
+	return x;
 }
 
-void setP_date(Post x, int d, int m, int a)
+Post setP_date(Post x, int d, int m, int a)
 {
 
 	free_date(x->moment);
 	x->moment = createDate(d, m, a);
+	return x;
 }
 
-void setP_fund(Post x, long f)
+Post setP_fund(Post x, long f)
 {
 	x->fundador = f;
+	return x;
 }
 
-void setP_name(Post x, const unsigned char *un)
+Post setP_name(Post x, const unsigned char *un)
 {
 
 	null_check(x->name);
 	x->name = g_malloc(sizeof(unsigned char) * (strlen((const char *)un) + 1));
 	strcpy((char *)x->name, (const char *)un);
+	return x;
 }
 
-void setP_score(Post x, unsigned int s)
+Post setP_score(Post x, unsigned int s)
 {
 	x->score = s;
+	return x;
 }
 
-void setP_type(Post x, unsigned char t)
+Post setP_type(Post x, unsigned char t)
 {
 	x->type = t;
+	return x;
 }
+
+
+
+
