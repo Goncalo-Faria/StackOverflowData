@@ -10,7 +10,6 @@ typedef struct TCD_community
     GHashTable *userByName;
     bArray PostArray;
     GHashTable *post;
-    GTree *treeP;
 
 } * TAD_community;
 
@@ -71,8 +70,6 @@ TAD_community init(void)
 
     x->post = g_hash_table_new_full(g_int_hash, g_int_equal, NULL, destroyPost);
 
-    x->treeP = g_tree_new_full(date_compare, NULL, NULL, NULL);
-
     x->PostArray = NULL;
     return x;
 }
@@ -84,7 +81,6 @@ TAD_community clean(TAD_community com)
     g_hash_table_destroy(com->userByName);
 
     g_hash_table_destroy(com->post);
-    g_tree_destroy(com->treeP);
 
     if (com->PostArray)
         destroy_A(com->PostArray);
@@ -197,18 +193,4 @@ unsigned int postSet_size(TAD_community com)
 {
 
     return g_hash_table_size(com->post);
-}
-// POST BALANCED TREE;
-
-void postTree_insert(TAD_community com, Date key, Post x)
-{
-
-    return g_tree_insert(com->treeP, (void *)key, (void *)x);
-}
-
-void* postTree_transversal(TAD_community com, int (*f)(void *, void *, void *), void *x)
-{ // eliminar
-
-    g_tree_foreach(com->treeP, f, x);
-    return x;
 }

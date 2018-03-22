@@ -30,9 +30,6 @@ void* postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), 
 unsigned int postSet_size(TAD_community com);
 
 // POST BALANCED TREE;
-// estás funções terão de ser substituidas assim que a AVL esteja terminada.
-void postTree_insert(TAD_community com, Date key, Post x);
-void* postTree_transversal(TAD_community com, int (*f)(void *, void *, void *), void *x);
 
 void turnOn_array(TAD_community com, unsigned long n);
 void insert_array(TAD_community com, Post x);
@@ -45,13 +42,13 @@ void* arraySeg_transversal(TAD_community com, Date begin, Date end,
 HEAP array_Priority_Queue(TAD_community com,
                           unsigned long Qsize,
                           Fcompare q_cmp,
-                          void (*filter)(void *, void *),
+                          int (*filter)(void *, void *),
                           void *user_data);
 
 HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end,
                              unsigned long Qsize,
                              Fcompare q_cmp,
-                             void (*filter)(void *, void *),
+                             int (*filter)(void *, void *),
                              void *user_data);
 
 int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data);

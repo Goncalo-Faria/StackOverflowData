@@ -36,7 +36,7 @@ static Container createContainer(Date begin, Date end)
     return x;
 }
 
-static int count(void *value, void *user_data)
+static void count(void *value, void *user_data)
 {
 
     Date x = (Date)getP_date_point((Post)value);
@@ -58,11 +58,6 @@ static int count(void *value, void *user_data)
             inc_snd_long(k); // não é Questão.
     }
 
-    // The tree is traversed in sorted order.
-    if (date_compare(x, box->dateE, NULL) > 0)
-        return 1;
-
-    return 0;
 }
 
 static int is_A(void *value, void *user_data)
