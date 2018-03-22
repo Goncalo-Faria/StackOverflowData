@@ -39,7 +39,7 @@ void insert_array(TAD_community com, Post x);
 void finalize_array(TAD_community com);
 
 void arraySeg_transversal(TAD_community com, Date begin, Date end,
-                          void (*functor)(void *, void *, void *),
+                          void (*functor)(void *, void *),
                           void *user_data);
 
 HEAP array_Priority_Queue(TAD_community com,

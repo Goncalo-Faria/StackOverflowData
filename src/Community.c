@@ -136,7 +136,7 @@ HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end, unsigned l
     return from_to_Priority_Queue(com->PostArray, begin, end, Qsize, q_cmp, post_src, filter, user_data);
 }
 
-void arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *, void *), void *user_data)
+void arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *), void *user_data)
 {
 
     for_each_from_to(com->PostArray, begin, end, functor, post_src, user_data);
