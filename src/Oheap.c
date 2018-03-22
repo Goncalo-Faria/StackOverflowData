@@ -139,13 +139,14 @@ static void BubleDown(ENTRY *v, unsigned long i, unsigned long N, Fcompare h, vo
     }
 }
 
-void add_Heap(HEAP x, void *n)
+HEAP add_Heap(HEAP x, void *n)
 {
 
     if (full(x))
         tabledouble(x);
     x->v[x->use++] = n;
     BubleUp(x->v, x->use - 1, x->cmp, x->user_data);
+    return x;
 }
 
 void *rem_Heap(HEAP x)
@@ -166,7 +167,7 @@ void *rem_Heap(HEAP x)
     return NULL;
 }
 
-void add_in_Place_H(HEAP x, void *n)
+HEAP add_in_Place_H(HEAP x, void *n)
 { // no topo tem o máximo.
 
     if (x->cmp(x->v[0], n, x->user_data) > 0)
@@ -184,6 +185,8 @@ void add_in_Place_H(HEAP x, void *n)
         if (x->dataCl)
             x->dataCl(n);
     }
+
+    return x;
 }
 
 /*

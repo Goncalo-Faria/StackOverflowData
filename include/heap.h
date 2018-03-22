@@ -20,14 +20,14 @@ HEAP create_fixed_H(ENTRY *v, unsigned long n, freeFunc in_free, Fcompare h, voi
 void destroy_H(HEAP x);
 //ENTRY *getDestroy_H(HEAP x, unsigned long *size);
 
-void add_Heap(HEAP x, void *n);
+HEAP add_Heap(HEAP x, void *n);
 void *rem_Heap(HEAP x);
-void add_in_Place_H(HEAP x, void *n);
+HEAP add_in_Place_H(HEAP x, void *n);
 
 //HEAP heapify_H(ENTRY *v, unsigned long n, Fcompare h, void *usr_d);
 int empty_H(HEAP x);
 unsigned long length_H(HEAP x);
-
+/*
 typedef struct beap *BEAP;
 
 BEAP create_B(unsigned long N, freeFunc in_free, Fcompare ff, ENTRY *g, void *usr_d);
@@ -39,5 +39,5 @@ void addInplace_Beap(BEAP x, void *n);
 int empty_B(BEAP x);
 unsigned long length_B(BEAP x);
 unsigned long Capacity_B(BEAP x);
-
+*/
 #endif

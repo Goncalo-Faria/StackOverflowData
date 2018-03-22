@@ -26,16 +26,16 @@ typedef struct brray
 
 // Métodos públicos.
 bArray init_A(unsigned long n, freeFunc dados);
-int add_to_A(bArray x, void *ele);
+bArray add_to_A(bArray x, void *ele);
 void destroy_A(bArray x);
-void sort_A(bArray x, int (*cmp)(const void *, const void *));
-void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
-void for_each(bArray x, appFunc functor, void *user_data);
+bArray sort_A(bArray x, int (*cmp)(const void *, const void *));
+void* for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
+void* for_each(bArray x, appFunc functor, void *user_data);
 HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord, filterFunc functor, void *user_data);
 HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp, filterFunc functor, void *user_data);
 
 // Privados
-static void fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data);
+static void* fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data);
 static long find(bArray x, void *from, cmpFunc comp, int flag);
 static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp, filterFunc functor, void *user_data);
 
@@ -64,7 +64,7 @@ bArray init_A(unsigned long n, freeFunc dados)
     return x;
 }
 
-int add_to_A(bArray x, void *ele)
+bArray add_to_A(bArray x, void *ele)
 {
 
     freeFunc ff = x->b;
@@ -72,12 +72,12 @@ int add_to_A(bArray x, void *ele)
     if (!full(x))
     {
         x->v[x->use++] = ele;
-        return 1;
+        return x;
     }
     if (ff)
         ff(ele);
 
-    return 0;
+    return x;
 }
 
 void destroy_A(bArray x)
@@ -93,14 +93,15 @@ void destroy_A(bArray x)
     g_free(x);
 }
 
-void sort_A(bArray x, int (*cmp)(const void *, const void *))
+bArray sort_A(bArray x, int (*cmp)(const void *, const void *))
 {
 
     qsort(x->v, x->use, sizeof(void **), cmp);
     x->ord = 1;
+    return x;
 }
 
-void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, Fcompare alt_cmp, void *user_data)
+void* for_each_from_to(bArray x, void *begin, void *end, appFunc functor, Fcompare alt_cmp, void *user_data)
 {
     long s, e;
 
@@ -119,16 +120,17 @@ void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, Fcompar
             e = get_end(x, end, alt_cmp);
 
         if (s == -1 || e == -1)
-            return;
+            return x;
 
-        fmap(x, (unsigned long)s, (unsigned long)(e - s), functor, user_data);
+        return fmap(x, (unsigned long)s, (unsigned long)(e - s), functor, user_data);
     }
+    return x;
 }
 
-void for_each(bArray x, appFunc functor, void *user_data)
+void* for_each(bArray x, appFunc functor, void *user_data)
 {
 
-    for_each_from_to(x, NULL, NULL, functor, NULL, user_data);
+    return for_each_from_to(x, NULL, NULL, functor, NULL, user_data);
 }
 
 HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord, filterFunc functor, void *user_data)
@@ -158,20 +160,22 @@ HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp, f
     return GenP(ll, 0, Qsize, ll->use, q_cmp, functor, user_data);
 }
 
-static void fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data)
+static void* fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data)
 {
 
     unsigned long i;
     unsigned long sum = start + n;
 
     if (start >= ll->use || !ll->ord)
-        return;
+        return user_data;
 
     if (start + n > ll->use)
         sum = ll->use;
 
     for (i = start; i < sum; i++)
         functor(ll->v[i], user_data);
+
+    return user_data;
 }
 
 static long find(bArray x, void *from, cmpFunc comp, int flag)

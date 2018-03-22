@@ -208,7 +208,7 @@ Util bind_toBacia( Util x, Post y ){
     if( getP_type(y) == 1 ){ // Questão. y post x user
         //printf("Works bro!\n");
         if ( !Q_belongs_hash(x , tmpid  ) )// verifica se existe!
-            add_toBacia(x , getP_id_point(y) , NULL );
+            x = add_toBacia(x , getP_id_point(y) , NULL );
 
     } 
     if( getP_type(y) == 2 ){
@@ -217,11 +217,11 @@ Util bind_toBacia( Util x, Post y ){
 		tmppr = getP_parentId( y );
         flag = A_belongs_hash(x ,tmppr );
         if ( ! flag  )// não existe
-            add_toBacia(x , getP_parentId_point(y) ,  getP_id_point(y) );
+            x = add_toBacia(x , getP_parentId_point(y) ,  getP_id_point(y) );
         
         if( flag == 2 ){
 			g_hash_table_remove( x->bacia , &tmppr );
-			add_toBacia(x , getP_parentId_point(y) ,  getP_id_point(y) );
+			x = add_toBacia(x , getP_parentId_point(y) ,  getP_id_point(y) );
         }
         
     }

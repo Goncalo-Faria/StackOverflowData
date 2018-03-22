@@ -23,19 +23,19 @@ typedef int (*cmpFunc)(void *, void *, void *);
 typedef struct brray *bArray;
 
 bArray init_A(unsigned long n, freeFunc dados);
-int add_to_A(bArray x, void *ele);
+bArray add_to_A(bArray x, void *ele);
 void destroy_A(bArray x);
-void sort_A(bArray x, int (*cmp)(const void *, const void *));
+bArray sort_A(bArray x, int (*cmp)(const void *, const void *));
 
 int is_full(bArray x);
-unsigned long length_A( bArray x );
+unsigned long length_A(bArray x);
 
-void for_each_from_to(bArray x, void *begin, void *end,
+void* for_each_from_to(bArray x, void *begin, void *end,
                       appFunc functor,
                       cmpFunc alt_cmp,
                       void *user_data);
 
-void for_each(bArray x, appFunc functor, void *user_data);
+void* for_each(bArray x, appFunc functor, void *user_data);
 
 HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize,
                                 cmpFunc q_cmp,

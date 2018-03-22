@@ -21,7 +21,8 @@
 #define convert_to_lowercase(p, str)       \
     for ((p) = (str); *(p) != '\0'; (p)++) \
     *(p) = tolower(*(p))
-typedef void (*parse_function)(TAD_community, const xmlNode *);
+
+typedef TAD_community (*parse_function)(TAD_community, const xmlNode *);
 
 // Métodos publicos.
 //TAD_community init();
@@ -30,10 +31,10 @@ typedef void (*parse_function)(TAD_community, const xmlNode *);
 
 // Métodos privados.
 //static void parsePost( TAD_community com, xmlNode * node);
-static void parseUser(TAD_community com, const xmlNode *node);
-static void parser(TAD_community com, char *dump_path, char *file_name, parse_function f);
-static void parsePost(TAD_community com, const xmlNode *node);
-static void parseHistory(TAD_community com, const xmlNode *node);
+static TAD_community parseUser(TAD_community com, const xmlNode *node);
+static TAD_community parser(TAD_community com, char *dump_path, char *file_name, parse_function f);
+static TAD_community parsePost(TAD_community com, const xmlNode *node);
+static TAD_community parseHistory(TAD_community com, const xmlNode *node);
 //
 
 // recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
@@ -53,18 +54,18 @@ TAD_community load(TAD_community com, char *dump_path)
     //Post x;
 
     //unsigned char* bio,*name;
-    parser(com, dump_path, "Users", parseUser);
+    com = parser(com, dump_path, "Users", parseUser);
     printf("Number of users loaded ::%d \n", userSet_size(com));
-    parser(com, dump_path, "Posts", parsePost);
+    com = parser(com, dump_path, "Posts", parsePost);
     printf("Number of posts loaded ::%d \n", postSet_size(com));
 
     //->
     turnOn_array( com,(unsigned long)postSet_size(com));
-    postSet_transversal(com ,adder , com);
+    com = postSet_transversal(com ,adder , com);
     finalize_array(com);
     //->
 
-    parser(com, dump_path, "PostHistory", parseHistory);
+    com = parser(com, dump_path, "PostHistory", parseHistory);
     printf("\n.. Loading Terminaterd ..\n");
 
     /*
@@ -112,7 +113,7 @@ TAD_community load(TAD_community com, char *dump_path)
     return com;
 }
 
-static void parser(TAD_community com, char *dump_path, char *file_name, parse_function f)
+static TAD_community parser(TAD_community com, char *dump_path, char *file_name, parse_function f)
 {
 
     xmlDoc *doc = NULL;
@@ -137,7 +138,7 @@ static void parser(TAD_community com, char *dump_path, char *file_name, parse_fu
     {
         perror("Documento vazio.\n");
         xmlFreeDoc(doc);
-        return;
+        return com;
     }
     node = root_element;
     strcpy(docname, file_name);
@@ -147,7 +148,7 @@ static void parser(TAD_community com, char *dump_path, char *file_name, parse_fu
     {
         perror("Documento do tipo errado.\n");
         xmlFreeDoc(doc);
-        return;
+        return com;
     }
     node = node->xmlChildrenNode;
 
@@ -159,7 +160,7 @@ static void parser(TAD_community com, char *dump_path, char *file_name, parse_fu
         if ((!xmlStrcmp(node->name, (const xmlChar *)"row")))
         {
             //perror("->alivde\n");
-            f(com, node);
+            com = f(com, node);
         }
         node = node->next;
     }
@@ -169,10 +170,10 @@ static void parser(TAD_community com, char *dump_path, char *file_name, parse_fu
 
     xmlCleanupParser();
     xmlMemoryDump();
-    return;
+    return com;
 }
 
-static void parsePost(TAD_community com, const xmlNode *node)
+static TAD_community parsePost(TAD_community com, const xmlNode *node)
 {
 
     xmlChar *hold;
@@ -186,7 +187,7 @@ static void parsePost(TAD_community com, const xmlNode *node)
     // GET POST ID <LONG> getatr( hold , n , str )
 
     getAtr(hold, node, "Id");
-    setP_id(x, (unsigned int)atoi((const char *)hold));
+    x = setP_id(x, (unsigned int)atoi((const char *)hold));
     xmlFree(hold);
 
     // printf( " id: : %d \n",getP_id(x) );
@@ -195,29 +196,29 @@ static void parsePost(TAD_community com, const xmlNode *node)
     getAtr(hold, node, "CreationDate");
     sscanf((const char *)hold, "%d-%d-%d%s", &ano, &mes, &dia, buffer);
     xmlFree(hold);
-    setP_date(x, dia, mes, ano);
+    x = setP_date(x, dia, mes, ano);
 
     // GET POST TYPE
     getAtr(hold, node, "PostTypeId");
-    setP_type(x, (unsigned char)atoi((const char *)hold));
+    x = setP_type(x, (unsigned char)atoi((const char *)hold));
     xmlFree(hold);
 
     if (getP_type(x) > 2)
     {
         //printf("trigger\n");
         destroyPost(x);
-        return;
+        return com;
     }
 
     if (getP_type(x) == 2)
     { // ans
         getAtr(hold, node, "ParentId");
-        setP_parentId(x, (unsigned int)atoi((const char *)hold));
+        x = setP_parentId(x, (unsigned int)atoi((const char *)hold));
         xmlFree(hold);
     }
     // ADD SCORE.
     getAtr(hold, node, "Score");
-    setP_score(x, (int)atoi((const char *)hold));
+    x = setP_score(x, (int)atoi((const char *)hold));
     //printf("%s\n",(char*)hold);
     xmlFree(hold);
 
@@ -227,14 +228,14 @@ static void parsePost(TAD_community com, const xmlNode *node)
     getAtr(hold, node, "Title");
     if (hold)
     {
-        setP_name(x, (unsigned char *)hold);
+        x = setP_name(x, (unsigned char *)hold);
         xmlFree(hold);
     }
 
-    postSet_insert(com, getP_id_point(x), x);
+    return postSet_insert(com, getP_id_point(x), x);
 }
 
-static void parseUser(TAD_community com, const xmlNode *node)
+static TAD_community parseUser(TAD_community com, const xmlNode *node)
 {
 
     xmlChar *hold = NULL;
@@ -247,7 +248,7 @@ static void parseUser(TAD_community com, const xmlNode *node)
     // get user id
 
     getAtr(hold, node, "Id");
-    setU_id(x, (unsigned long)atol((const char *)hold));
+    x = setU_id(x, (unsigned long)atol((const char *)hold));
     xmlFree(hold);
 
     // GET UTIL BIO
@@ -255,22 +256,22 @@ static void parseUser(TAD_community com, const xmlNode *node)
 
     if (hold)
     {
-        setU_bio(x, (unsigned char *)hold);
+        x = setU_bio(x, (unsigned char *)hold);
         //printf("%s \n",(char*)hold);
         xmlFree(hold);
     }
 
     // get Display name
     getAtr(hold, node, "DisplayName");
-    setU_name(x, (unsigned char *)hold);
+    x = setU_name(x, (unsigned char *)hold);
     xmlFree(hold);
 
-    userSet_insert_id(com, getU_id_point(x), x);
-    userSet_insert_name(com, getU_name_point(x), x);
-    return;
+    com = userSet_insert_id(com, getU_id_point(x), x);
+    com = userSet_insert_name(com, getU_name_point(x), x);
+    return com;
 }
 
-static void parseHistory(TAD_community com, const xmlNode *node)
+static TAD_community parseHistory(TAD_community com, const xmlNode *node)
 {
 
     xmlChar *hold = NULL;
@@ -286,7 +287,7 @@ static void parseHistory(TAD_community com, const xmlNode *node)
     xmlFree(hold);
 
     if (hType != 1)
-        return;
+        return com;
 
     getAtr(hold, node, "UserId");
     if (hold)
@@ -296,7 +297,7 @@ static void parseHistory(TAD_community com, const xmlNode *node)
 
         x = userSet_id_lookup(com, userId);
         if (!x)
-            return;
+            return com;
     }
     else
     {
@@ -306,7 +307,7 @@ static void parseHistory(TAD_community com, const xmlNode *node)
         x = userSet_name_lookup(com, name);
         xmlFree(hold);
         if (!x)
-            return;
+            return com;
         userId = getU_id(x);
     }
 
@@ -317,26 +318,26 @@ static void parseHistory(TAD_community com, const xmlNode *node)
     y = postSet_lookup(com, postId);
 
     if (!y)
-        return;
+        return com;
 
     if (getP_type(y) == 1)
     {
-        incU_Q(x);
+        x = incU_Q(x);
     }
 
     if (getP_type(y) == 2)
     {
-        incU_A(x);
+        x = incU_A(x);
         // Acrescentar ao numero de respostas.
         tmp = postSet_lookup(com, getP_parentId(y));
         if (!tmp)
-            incP_ansCount(tmp);
+            tmp = incP_ansCount(tmp);
     }
 
-    setP_fund(y, userId);
+    y = setP_fund(y, userId);
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    bind_toBacia(x, y); //
+    x = bind_toBacia(x, y); //
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-    return;
+    return com;
 }
