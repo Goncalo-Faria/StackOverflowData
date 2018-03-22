@@ -52,11 +52,11 @@ Util add_toBacia(Util x, unsigned int *id, void *dados);
 
 //Functions
 
-void add_toBacia(Util x, unsigned int *id, void *dados);
+Util add_toBacia(Util x, unsigned int *id, void *dados);
 
 int belongs_toBacia(Util x, unsigned int Parent_id, char flag);
 
-void toBacia_transversal(Util x, void (*f)(void *, void *, void *), void *y);
+void* toBacia_transversal(Util x, void (*f)(void *, void *, void *), void *y);
 
 unsigned int *toBacia_lookup(Util x, unsigned int Parent_id);
 

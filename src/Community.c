@@ -136,10 +136,11 @@ HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end, unsigned l
     return from_to_Priority_Queue(com->PostArray, begin, end, Qsize, q_cmp, post_src, filter, user_data);
 }
 
-void arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *), void *user_data)
+void* arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *), void *user_data)
 {
 
     for_each_from_to(com->PostArray, begin, end, functor, post_src, user_data);
+    return user_data;
 }
 
 // USER HASHTABLE;
@@ -155,10 +156,11 @@ int userSet_insert_name(TAD_community com, unsigned char *key, Util x)
     return g_hash_table_insert(com->userByName, (void *)key, (void *)x);
 }
 
-void userSet_id_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
+void* userSet_id_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
 {
 
     g_hash_table_foreach(com->userById, f, x);
+    return x;
 }
 
 Util userSet_id_lookup(TAD_community com, unsigned long num)
@@ -192,10 +194,11 @@ Post postSet_lookup(TAD_community com, unsigned int num)
     return (Post)g_hash_table_lookup(com->post, &num);
 }
 
-void postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
+void* postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
 {
 
     g_hash_table_foreach(com->post, f, x);
+    return x;
 }
 
 unsigned int postSet_size(TAD_community com)
@@ -211,8 +214,9 @@ void postTree_insert(TAD_community com, Date key, Post x)
     return g_tree_insert(com->treeP, (void *)key, (void *)x);
 }
 
-void postTree_transversal(TAD_community com, int (*f)(void *, void *, void *), void *x)
+void* postTree_transversal(TAD_community com, int (*f)(void *, void *, void *), void *x)
 { // eliminar
 
     g_tree_foreach(com->treeP, f, x);
+    return x;
 }

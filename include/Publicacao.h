@@ -6,7 +6,7 @@
 typedef struct post *Post;
 
 // create a new post
-void *createPost();
+Post createPost();
 
 //destroy a specify post
 void destroyPost(void *x);
