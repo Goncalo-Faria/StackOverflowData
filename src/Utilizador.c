@@ -29,7 +29,7 @@ static void null_check ( void * x ){
 
 // create -- destroy -- getters (P e respostas)
 
-Util *createUtil(){
+Util createUtil(){
 	Util x = g_malloc (sizeof (struct utilizador));
 	x->name =NULL;
 	x->bio =NULL;
@@ -56,6 +56,13 @@ void destroyUtil( void* x ){
 }
 
 //COMPARE
+static int int_cmp(void *a, void *b, void *user_data)
+{
+    int *x = (int *)a;
+    int *y = (int *)b;
+
+    return (*y - *x);
+}
 
 int np_cmp(void *a, void *b, void *user_data)
 {
@@ -187,10 +194,10 @@ unsigned int * toBacia_lookup( Util x, unsigned int Parent_id ){
 	return g_hash_table_lookup(x->bacia, &Parent_id);
 }
 
-void toBacia_transversal( Util x, void (*f)(void*, void*, void*) ,void* y){
+void * toBacia_transversal( Util x, void (*f)(void*, void*, void*) ,void* y){
 	
 	g_hash_table_foreach( x->bacia , f , y );
-	
+	return y;
 }
 
 Util bind_toBacia( Util x, Post y ){

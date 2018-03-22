@@ -10,7 +10,7 @@ typedef struct utilizador *Util;
 #define A_belongs_hash(user, id) belongs_toBacia(user, id, 2)
 
 // create a new util
-Util *createUtil();
+Util createUtil();
 
 //destroy some specify post
 void destroyUtil(void *x);

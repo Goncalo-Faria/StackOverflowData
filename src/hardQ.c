@@ -25,6 +25,12 @@ static Record createRecord(void *fs, void *sn)
     return a;
 }
 
+static int yes(void *a, void *b)
+{
+    return 1;
+}
+
+
 static void collect_top10(void *key, void *value, void *user_data)
 {
 
@@ -63,7 +69,7 @@ static void collect_top10(void *key, void *value, void *user_data)
         }
         else
         { // está cheio o array
-            rd2 = Generalized_Priority_Queue(rd1, length_A(rd1), post_cmp, yes, NULL);
+            rd2 = Generalized_Priority_Queue(rd1, length_A(rd1), post_compare, yes, NULL);
             destroy_A(rd1);
             *flag = 1;
             rd->fst = rd2;
@@ -77,7 +83,7 @@ static void collect_top10(void *key, void *value, void *user_data)
 }
 
 ////////
-
+/*
 USER get_user_info(TAD_community com, long id)
 {
     int i;
@@ -122,10 +128,7 @@ USER get_user_info(TAD_community com, long id)
     destroy_H(pQ);
     return send;
 }
-static int yes(void *a, void *b)
-{
-    return 1;
-}
+*/
 
 static void make_pq(void *key, void *value, void *user_data)
 {
@@ -144,7 +147,7 @@ static void make_pq(void *key, void *value, void *user_data)
         else
         { // está cheio o array
             rd2 = Generalized_Priority_Queue(rd1, length_A(rd1), np_cmp, yes, NULL);
-            destroy_A(x);
+            destroy_A(rd1);
             *flag = 1;
             x->fst = rd2;
         }
@@ -244,7 +247,7 @@ USER get_user_info(TAD_community com, long id)
 
     } else {
         extreme = (bArray)rd->fst;
-        hp = Generalized_Priority_Queue( extreme , length_A(extreme), post_cmp, yes, NULL);
+        hp = Generalized_Priority_Queue( extreme , length_A(extreme), post_compare, yes, NULL);
         destroy_A(extreme);
     }
     //->>>>
@@ -272,6 +275,6 @@ USER get_user_info(TAD_community com, long id)
     g_free(carrier);
     
     destroy_H(hp);
-    
+
     return send;
 }

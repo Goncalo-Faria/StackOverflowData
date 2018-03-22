@@ -56,14 +56,6 @@ static int post_ord(const void *a, const void *b)
     return (-1) * date_compare(getP_date_point(an), getP_date_point(bn), NULL);
 }
 
-int int_cmp(void *a, void *b, void *user_data)
-{
-    int *x = (int *)a;
-    int *y = (int *)b;
-
-    return (*y - *x);
-}
-
 void gen_free_date(void *d)
 {
     free_date((Date)d);
@@ -124,13 +116,13 @@ void finalize_array(TAD_community com)
 }
 
 
-HEAP array_Priority_Queue(TAD_community com, unsigned long Qsize, Fcompare q_cmp, void (*filter)(void *, void *), void *user_data)
+HEAP array_Priority_Queue(TAD_community com, unsigned long Qsize, Fcompare q_cmp, int (*filter)(void *, void *), void *user_data)
 {
 
     return Generalized_Priority_Queue(com->PostArray, Qsize, q_cmp, filter, user_data);
 }
 
-HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end, unsigned long Qsize, Fcompare q_cmp, void (*filter)(void *, void *), void *user_data)
+HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end, unsigned long Qsize, Fcompare q_cmp, int (*filter)(void *, void *), void *user_data)
 {
 
     return from_to_Priority_Queue(com->PostArray, begin, end, Qsize, q_cmp, post_src, filter, user_data);

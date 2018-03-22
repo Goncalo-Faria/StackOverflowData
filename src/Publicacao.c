@@ -2,7 +2,7 @@
 #include <string.h>
 #include "interface.h"
 #include <glib.h>
-#include "Community.h"
+//#include "Community.h"
 #include "bArray.h"
 //#include <stdio.h>
 //#include "date.h"
@@ -57,11 +57,44 @@ void destroyPost(void *x)
 
 
 //COMPARADORES
+
+static int int_cmp(void *a, void *b, void *user_data)
+{
+    int *x = (int *)a;
+    int *y = (int *)b;
+
+    return (*y - *x);
+}
+
+static int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data)
+{
+
+    // user data será sempre null;
+    Date x = (Date)a, y = (Date)b;
+
+    if (get_year(x) > get_year(y))
+        return 1;
+    else if (get_year(x) < get_year(y))
+        return -1;
+    //-----------------------------------------
+    if (get_month(x) > get_month(y))
+        return 1;
+    else if (get_month(x) < get_month(y))
+        return -1;
+    //-----------------------------------------
+    if (get_day(x) > get_day(y))
+        return 1;
+    else if (get_day(x) < get_day(y))
+        return -1;
+
+    return 0;
+}
+
 int post_compare(void *a, void *b, void *user_data)// não vai ser preciso.
 {
 
-	Date x = getP_date_point((Post)a);
-	Date y = getP_date_point((Post)b);
+	Date x = ((Post)a)->moment;
+	Date y = ((Post)b)->moment;
 
 	return date_compare(x, y, user_data);
 }
@@ -152,6 +185,7 @@ Date getP_date_point(Post x)
 	//return createDate( get_day(x->moment), get_month(x->moment), get_year(x->moment) ) ;
 	return x->moment;
 }
+
 Date getP_date(Post x)
 {
 	// memória dinâmica.
