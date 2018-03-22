@@ -36,13 +36,6 @@ static Container createContainer(Date begin, Date end)
     return x;
 }
 
-static void heapify(void *key, void *value, void *user_data)
-{
-    HEAP y = (HEAP)user_data;
-
-    add_Heap(y, value);
-}
-
 static int count(void *value, void *user_data)
 {
 

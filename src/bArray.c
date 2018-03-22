@@ -31,21 +31,23 @@ void destroy_A(bArray x);
 void sort_A(bArray x, int (*cmp)(const void *, const void *));
 void for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
 void for_each(bArray x, appFunc functor, void *user_data);
-HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord,filterFunc functor,void* user_data);
-HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp,filterFunc functor,void* user_data);
+HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord, filterFunc functor, void *user_data);
+HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp, filterFunc functor, void *user_data);
 
 // Privados
 static void fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data);
 static long find(bArray x, void *from, cmpFunc comp, int flag);
-static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp,filterFunc functor,void* user_data);
+static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp, filterFunc functor, void *user_data);
 
 // >>>>><
 
-int is_full(bArray x){
+int is_full(bArray x)
+{
     return full(x);
 }
 
-unsigned long length_A( bArray x ){
+unsigned long length_A(bArray x)
+{
     return x->use;
 }
 
@@ -148,7 +150,7 @@ HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsiz
     if (s == -1 || e == -1)
         return NULL;
 
-    return GenP(x, (unsigned long)s, Qsize, (unsigned long)e - s, q_cmp, functor,user_data);
+    return GenP(x, (unsigned long)s, Qsize, (unsigned long)e - s, q_cmp, functor, user_data);
 }
 
 HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp, filterFunc functor, void *user_data)
@@ -223,7 +225,7 @@ static long find(bArray x, void *from, cmpFunc comp, int flag)
     return res;
 }
 
-static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp, filterFunc functor,void* user_data)
+static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp, filterFunc functor, void *user_data)
 {
 
     HEAP x;
@@ -247,7 +249,7 @@ static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned l
     x = create_fixed_H(the_v, Qsize, NULL, alt_cmp, NULL);
 
     for (i = Qsize; i < num_elem; i++)
-        if( functor( the_v[i], user_data) )
+        if (functor(the_v[i], user_data))
             add_in_Place_H(x, the_v[i]);
 
     return x;
