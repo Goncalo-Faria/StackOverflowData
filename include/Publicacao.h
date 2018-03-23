@@ -13,9 +13,10 @@ void destroyPost(void *x);
 
 int post_compare(void *a, void *b, void *user_data);
 int score_cmp(void *a, void *b, void *user_data);
+int nAns_cmp(void *a, void *b, void *user_data);
 
 //cria o especifico arrays com as tags
-Post create_array ( Post p , unsigned long x , char **strings);
+Post startP_ansCount(Post x);
 
 // Post getters
 

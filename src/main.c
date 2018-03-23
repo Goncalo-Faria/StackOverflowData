@@ -10,25 +10,18 @@
 #include "heap.h"
 #include <time.h>
 
-static int print(void *a, void *garb)
-{
-    int *x = (int *)a;
-    printf("->%d ||| \n", *x);
-    return 1;
-}
-
 int main(void)
 {
     clock_t t1, t2;
     USER q5;
     Util usq2;
-    Post q6p;
+    Post q6p, q7p;
     STR_pair q1;
     LONG_pair q3;
     LONG_list q2;
     long *l;
-    LONG_list q6;
-    Date begin = createDate(16, 1, 2011), end = createDate(3, 3, 2013);
+    LONG_list q6, q7;
+    Date begin = createDate(16, 1, 2011), end = createDate(3, 3, 2012);
     //int i, *the_test_tmp;
     int n;
     //int *bg, *ed;
@@ -46,7 +39,7 @@ int main(void)
 
     t1 = clock();
     com = init();
-    com = load(com, "askubuntu");
+    com = load(com, "android");
 
     t2 = clock();
     time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
@@ -55,7 +48,7 @@ int main(void)
 
     printf("______________________\n");
     printf("|->Q1\n\n");
-    q1 = info_from_post(com, 97086);
+    q1 = info_from_post(com, 30334);
     if (q1)
     {
         printf("Publication name :: %s\n", get_fst_str(q1));
@@ -91,7 +84,7 @@ int main(void)
 
     printf("______________________\n");
     printf("|->Q5\n\n");
-    q5 = get_user_info(com, 9897);
+    q5 = get_user_info(com, 16575);
     if (q5)
     {
         printf("Short user bio :: \n%s \n", get_bio(q5));
@@ -101,16 +94,20 @@ int main(void)
 
         for (i = 0; i < 10; i++)
         {
+            if (l[i])
+            {
+                printf(" POST %d :: %ld   ", i + 1, l[i]);
+                q6p = postSet_lookup(com, l[i]);
 
-            printf(" POST %d :: %ld   ", i + 1, l[i]);
-            q6p = postSet_lookup(com, l[i]);
-            pdate = getP_date_point(q6p);
-            printf(" - %d - %d - %d - \n", get_day(pdate), get_month(pdate), get_year(pdate));
+                pdate = getP_date_point(q6p);
+                printf(" - %d - %d - %d - \n", get_day(pdate), get_month(pdate), get_year(pdate));
+            } else printf(" Can't find that post bro\n");
         }
         g_free(l);
         free_user(q5);
     }
-    else printf(" Nao existe colega! \n");
+    else
+        printf(" Nao existe colega! \n");
 
     printf("______________________\n");
     printf("|->Q6\n\n");
@@ -129,6 +126,21 @@ int main(void)
     }
 
     g_free(q6);
+
+    printf("______________________\n");
+    printf("|->Q7\n\n");
+    n = 20;
+    q7 = most_answered_questions(com, n, begin, end);
+    for (i = 0; i < n; i++)
+    {
+        printf(">> %d <<  ", (int)get_list(q7, i));
+        if ((unsigned int)get_list(q7, i))
+        {
+            q7p = postSet_lookup(com, (unsigned int)get_list(q7, i));
+            printf(" < %d > \n", getP_ansCount(q7p));
+        }
+    }
+    g_free(q7);
 
     clean(com);
     return 1;

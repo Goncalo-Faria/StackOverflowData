@@ -4,7 +4,6 @@
 #include <glib.h>
 //#include "Community.h"
 #include "bArray.h"
-//#include <stdio.h>
 //#include "date.h"
 
 typedef struct post
@@ -109,6 +108,8 @@ int score_cmp(void *a, void *b, void *user_data)
 
 	return int_cmp(&anum, &bnum, user_data);
 }
+
+
 ////
 // Post getters
 unsigned int getP_id(Post x)
@@ -142,6 +143,19 @@ unsigned int getP_ansCount(Post x)
 		return (*y);
 	}
 	return 0;
+}
+
+int nAns_cmp(void *a, void *b, void *user_data)
+{
+	Post x = (Post)a;
+	Post y = (Post)b;
+
+	int anum, bnum;
+
+	anum = getP_ansCount(x);
+	bnum = getP_ansCount(y);
+
+	return int_cmp(&anum, &bnum, user_data);
 }
 
 unsigned int *getP_parentId_point(Post x)
@@ -223,19 +237,18 @@ Post incP_ansCount(Post x)
 
 	if (x->type == 1)
 	{
-		if (!x->special)
-		{
-
-			y = g_malloc(sizeof(unsigned int));
-			*y = 1;
-			x->special = y;
-		}
-		else
-		{
-			y = x->special;
-			*y = *y + 1;
-		}
+		y = x->special;
+		*y = *y + 1;
 	}
+	return x;
+}
+Post startP_ansCount(Post x)
+{
+	unsigned int *y;
+
+	y = g_malloc(sizeof(unsigned int));
+	*y = 0;
+	x->special = y;
 	return x;
 }
 

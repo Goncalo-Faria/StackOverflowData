@@ -220,12 +220,17 @@ static long find(bArray x, void *from, cmpFunc comp, int flag)
     res = meio;
 
     if (flag == -1)
+    {
         while (!(comp(x->v[res], from, NULL) > 0) && res > 0)
             res--;
+        res = res ? (res + 1) : res;
+    }
     else
-        while (!(comp(x->v[res], from, NULL) < 0) && res > 0)
+    {
+        while (!(comp(x->v[res], from, NULL) < 0) && res < x->use)
             res++;
-
+        res = res ? (res - 1) : res;
+    }
     return res;
 }
 

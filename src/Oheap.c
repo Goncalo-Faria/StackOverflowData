@@ -1,9 +1,5 @@
 #include <glib.h>
-
-//#include <stdlib.h>
-//#include <string.h>
 #include "heap.h"
-//#include <stdio.h>
 
 #define full(x) ((x)->use == (x)->len)
 #define quarter(x) (((x)->use * 4) <= (x)->len)
@@ -27,14 +23,10 @@ typedef struct heap
 // Métodos publicos
 HEAP create_H(freeFunc in_free, Fcompare ff, void *usr_d);
 HEAP create_fixed_H(ENTRY *v, unsigned long n, freeFunc in_free, Fcompare h, void *usr_d);
-
 void destroy_H(HEAP x);
-
 HEAP add_Heap(HEAP x, void *n);
 HEAP add_in_Place_H(HEAP x, void *n);
-
 void *rem_Heap(HEAP x);
-
 int empty_H(HEAP x);
 unsigned long length_H(HEAP x);
 

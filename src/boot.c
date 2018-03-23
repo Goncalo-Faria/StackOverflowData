@@ -25,20 +25,14 @@
 
 typedef TAD_community (*parse_function)(TAD_community, const xmlNode *);
 
-// Métodos publicos.
-//TAD_community init();
-//TAD_community clean(TAD_community com);
-//TAD_community load(TAD_community com, char* dump_path)
-
-// Métodos privados.
-//static void parsePost( TAD_community com, xmlNode * node);
+//int COUNTER;
 
 TAD_community load(TAD_community com, char *dump_path); // #0
 
 static TAD_community parseUser(TAD_community com, const xmlNode *node);
 static TAD_community parser(TAD_community com, char *dump_path, char *file_name, parse_function f);
 static TAD_community parsePost(TAD_community com, const xmlNode *node);
-static TAD_community parseHistory(TAD_community com, const xmlNode *node);
+//static TAD_community parseHistory(TAD_community com, const xmlNode *node);
 static TAD_community reduce(TAD_community com);
 static void link(void *key, void *value, void *user_data);
 //
@@ -58,11 +52,13 @@ TAD_community load(TAD_community com, char *dump_path)
     //Util y;
     //Post x;
     //unsigned char* bio,*name;
+    //COUNTER=0;
     com = parser(com, dump_path, "Users", parseUser);
     printf("Number of users loaded ::%d \n", userSet_size(com));
     com = parser(com, dump_path, "Posts", parsePost);
     printf("Number of posts loaded ::%d \n", postSet_size(com));
 
+    //printf(" %d \n",COUNTER);
     //->
     com = turnOn_array(com, (unsigned long)postSet_size(com));
     com = postSet_transversal(com, adder, com);
@@ -73,8 +69,7 @@ TAD_community load(TAD_community com, char *dump_path)
 
     com = reduce(com);
 
-    //com = parser(com, dump_path, "PostHistory", parseHistory);
-    //com = terminate_UbyName(com);
+
 
     return com;
 }
@@ -210,9 +205,14 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
 
     if (getP_type(x) == 2)
     { // ans
+        //COUNTER++;
         getAtr(hold, node, "ParentId");
         x = setP_parentId(x, (unsigned int)atoi((const char *)hold));
         xmlFree(hold);
+    }
+    else
+    {
+        x = startP_ansCount(x);
     }
     // ADD SCORE.
     getAtr(hold, node, "Score");
@@ -226,7 +226,6 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
     getAtr(hold, node, "Title");
     if (hold)
     {
-        //HUGE_COUNTER++;
         x = setP_name(x, (unsigned char *)hold);
         xmlFree(hold);
     }
