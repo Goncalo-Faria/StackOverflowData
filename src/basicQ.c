@@ -100,11 +100,15 @@ STR_pair info_from_post(TAD_community com, int id)
     unsigned long userid;
 
     x = postSet_lookup(com, id);
-
+    if( !x )
+        return NULL;
+    
     str1 = getP_name(x);
     userid = getP_fund(x);
 
     y = userSet_id_lookup(com, userid);
+    if( !y )
+        return NULL;
 
     str2 = getU_name(y);
     result = create_str_pair((char *)str1, (char *)str2);
@@ -166,11 +170,11 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end)
             d = getP_date_point(newp);
 
             if (date_compare(d, begin, NULL) >= 0 && date_compare(d, end, NULL) <= 0) // no futuro poderá ser removida. <assim que o find for melhorado>
-                set_list(ll, i, (long)getP_id(newp));
+                set_list(ll, N - 1 - i , (long)getP_id(newp));
         }
         else
         {
-            set_list(ll, i, 0);
+            set_list(ll,  N - 1 - i, 0);
         }
     }
 

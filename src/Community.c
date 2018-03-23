@@ -9,7 +9,7 @@ typedef struct TCD_community
 {
     GHashTable *userById;
 
-    GHashTable *userByName;
+    //GHashTable *userByName;
     bArray PostArray;
     GHashTable *post;
 
@@ -69,7 +69,7 @@ TAD_community init(void)
     TAD_community x = g_malloc(sizeof(struct TCD_community));
 
     x->userById = g_hash_table_new_full(g_int64_hash, g_int64_equal, NULL, destroyUtil);
-    x->userByName = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, NULL);
+    //x->userByName = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, NULL);
 
     x->post = g_hash_table_new_full(g_int_hash, g_int_equal, NULL, destroyPost);
 
@@ -81,8 +81,8 @@ TAD_community clean(TAD_community com)
 {
     g_hash_table_destroy(com->userById);
 
-    if( com->userByName)
-        g_hash_table_destroy(com->userByName);
+    //if( com->userByName)
+      //  g_hash_table_destroy(com->userByName);
 
     g_hash_table_destroy(com->post);
 
@@ -93,11 +93,24 @@ TAD_community clean(TAD_community com)
 
     return com;
 }
+/*
+
 TAD_community terminate_UbyName( TAD_community com ){
     g_hash_table_destroy(com->userByName);
     com->userByName = NULL;
     return com;
 }
+Util userSet_name_lookup(TAD_community com, unsigned char *name)
+{
+    return (Util)g_hash_table_lookup(com->userByName, name);
+}
+TAD_community userSet_insert_name(TAD_community com, unsigned char *key, Util x)
+{
+    g_hash_table_insert(com->userByName, (void *)key, (void *)x);
+    return com;
+}
+
+*/
 
 int reverseCompare(void *a, void *b, void *fun)
 {
@@ -164,11 +177,7 @@ TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x)
     return com;
 }
 
-TAD_community userSet_insert_name(TAD_community com, unsigned char *key, Util x)
-{
-    g_hash_table_insert(com->userByName, (void *)key, (void *)x);
-    return com;
-}
+
 
 void* userSet_id_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
 {
@@ -181,10 +190,7 @@ Util userSet_id_lookup(TAD_community com, unsigned long num)
     return (Util)g_hash_table_lookup(com->userById, &num);
 }
 
-Util userSet_name_lookup(TAD_community com, unsigned char *name)
-{
-    return (Util)g_hash_table_lookup(com->userByName, name);
-}
+
 
 unsigned int userSet_size(TAD_community com)
 {
