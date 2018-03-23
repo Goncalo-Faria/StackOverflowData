@@ -16,7 +16,6 @@ typedef struct record
 LONG_list top_most_active(TAD_community com, int N); //#2
 USER get_user_info(TAD_community com, long id);      //#5
 
-
 // Métodos Privados.
 static Record createRecord(void *fs, void *sn)
 {
@@ -31,7 +30,6 @@ static int yes(void *a, void *b)
     return 1;
 }
 
-
 static void collect_top10(void *key, void *value, void *user_data)
 {
 
@@ -41,12 +39,12 @@ static void collect_top10(void *key, void *value, void *user_data)
 
     Record carrier = (Record)user_data;
     Record rd = (Record)carrier->fst;
-    char* flag = (char*)carrier->snd;
+    char *flag = (char *)carrier->snd;
 
     TAD_community com = (TAD_community)rd->snd;
 
     bArray rd1;
-    HEAP   rd2;
+    HEAP rd2;
     Post pub;
 
     if (child)
@@ -62,7 +60,8 @@ static void collect_top10(void *key, void *value, void *user_data)
 
     pub = postSet_lookup(com, *used);
 
-    if( ! *flag ){//barray
+    if (!*flag)
+    { //barray
         rd1 = (bArray)rd->fst;
         if (!is_full(rd1))
         { //não está cheio o array
@@ -75,61 +74,14 @@ static void collect_top10(void *key, void *value, void *user_data)
             *flag = 1;
             rd->fst = rd2;
         }
-    } else {//heap
+    }
+    else
+    { //heap
 
         rd2 = (HEAP)rd->fst;
         rd2 = add_in_Place_H(rd2, pub);
-
     }
 }
-
-////////
-/*
-USER get_user_info(TAD_community com, long id)
-{
-    int i;
-    Post the_post;
-    USER send;
-    Record carrier;
-    HEAP pQ = create_H(NULL, reverseCompare, (void *)post_compare);
-    long post_history[10];
-    char *short_bio = NULL;
-    Util x = userSet_id_lookup(com, (unsigned long)id);
-
-    if (!x)
-        return NULL;
-    short_bio = (char *)getU_bio(x);
-
-    carrier = createRecord((void *)pQ, (void *)com);
-    // x->bio;
-    toBacia_transversal(x, collect_top10, carrier);
-
-    //
-
-    for (i = 0; i < 10; i++)
-    { // vai do novo para o velho. (cronologia inversa)
-
-        if (!empty_H(pQ))
-        {
-
-            the_post = (Post)rem_Heap(pQ);
-            post_history[i] = (long)getP_id(the_post);
-        }
-        else
-        {
-
-            post_history[i] = 0;
-        }
-    }
-
-    send = create_user(short_bio, post_history);
-
-    g_free(short_bio);
-    g_free(carrier);
-    destroy_H(pQ);
-    return send;
-}
-*/
 
 static void make_pq(void *key, void *value, void *user_data)
 {
@@ -159,6 +111,7 @@ static void make_pq(void *key, void *value, void *user_data)
         rd2 = add_in_Place_H(rd2, value);
     }
 }
+
 // --2 FEITO
 LONG_list top_most_active(TAD_community com, int N)
 {
@@ -177,12 +130,14 @@ LONG_list top_most_active(TAD_community com, int N)
     ll = create_list(N);
     //
 
-    if( (*(char*)x->snd) == 1 ){
+    if ((*(char *)x->snd) == 1)
+    {
         hp = (HEAP)x->fst;
-
-    } else {
+    }
+    else
+    {
         extreme = (bArray)x->fst;
-        hp = Generalized_Priority_Queue( extreme , length_A(extreme), np_cmp, yes, NULL);
+        hp = Generalized_Priority_Queue(extreme, length_A(extreme), np_cmp, yes, NULL);
         destroy_A(extreme);
     }
 
@@ -197,14 +152,14 @@ LONG_list top_most_active(TAD_community com, int N)
         {
 
             c = rem_Heap(hp);
-            set_list(ll, N -1 - i, (long)getU_id(c));
+            set_list(ll, N - 1 - i, (long)getU_id(c));
         }
         else
         {
             set_list(ll, i, 0);
         }
     }
-    
+
     g_free(flag);
     g_free(x);
     destroy_H(hp);
@@ -212,9 +167,8 @@ LONG_list top_most_active(TAD_community com, int N)
     return ll;
 }
 
-
 USER get_user_info(TAD_community com, long id)
-{   
+{
     char *flag = g_malloc(sizeof(char));
     HEAP hp;
     bArray extreme;
@@ -229,26 +183,28 @@ USER get_user_info(TAD_community com, long id)
 
     *flag = 0;
 
-    Record carrier= createRecord( createRecord( (void*)init_A(10, NULL) , (void *)com) , (void*)flag);// usar post compare.
-    
+    Record carrier = createRecord(createRecord((void *)init_A(10, NULL), (void *)com), (void *)flag); // usar post compare.
+
     Util x = userSet_id_lookup(com, (unsigned long)id);
 
     if (!x)
         return NULL;
-    
+
     short_bio = (char *)getU_bio(x);
 
     // x->bio;
-    carrier = toBacia_transversal(x, collect_top10, carrier);//
+    carrier = toBacia_transversal(x, collect_top10, carrier); //
 
     rd = (Record)carrier->fst;
 
-    if( (*(char*)carrier->snd) == 1 ){    
+    if ((*(char *)carrier->snd) == 1)
+    {
         hp = (HEAP)rd->fst;
-
-    } else {
+    }
+    else
+    {
         extreme = (bArray)rd->fst;
-        hp = Generalized_Priority_Queue( extreme , length_A(extreme), post_compare, yes, NULL);
+        hp = Generalized_Priority_Queue(extreme, length_A(extreme), post_compare, yes, NULL);
         destroy_A(extreme);
     }
     //->>>>
@@ -274,7 +230,7 @@ USER get_user_info(TAD_community com, long id)
     g_free(flag);
 
     g_free(carrier);
-    
+
     destroy_H(hp);
 
     return send;

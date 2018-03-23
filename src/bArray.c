@@ -29,13 +29,13 @@ bArray init_A(unsigned long n, freeFunc dados);
 bArray add_to_A(bArray x, void *ele);
 void destroy_A(bArray x);
 bArray sort_A(bArray x, int (*cmp)(const void *, const void *));
-void* for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
-void* for_each(bArray x, appFunc functor, void *user_data);
+void *for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
+void *for_each(bArray x, appFunc functor, void *user_data);
 HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord, filterFunc functor, void *user_data);
 HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp, filterFunc functor, void *user_data);
 
 // Privados
-static void* fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data);
+static void *fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data);
 static long find(bArray x, void *from, cmpFunc comp, int flag);
 static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp, filterFunc functor, void *user_data);
 
@@ -101,7 +101,7 @@ bArray sort_A(bArray x, int (*cmp)(const void *, const void *))
     return x;
 }
 
-void* for_each_from_to(bArray x, void *begin, void *end, appFunc functor, Fcompare alt_cmp, void *user_data)
+void *for_each_from_to(bArray x, void *begin, void *end, appFunc functor, Fcompare alt_cmp, void *user_data)
 {
     long s, e;
 
@@ -127,7 +127,7 @@ void* for_each_from_to(bArray x, void *begin, void *end, appFunc functor, Fcompa
     return x;
 }
 
-void* for_each(bArray x, appFunc functor, void *user_data)
+void *for_each(bArray x, appFunc functor, void *user_data)
 {
 
     return for_each_from_to(x, NULL, NULL, functor, NULL, user_data);
@@ -160,7 +160,7 @@ HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp, f
     return GenP(ll, 0, Qsize, ll->use, q_cmp, functor, user_data);
 }
 
-static void* fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data)
+static void *fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data)
 {
 
     unsigned long i;

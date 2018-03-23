@@ -44,7 +44,6 @@ Post createPost()
 	return x;
 }
 
-
 void destroyPost(void *x)
 {
 	Post y = (Post)x;
@@ -55,42 +54,41 @@ void destroyPost(void *x)
 	g_free(y);
 }
 
-
 //COMPARADORES
 
 static int int_cmp(void *a, void *b, void *user_data)
 {
-    int *x = (int *)a;
-    int *y = (int *)b;
+	int *x = (int *)a;
+	int *y = (int *)b;
 
-    return (*y - *x);
+	return (*y - *x);
 }
 
 static int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data)
 {
 
-    // user data será sempre null;
-    Date x = (Date)a, y = (Date)b;
+	// user data será sempre null;
+	Date x = (Date)a, y = (Date)b;
 
-    if (get_year(x) > get_year(y))
-        return 1;
-    else if (get_year(x) < get_year(y))
-        return -1;
-    //-----------------------------------------
-    if (get_month(x) > get_month(y))
-        return 1;
-    else if (get_month(x) < get_month(y))
-        return -1;
-    //-----------------------------------------
-    if (get_day(x) > get_day(y))
-        return 1;
-    else if (get_day(x) < get_day(y))
-        return -1;
+	if (get_year(x) > get_year(y))
+		return 1;
+	else if (get_year(x) < get_year(y))
+		return -1;
+	//-----------------------------------------
+	if (get_month(x) > get_month(y))
+		return 1;
+	else if (get_month(x) < get_month(y))
+		return -1;
+	//-----------------------------------------
+	if (get_day(x) > get_day(y))
+		return 1;
+	else if (get_day(x) < get_day(y))
+		return -1;
 
-    return 0;
+	return 0;
 }
 
-int post_compare(void *a, void *b, void *user_data)// não vai ser preciso.
+int post_compare(void *a, void *b, void *user_data) // não vai ser preciso.
 {
 
 	Date x = ((Post)a)->moment;
@@ -101,15 +99,15 @@ int post_compare(void *a, void *b, void *user_data)// não vai ser preciso.
 
 int score_cmp(void *a, void *b, void *user_data)
 {
-    Post x = (Post)a;
-    Post y = (Post)b;
+	Post x = (Post)a;
+	Post y = (Post)b;
 
-    int anum, bnum;
+	int anum, bnum;
 
-    anum = (int)(x->score);
-    bnum = (int)(y->score);
+	anum = (int)(x->score);
+	bnum = (int)(y->score);
 
-    return int_cmp(&anum, &bnum, user_data);
+	return int_cmp(&anum, &bnum, user_data);
 }
 ////
 // Post getters
@@ -275,7 +273,3 @@ Post setP_type(Post x, unsigned char t)
 	x->type = t;
 	return x;
 }
-
-
-
-

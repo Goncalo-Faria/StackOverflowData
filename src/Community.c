@@ -18,7 +18,6 @@ typedef struct TCD_community
 /*
 */
 
-
 int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data)
 {
 
@@ -82,7 +81,7 @@ TAD_community clean(TAD_community com)
     g_hash_table_destroy(com->userById);
 
     //if( com->userByName)
-      //  g_hash_table_destroy(com->userByName);
+    //  g_hash_table_destroy(com->userByName);
 
     g_hash_table_destroy(com->post);
 
@@ -136,7 +135,6 @@ TAD_community finalize_array(TAD_community com)
     return com;
 }
 
-
 HEAP array_Priority_Queue(TAD_community com, unsigned long Qsize, Fcompare q_cmp, int (*filter)(void *, void *), void *user_data)
 {
     return Generalized_Priority_Queue(com->PostArray, Qsize, q_cmp, filter, user_data);
@@ -147,25 +145,24 @@ HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end, unsigned l
     return from_to_Priority_Queue(com->PostArray, begin, end, Qsize, q_cmp, post_src, filter, user_data);
 }
 
-static void print( void* x, void* y)
+static void print(void *x, void *y)
 {
 
     //Post a = (Post)x;
     //Date d = getP_date_point(a);
 
     Date d = x;
-    printf(" %d-%d-%d \n",get_day(d),get_month(d),get_year(d) );
-
+    printf(" %d-%d-%d \n", get_day(d), get_month(d), get_year(d));
 }
 
-void* arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *), void *user_data)
-{   
+void *arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *), void *user_data)
+{
     return for_each_from_to(com->PostArray, begin, end, functor, post_src, user_data);
-
 }
 
-void* show_date(TAD_community com){
-    for_each(com->PostArray, print , NULL);
+void *show_date(TAD_community com)
+{
+    for_each(com->PostArray, print, NULL);
     return NULL;
 }
 
@@ -177,9 +174,7 @@ TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x)
     return com;
 }
 
-
-
-void* userSet_id_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
+void *userSet_id_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
 {
     g_hash_table_foreach(com->userById, f, x);
     return x;
@@ -189,8 +184,6 @@ Util userSet_id_lookup(TAD_community com, unsigned long num)
 {
     return (Util)g_hash_table_lookup(com->userById, &num);
 }
-
-
 
 unsigned int userSet_size(TAD_community com)
 {
@@ -209,7 +202,7 @@ Post postSet_lookup(TAD_community com, unsigned int num)
     return (Post)g_hash_table_lookup(com->post, &num);
 }
 
-void* postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
+void *postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
 {
     g_hash_table_foreach(com->post, f, x);
     return x;

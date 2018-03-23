@@ -142,12 +142,6 @@ LONG_pair total_posts(TAD_community com, Date begin, Date end)
     return res;
 }
 
-// --4 precisamos da tag
-/*
-LONG_list questions_with_tag(TAD community com, char* tag, Date begin, Date end) {
-}
-*/
-
 // --6 FEITA
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end)
 {
