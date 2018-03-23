@@ -16,6 +16,7 @@
  * 
  * PostTypeId = 2 resposta;
  * */
+
 #define getAtr(hold, n, str) hold = xmlGetProp(n, (const xmlChar *)str)
 
 #define convert_to_lowercase(p, str)       \
@@ -31,28 +32,31 @@ typedef TAD_community (*parse_function)(TAD_community, const xmlNode *);
 
 // Métodos privados.
 //static void parsePost( TAD_community com, xmlNode * node);
+
+TAD_community load(TAD_community com, char *dump_path); // #0
+
 static TAD_community parseUser(TAD_community com, const xmlNode *node);
 static TAD_community parser(TAD_community com, char *dump_path, char *file_name, parse_function f);
 static TAD_community parsePost(TAD_community com, const xmlNode *node);
 static TAD_community parseHistory(TAD_community com, const xmlNode *node);
+static TAD_community reduce(TAD_community com);
+static void link(void *key, void *value, void *user_data);
 //
 
 // recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
 // estou a assumir que recebo uma AVL;
 
+static void adder(void *key, void *value, void *user_data)
+{
+    TAD_community com = (TAD_community)user_data;
 
-static void adder(void* key, void* value, void* user_data ){
-    TAD_community com = (TAD_community) user_data;
-
-    insert_array( com, (Post)value );
-} 
-
+    insert_array(com, (Post)value);
+}
 
 TAD_community load(TAD_community com, char *dump_path)
 {
     //Util y;
     //Post x;
-
     //unsigned char* bio,*name;
     com = parser(com, dump_path, "Users", parseUser);
     printf("Number of users loaded ::%d \n", userSet_size(com));
@@ -60,19 +64,53 @@ TAD_community load(TAD_community com, char *dump_path)
     printf("Number of posts loaded ::%d \n", postSet_size(com));
 
     //->
-    com = turnOn_array( com,(unsigned long)postSet_size(com));
-    com = postSet_transversal(com ,adder , com);
-    
+    com = turnOn_array(com, (unsigned long)postSet_size(com));
+    com = postSet_transversal(com, adder, com);
+
     com = finalize_array(com);
     //-
     //show_date(com);
-    com = parser(com, dump_path, "PostHistory", parseHistory);
-    com = terminate_UbyName(com);
 
-    printf("\n.. Loading Terminaterd ..\n");
+    com = reduce(com);
 
-   
+    //com = parser(com, dump_path, "PostHistory", parseHistory);
+    //com = terminate_UbyName(com);
+
     return com;
+}
+
+static TAD_community reduce(TAD_community com)
+{
+    return (TAD_community)postSet_transversal(com, link, (void *)com);
+}
+
+static void link(void *key, void *value, void *user_data)
+{
+    Post parentPub, pub = (Post)value;
+    TAD_community com = (TAD_community)user_data;
+    Util usr;
+    unsigned long founder = getP_fund(pub);
+
+    if (founder)
+    {
+        usr = userSet_id_lookup(com, founder);
+        if (usr)
+        {
+            if (getP_type(pub) == 1)
+                usr = incU_Q(usr);
+            else
+            {
+                usr = incU_A(usr);
+
+                parentPub = postSet_lookup(com, getP_parentId(pub));
+
+                if (parentPub)
+                    parentPub = incP_ansCount(parentPub);
+            }
+
+            usr = bind_toBacia(usr, pub); //
+        }
+    }
 }
 
 static TAD_community parser(TAD_community com, char *dump_path, char *file_name, parse_function f)
@@ -188,7 +226,15 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
     getAtr(hold, node, "Title");
     if (hold)
     {
+        //HUGE_COUNTER++;
         x = setP_name(x, (unsigned char *)hold);
+        xmlFree(hold);
+    }
+
+    getAtr(hold, node, "OwnerUserId");
+    if (hold)
+    {
+        x = setP_fund(x, (unsigned long)atol((const char *)hold));
         xmlFree(hold);
     }
 
@@ -216,6 +262,7 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
 
     if (hold)
     {
+
         x = setU_bio(x, (unsigned char *)hold);
         //printf("%s \n",(char*)hold);
         xmlFree(hold);
@@ -227,10 +274,11 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
     xmlFree(hold);
 
     com = userSet_insert_id(com, getU_id_point(x), x);
-    com = userSet_insert_name(com, getU_name_point(x), x);
+    //com = userSet_insert_name(com, getU_name_point(x), x);
     return com;
 }
 
+/*
 static TAD_community parseHistory(TAD_community com, const xmlNode *node)
 {
 
@@ -301,3 +349,5 @@ static TAD_community parseHistory(TAD_community com, const xmlNode *node)
 
     return com;
 }
+
+*/
