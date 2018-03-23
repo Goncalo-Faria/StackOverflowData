@@ -50,8 +50,7 @@ static void count(void *value, void *user_data)
 
     if (date_compare(x, box->dateB, NULL) >= 0 && date_compare(x, box->dateE, NULL) <= 0)
     {
-        //if ( getP_type(p) == 2 ) printf(" %d  \n",(int) getP_score(p));
-
+        //printf(" %d  \n",(int) getP_score(p));
         if (getP_type(p) == 1)
             inc_fst_long(k); // é Questão.
         else
@@ -124,13 +123,13 @@ LONG_pair total_posts(TAD_community com, Date begin, Date end)
 {
 
     Container x = createContainer(begin, end); //set_snd_long
-    x->spec = (void *)create_long_pair(0, 0);
+    x->spec = (void *)create_long_pair(0, 0); 
 
     // nao esta defenido por incompetencia (LONG_PAIR) xD !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     //post_compare
 
-    arraySeg_transversal(com, begin, end, count, (void *)x);
+    x = arraySeg_transversal(com, begin , end , count, (void *)x);
 
     LONG_pair res = (LONG_pair)x->spec;
 

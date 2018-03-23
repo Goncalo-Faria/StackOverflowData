@@ -13,8 +13,9 @@ typedef struct record
 /////
 
 // Métodos Publicos
-USER get_user_info(TAD_community com, long id);      //#5
 LONG_list top_most_active(TAD_community com, int N); //#2
+USER get_user_info(TAD_community com, long id);      //#5
+
 
 // Métodos Privados.
 static Record createRecord(void *fs, void *sn)
@@ -196,7 +197,7 @@ LONG_list top_most_active(TAD_community com, int N)
         {
 
             c = rem_Heap(hp);
-            set_list(ll, i, (long)getU_id(c));
+            set_list(ll, N -1 - i, (long)getU_id(c));
         }
         else
         {
@@ -204,7 +205,7 @@ LONG_list top_most_active(TAD_community com, int N)
         }
     }
     
-    g_free(x->snd);
+    g_free(flag);
     g_free(x);
     destroy_H(hp);
 
@@ -270,8 +271,8 @@ USER get_user_info(TAD_community com, long id)
     send = create_user(short_bio, post_history);
 
     g_free(short_bio);
+    g_free(flag);
 
-    g_free(carrier->fst);
     g_free(carrier);
     
     destroy_H(hp);

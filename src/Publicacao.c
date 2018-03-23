@@ -16,7 +16,7 @@ typedef struct post
 	// Either.
 	unsigned char type; // 1 Q ; 2 A;
 	void *special;		// parent Id. // answer count.
-	bArray *tags;
+	//bArray *tags;
 	Date moment;
 
 } * Post;
@@ -40,7 +40,7 @@ Post createPost()
 	x->special = NULL;
 	//x->data = g_malloc (sizeof(struct date));
 	x->moment = createDate(0, 0, 0);
-	x->tags = NULL;
+	//x->tags = NULL;
 	return x;
 }
 

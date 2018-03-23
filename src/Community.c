@@ -3,6 +3,8 @@
 #include <date.h>
 #include "bArray.h"
 
+#include <stdio.h>
+
 typedef struct TCD_community
 {
     GHashTable *userById;
@@ -15,6 +17,7 @@ typedef struct TCD_community
 
 /*
 */
+
 
 int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data)
 {
@@ -44,7 +47,7 @@ static int post_src(void *a, void *b, void *garb)
 { // Post, date.
     Post x = (Post)a;
 
-    return date_compare(getP_date_point(x), (Date)b, NULL);
+    return (-1) * date_compare(getP_date_point(x), (Date)b, NULL);
 }
 static int post_ord(const void *a, const void *b)
 {
@@ -52,7 +55,7 @@ static int post_ord(const void *a, const void *b)
     Post an = *(Post *)a;
     Post bn = *(Post *)b;
 
-    return (-1) * date_compare(getP_date_point(an), getP_date_point(bn), NULL);
+    return date_compare(getP_date_point(an), getP_date_point(bn), NULL);
 }
 
 void gen_free_date(void *d)
@@ -77,7 +80,9 @@ TAD_community init(void)
 TAD_community clean(TAD_community com)
 {
     g_hash_table_destroy(com->userById);
-    g_hash_table_destroy(com->userByName);
+
+    if( com->userByName)
+        g_hash_table_destroy(com->userByName);
 
     g_hash_table_destroy(com->post);
 
@@ -86,6 +91,11 @@ TAD_community clean(TAD_community com)
 
     g_free(com);
 
+    return com;
+}
+TAD_community terminate_UbyName( TAD_community com ){
+    g_hash_table_destroy(com->userByName);
+    com->userByName = NULL;
     return com;
 }
 
@@ -124,10 +134,26 @@ HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end, unsigned l
     return from_to_Priority_Queue(com->PostArray, begin, end, Qsize, q_cmp, post_src, filter, user_data);
 }
 
-void* arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *), void *user_data)
+static void print( void* x, void* y)
 {
-    for_each_from_to(com->PostArray, begin, end, functor, post_src, user_data);
-    return user_data;
+
+    //Post a = (Post)x;
+    //Date d = getP_date_point(a);
+
+    Date d = x;
+    printf(" %d-%d-%d \n",get_day(d),get_month(d),get_year(d) );
+
+}
+
+void* arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *), void *user_data)
+{   
+    return for_each_from_to(com->PostArray, begin, end, functor, post_src, user_data);
+
+}
+
+void* show_date(TAD_community com){
+    for_each(com->PostArray, print , NULL);
+    return NULL;
 }
 
 // USER HASHTABLE;

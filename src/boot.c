@@ -60,56 +60,18 @@ TAD_community load(TAD_community com, char *dump_path)
     printf("Number of posts loaded ::%d \n", postSet_size(com));
 
     //->
-    turnOn_array( com,(unsigned long)postSet_size(com));
+    com = turnOn_array( com,(unsigned long)postSet_size(com));
     com = postSet_transversal(com ,adder , com);
-    finalize_array(com);
-    //->
-
+    
+    com = finalize_array(com);
+    //-
+    //show_date(com);
     com = parser(com, dump_path, "PostHistory", parseHistory);
+    com = terminate_UbyName(com);
+
     printf("\n.. Loading Terminaterd ..\n");
 
-    /*
-    y = userSet_lookup( com, 91872 );
-    bio = getU_bio(y);
-    name = getU_name(y);
-    if(name){
-        printf("%s\n",(char*)name);
-    }
-    
-    if(bio){
-        printf("%s\n",(char*)bio);
-    }
-    x = postSet_lookup(com, 97086);
-
-    name=  getP_name(x);
-    if(name){
-        printf("%s\n",(char*)name);
-        printf("type : %d \n",getP_type(x));
-    }
-
-    printf("Este utilizador deixa-m especialmente preocupado.\n");
-    */
-    /*
-    ///////////////////////////////////////////////////////////////////
-    
-    sprintf(tmpstr,"%s/Posts.xml",dump_path);
-    doc = xmlReadFile(tmpstr, NULL, 0);
-
-    if( !doc )
-        perror("Could not parse the XML file\n");
-    
-    root_element = xmlDocGetRootElement(doc);
-
-    parsePost(com,root_element);
-    printf("USER::%d \n",postSet_size(com));
-    
-    g_free(tmpstr);
-
-    xmlFreeDoc(doc);
-    xmlCleanupParser();
-    xmlMemoryDump();
-    // x.............................................................
-    */
+   
     return com;
 }
 
@@ -130,13 +92,12 @@ static TAD_community parser(TAD_community com, char *dump_path, char *file_name,
     doc = xmlParseFile(docname);
 
     if (!doc)
-        perror("Erro no parse do documento XML.\n");
+        return com;
 
     root_element = xmlDocGetRootElement(doc);
 
     if (!root_element)
     {
-        perror("Documento vazio.\n");
         xmlFreeDoc(doc);
         return com;
     }
@@ -146,7 +107,6 @@ static TAD_community parser(TAD_community com, char *dump_path, char *file_name,
 
     if (xmlStrcmp(node->name, (const xmlChar *)docname))
     {
-        perror("Documento do tipo errado.\n");
         xmlFreeDoc(doc);
         return com;
     }
@@ -294,7 +254,6 @@ static TAD_community parseHistory(TAD_community com, const xmlNode *node)
     {
         userId = (unsigned long)atol((const char *)hold);
         xmlFree(hold);
-
         x = userSet_id_lookup(com, userId);
         if (!x)
             return com;
@@ -303,7 +262,8 @@ static TAD_community parseHistory(TAD_community com, const xmlNode *node)
     {
         getAtr(hold, node, "UserDisplayName");
         name = (unsigned char *)hold;
-
+        if (!name)
+            return com;
         x = userSet_name_lookup(com, name);
         xmlFree(hold);
         if (!x)
@@ -329,9 +289,9 @@ static TAD_community parseHistory(TAD_community com, const xmlNode *node)
     {
         x = incU_A(x);
         // Acrescentar ao numero de respostas.
-        tmp = postSet_lookup(com, getP_parentId(y));
-        if (!tmp)
-            tmp = incP_ansCount(tmp);
+        //tmp = postSet_lookup(com, getP_parentId(y));
+        //if (!tmp)
+          //  tmp = incP_ansCount(tmp);
     }
 
     y = setP_fund(y, userId);
