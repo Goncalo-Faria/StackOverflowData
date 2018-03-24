@@ -51,6 +51,15 @@ unsigned long length_A(bArray x)
     return x->use;
 }
 
+void* get_atA( bArray b, unsigned long i){
+
+    if( i < b->use ){
+        return b->v[i];
+    }
+    
+    return NULL;
+}
+
 bArray init_A(unsigned long n, freeFunc dados)
 {
     bArray x = (bArray)g_malloc(sizeof(struct brray));

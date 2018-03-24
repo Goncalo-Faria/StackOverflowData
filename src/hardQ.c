@@ -3,6 +3,7 @@
 #include "Community.h"
 
 #include "bArray.h"
+#include <stdio.h>
 
 // Estruturas  privadas
 typedef struct record
@@ -10,11 +11,18 @@ typedef struct record
     void *fst;
     void *snd;
 } * Record;
+
+struct no
+{
+    unsigned int pid;
+    struct no *px;
+};
 /////
 
 // Métodos Publicos
-LONG_list top_most_active(TAD_community com, int N); //#2
-USER get_user_info(TAD_community com, long id);      //#5
+LONG_list top_most_active(TAD_community com, int N);                       //#2
+USER get_user_info(TAD_community com, long id);                            //#5
+LONG_list both_participated(TAD_community com, long id1, long id2, int N); //#9
 
 // Métodos Privados.
 static Record createRecord(void *fs, void *sn)
@@ -234,4 +242,134 @@ USER get_user_info(TAD_community com, long id)
     destroy_H(hp);
 
     return send;
+}
+
+static void intr(void *key, void *value, void *user_data)
+{
+    Record box = (Record)user_data;
+    Record ll = (Record)box->fst;
+    int *counter = (int *)ll->snd;
+    struct no **cur = (struct no **)ll->fst;
+    struct no *new;
+    Util lrg = (Util)box->snd;
+    unsigned int pst = *(unsigned int *)key;
+
+    if (toBacia_contains(lrg, pst))
+    {
+
+        new = g_malloc(sizeof(struct no));
+        new->pid = pst;
+        new->px = *cur;
+        *cur = new;
+        *counter+=1;
+    }
+}
+
+LONG_list both_participated(TAD_community com, long id1, long id2, int N)
+{
+
+    Util usr1, usr2;
+    int p, pred;
+    Record box;
+    Util sml, lgr;
+    HEAP hp;
+    bArray b;
+    Post u;
+    struct no *del, *x, *cur = NULL;
+
+    LONG_list ll;
+
+    usr1 = userSet_id_lookup(com, id1);
+    usr2 = userSet_id_lookup(com, id2);
+
+    if (usr1 && usr2)
+    {
+        p = toBacia_size(usr1) > toBacia_size(usr2);
+
+        sml = p ? usr2 : usr1;
+        lgr = p ? usr1 : usr2;
+
+        box = createRecord(createRecord(&cur, &p), lgr);
+        box = toBacia_transversal(sml, intr, box);
+
+        printf("%d \n",p);
+        for (cur = cur; cur; cur = cur->px)
+            printf("%d \n", cur->pid);
+
+        pred = ( p < N );
+        N = pred ? p : N;
+
+        b = init_A((unsigned long)N, NULL);
+
+        del = NULL;
+
+        for (x = cur; N-- ; x = x->px)
+        {
+
+            if (del)
+                g_free(del);
+
+            u = postSet_lookup(com, x->pid);
+            if (u)
+                b = add_to_A(b, u);
+
+            del = x;
+        }
+
+        if (del)
+            g_free(del);
+
+        if ( !pred )
+        { // ainda tem elementos a lista.
+            hp = Generalized_Priority_Queue(b, length_A(b), post_compare, yes, NULL);
+            cur = x;
+            ll = create_list(length_A(b));
+
+            del = NULL;
+
+            for (x = cur; x ; x = x->px)
+            {
+                if (del)
+                    g_free(del);
+
+                u = postSet_lookup(com, x->pid);
+                if (u)
+                    hp = add_in_Place_H(hp, u);
+
+                del = x;
+            }
+            if (del)
+                g_free(del);
+
+            p = 0;
+
+            while (!empty_H(hp))
+            {
+                u = rem_Heap(hp);
+                set_list(ll , p++ , (long)getP_id(u) );
+            }
+
+            destroy_H(hp);
+        }
+        else
+        {
+            b = sort_A(b, post_ord);
+            N = length_A(b);
+            ll = create_list(N);
+
+            for (p = 0; p < N; p++)
+            {
+                u = get_atA(b, p);
+                set_list(ll , p , (long)getP_id(u) );
+            }
+        }
+    }
+    else
+        return NULL;
+
+    destroy_A(b);
+    g_free(box->fst);
+    g_free(box);
+
+    return ll;
 }

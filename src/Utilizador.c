@@ -188,7 +188,16 @@ int belongs_toBacia ( Util x , unsigned int Parent_id, char flag ){
 
 
 }
-	
+
+unsigned int toBacia_size( Util x)
+{
+    return g_hash_table_size(x->bacia);
+}
+
+int toBacia_contains(Util x, unsigned int key){
+	return g_hash_table_contains(x->bacia, &key );
+}
+
 unsigned int * toBacia_lookup( Util x, unsigned int Parent_id ){
 	
 	return g_hash_table_lookup(x->bacia, &Parent_id);

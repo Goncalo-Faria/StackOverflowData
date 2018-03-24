@@ -55,5 +55,6 @@ void *show_date(TAD_community com);
 
 int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data);
 int reverseCompare(void *a, void *b, void *fun);
+int post_ord(const void *a, const void *b);
 
 #endif

@@ -48,7 +48,7 @@ static int post_src(void *a, void *b, void *garb)
 
     return (-1) * date_compare(getP_date_point(x), (Date)b, NULL);
 }
-static int post_ord(const void *a, const void *b)
+int post_ord(const void *a, const void *b)
 {
 
     Post an = *(Post *)a;

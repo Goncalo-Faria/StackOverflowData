@@ -60,6 +60,10 @@ void* toBacia_transversal(Util x, void (*f)(void *, void *, void *), void *y);
 
 unsigned int *toBacia_lookup(Util x, unsigned int Parent_id);
 
+unsigned int toBacia_size( Util x);
+
+int toBacia_contains(Util x, unsigned int key);
+
 Util bind_toBacia(Util x, Post y);
 
 #endif

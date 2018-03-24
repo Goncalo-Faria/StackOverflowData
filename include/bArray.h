@@ -27,6 +27,7 @@ bArray add_to_A(bArray x, void *ele);
 void destroy_A(bArray x);
 bArray sort_A(bArray x, int (*cmp)(const void *, const void *));
 
+void* get_atA( bArray b, unsigned long i);
 int is_full(bArray x);
 unsigned long length_A(bArray x);
 
