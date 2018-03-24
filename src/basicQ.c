@@ -51,15 +51,19 @@ STR_pair info_from_post(TAD_community com, int id)
 
     x = postSet_lookup(com, id);
     if (!x)
-        return NULL;
+    {
+        return create_str_pair("", "");
+    }
 
     str1 = getP_name(x);
     userid = getP_fund(x);
 
     y = userSet_id_lookup(com, userid);
     if (!y)
-        return NULL;
-
+    {
+        g_free(str1);
+        return create_str_pair((char *)str1, "");
+    }
     str2 = getU_name(y);
     result = create_str_pair((char *)str1, (char *)str2);
 

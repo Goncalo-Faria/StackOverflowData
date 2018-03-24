@@ -10,7 +10,33 @@
 #include "heap.h"
 #include <time.h>
 
-int main(void)
+int main(int argc, char*argv[] )
+{
+    clock_t t1, t2;
+    double time_spent = 0;
+    TAD_community com;
+
+    if( argc < 2 ){
+        printf("--------------------------------------------------------\n");
+        printf("\tIndica o path quando invocas o programa\n");
+        printf("--------------------------------------------------------\n");
+        exit(-1);
+    }  
+    
+    t1 = clock();
+    com = init();
+    com = load(com, argv[1] );
+    clean(com);
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+
+    printf("time: %f",(float)time_spent );
+    
+    return(1);
+}
+
+/*
+int main(int argc, char*argv[] )
 {
     clock_t t1, t2;
     USER q5;
@@ -36,10 +62,16 @@ int main(void)
     //double sum;
     //10.084375
     //10.430469
+    if( argc < 2 ){
+        printf("--------------------------------------------------------\n");
+        printf("\tIndica o path quando invocas o programa\n");
+        printf("--------------------------------------------------------\n");
+        exit(-1);
+    }  
 
     t1 = clock();
     com = init();
-    com = load(com, "askubuntu");
+    com = load(com, argv[1] );
 
     t2 = clock();
     time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
@@ -152,7 +184,7 @@ int main(void)
 
     printf("______________________\n");
     printf("|->Q9\n\n");
-    n = 40;
+    n = 10;
     q9 = both_participated(com, 15811, 449, n);
     if (q9)
     {
@@ -175,6 +207,7 @@ int main(void)
     clean(com);
     return 1;
 }
+*/
 
 /**
  *

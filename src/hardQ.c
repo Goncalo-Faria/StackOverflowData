@@ -3,7 +3,6 @@
 #include "Community.h"
 
 #include "bArray.h"
-#include <stdio.h>
 
 // Estruturas  privadas
 typedef struct record
@@ -17,12 +16,21 @@ struct no
     unsigned int pid;
     struct no *px;
 };
+
+typedef struct bo
+{
+    float key;
+    Post pid;
+
+} * Box;
+
 /////
 
 // Métodos Publicos
 LONG_list top_most_active(TAD_community com, int N);                       //#2
 USER get_user_info(TAD_community com, long id);                            //#5
 LONG_list both_participated(TAD_community com, long id1, long id2, int N); //#9
+LONG_list better_answer(TAD_community com, int id)                         //#10
 
 // Métodos Privados.
 static Record createRecord(void *fs, void *sn)
@@ -31,6 +39,15 @@ static Record createRecord(void *fs, void *sn)
     a->fst = fs;
     a->snd = sn;
     return a;
+}
+
+static Box createBox(float key, Post pid)
+{
+    Box send = g_malloc(sizeof(struct bo));
+
+    send->key = key;
+    send->pid = pid;
+    return send;
 }
 
 static int yes(void *a, void *b)
@@ -217,9 +234,20 @@ USER get_user_info(TAD_community com, long id)
     Util x = userSet_id_lookup(com, (unsigned long)id);
 
     if (!x)
-        return NULL;
+    {
 
+        for (i = 0; i < 10; i++)
+            post_history[i] = 0;
+
+        return create_user("", post_history);
+    }
     short_bio = (char *)getU_bio(x);
+
+    if (!short_bio)
+    {
+        short_bio = g_malloc(sizeof(char));
+        *short_bio = '\0';
+    }
 
     // x->bio;
     carrier = toBacia_transversal(x, collect_top10, carrier); //
@@ -374,13 +402,14 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
     return ll;
 }
 
-static float rank(TAD_community com, Post x)
+static float rank(TAD_community com, Post x) //x
 {
     float r;
-    unsigned long founder = getP_fund(x);
+    unsigned long founder;
     Util u;
     float rep, fav, cmm, scr;
 
+    founder = getP_fund(x);
     if (founder)
     {
         u = userSet_id_lookup(com, founder);
@@ -402,5 +431,59 @@ static float rank(TAD_community com, Post x)
     {
         r = 0;
     }
+
     return r;
+}
+
+static void *travel(Post x, void *user_data)
+{
+    Record cur = (Record)user_data;
+    TAD_community com = (TAD_community)cur->fst;
+    Box a = (Box)cur->snd;
+    float r;
+
+    r = rank(com, x);
+
+    if (a)
+    {
+        if (r > a->key)
+        {
+            a->key = r;
+            a->pid = x;
+        }
+    }
+    else
+    {
+        cur->snd = createBox(r, x);
+    }
+
+    return (void *)cur;
+}
+
+LONG_list better_answer(TAD_community com, int id)
+{
+    Record a;
+    Box bx;
+    Post p = postSet_lookup(com, (unsigned int)id);
+    LONG_list ll = create_list(1);
+
+    if (p)
+    {
+        a = createRecord((void *)com, NULL);
+        a = postAnswer_transversal(p, travel, a);
+
+        bx = (Box)a->snd;
+
+        if (bx)
+            set_list(ll, 0, (long)getP_id(bx->pid));
+        else
+            set_list(ll, 0, 0);
+
+        g_free(bx);
+        g_free(a);
+    }
+    else
+        set_list(ll, 0, 0);
+
+    return ll;
 }

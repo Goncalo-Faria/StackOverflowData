@@ -6,12 +6,6 @@
 #include "bArray.h"
 //#include "date.h"
 
-struct no
-{
-	unsigned int pid;
-	struct no *px;
-};
-
 typedef struct post
 {
 	unsigned int *id;
@@ -29,6 +23,12 @@ typedef struct post
 	Date moment;
 
 } * Post;
+
+struct no
+{
+	Post pid;
+	struct no *px;
+};
 
 static void null_check(void *x)
 {
@@ -70,7 +70,8 @@ void destroyPost(void *x)
 
 	if (del)
 	{
-		for (cur = del->px; cur ; cur = cur->px){
+		for (cur = del->px; cur; cur = cur->px)
+		{
 			g_free(del);
 			del = cur;
 		}
@@ -138,6 +139,16 @@ int score_cmp(void *a, void *b, void *user_data)
 	bnum = (int)(y->score);
 
 	return int_cmp(&anum, &bnum, user_data);
+}
+
+void *postAnswer_transversal(Post x, void* (*p)(Post, void *), void *a){
+	struct no *cur;
+	if( x->type == 1 ){
+		for(cur = x->ans; cur; cur = cur->px )
+			a = p( cur->pid , a );
+	}
+
+	return a;
 }
 
 ////
@@ -245,12 +256,13 @@ Date getP_date(Post x)
 }
 
 // Post setters
-Post setP_addAns(Post x, unsigned int p){
+Post setP_addAns(Post x, Post val)
+{
 
-	struct no* cur = g_malloc( sizeof(struct no) );
+	struct no *cur = g_malloc(sizeof(struct no));
 
-	cur->px  = x->ans;
-	cur->pid = p;
+	cur->px = x->ans;
+	cur->pid = val;
 	x->ans = cur;
 
 	return x;

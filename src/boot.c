@@ -96,7 +96,7 @@ static void link(void *key, void *value, void *user_data)
                 usr = incU_A(usr);
                 par = postSet_lookup(com, getP_parentId(pub));
                 if (par)
-                    par = setP_addAns(par, getP_id(pub));
+                    par = setP_addAns(par, pub );
             }
 
             usr = bind_toBacia(usr, pub); //

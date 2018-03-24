@@ -16,6 +16,7 @@ int inv_post_compare(void *a, void *b, void *user_data);
 int score_cmp(void *a, void *b, void *user_data);
 int nAns_cmp(void *a, void *b, void *user_data);
 
+void *postAnswer_transversal(Post x, void* (*p)(Post, void *), void *a);
 //cria o especifico arrays com as tags
 
 // Post getters
@@ -69,6 +70,6 @@ Post setP_date(Post x, int d, int m, int a);
 
 Post setP_nComment(Post x, unsigned int n);
 
-Post setP_addAns(Post x, unsigned int p);
+Post setP_addAns(Post x, Post val);
 
 #endif
