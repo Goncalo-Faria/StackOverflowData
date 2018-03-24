@@ -30,7 +30,7 @@ typedef struct bo
 LONG_list top_most_active(TAD_community com, int N);                       //#2
 USER get_user_info(TAD_community com, long id);                            //#5
 LONG_list both_participated(TAD_community com, long id1, long id2, int N); //#9
-LONG_list better_answer(TAD_community com, int id)                         //#10
+LONG_list better_answer(TAD_community com, int id);                        //#10
 
 // Métodos Privados.
 static Record createRecord(void *fs, void *sn)
@@ -162,54 +162,56 @@ static void intr(void *key, void *value, void *user_data)
 LONG_list top_most_active(TAD_community com, int N)
 {
     unsigned long i;
-    char *flag = g_malloc(sizeof(char));
+    char *flag;
     Record x;
-    LONG_list ll;
+    LONG_list ll = NULL;
     Util c;
     HEAP hp;
     bArray extreme;
-
-    *flag = 0;
-    x = createRecord(init_A((unsigned long)N, NULL), flag);
-
-    x = userSet_id_transversal(com, make_pq, (void *)x);
-    ll = create_list(N);
-    //
-
-    if ((*(char *)x->snd) == 1)
+    if (com)
     {
-        hp = (HEAP)x->fst;
-    }
-    else
-    {
-        extreme = (bArray)x->fst;
-        hp = Generalized_Priority_Queue(extreme, length_A(extreme), np_cmp, yes, NULL);
-        destroy_A(extreme);
-    }
+        flag = g_malloc(sizeof(char));
+        *flag = 0;
+        x = createRecord(init_A((unsigned long)N, NULL), flag);
 
-    //x contem    se x->snd ==1  HEAP
-    //x contem    se x->snd ==0  bArray
-    //
+        x = userSet_id_transversal(com, make_pq, (void *)x);
+        ll = create_list(N);
+        //
 
-    for (i = 0; i < N; i++)
-    {
-
-        if (!empty_H(hp))
+        if ((*(char *)x->snd) == 1)
         {
-
-            c = rem_Heap(hp);
-            set_list(ll, N - 1 - i, (long)getU_id(c));
+            hp = (HEAP)x->fst;
         }
         else
         {
-            set_list(ll, i, 0);
+            extreme = (bArray)x->fst;
+            hp = Generalized_Priority_Queue(extreme, length_A(extreme), np_cmp, yes, NULL);
+            destroy_A(extreme);
         }
+
+        //x contem    se x->snd ==1  HEAP
+        //x contem    se x->snd ==0  bArray
+        //
+
+        for (i = 0; i < N; i++)
+        {
+
+            if (!empty_H(hp))
+            {
+
+                c = rem_Heap(hp);
+                set_list(ll, N - 1 - i, (long)getU_id(c));
+            }
+            else
+            {
+                set_list(ll, i, 0);
+            }
+        }
+
+        g_free(flag);
+        g_free(x);
+        destroy_H(hp);
     }
-
-    g_free(flag);
-    g_free(x);
-    destroy_H(hp);
-
     return ll;
 }
 
@@ -238,7 +240,12 @@ USER get_user_info(TAD_community com, long id)
 
         for (i = 0; i < 10; i++)
             post_history[i] = 0;
-
+        
+        rd = (Record)carrier->fst;
+        destroy_A(rd->fst);
+        g_free(carrier->fst);
+        g_free(flag);
+        g_free(carrier);
         return create_user("", post_history);
     }
     short_bio = (char *)getU_bio(x);
@@ -286,6 +293,7 @@ USER get_user_info(TAD_community com, long id)
     g_free(short_bio);
     g_free(flag);
 
+    g_free(carrier->fst);
     g_free(carrier);
 
     destroy_H(hp);
