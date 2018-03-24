@@ -17,7 +17,6 @@ int score_cmp(void *a, void *b, void *user_data);
 int nAns_cmp(void *a, void *b, void *user_data);
 
 //cria o especifico arrays com as tags
-Post startP_ansCount(Post x);
 
 // Post getters
 
@@ -37,7 +36,11 @@ unsigned int getP_ansCount(Post x);
 
 unsigned int getP_score(Post x);
 
+unsigned int getP_fav(Post x);
+
 unsigned char getP_type(Post x);
+
+unsigned int getP_nComment(Post x);
 
 Date getP_date_point(Post x);
 
@@ -50,7 +53,7 @@ Post setP_parentId(Post x, unsigned int o);
 
 Post setP_fund(Post x, long f);
 
-Post incP_ansCount(Post x);
+Post setP_ansCount(Post x,unsigned int n);
 
 Post setP_name(Post x, const unsigned char *un);
 
@@ -60,6 +63,12 @@ Post setP_type(Post x, unsigned char t);
 
 Post setP_id(Post x, unsigned int o);
 
+Post setP_fav(Post x,unsigned int n);
+
 Post setP_date(Post x, int d, int m, int a);
+
+Post setP_nComment(Post x, unsigned int n);
+
+Post setP_addAns(Post x, unsigned int p);
 
 #endif

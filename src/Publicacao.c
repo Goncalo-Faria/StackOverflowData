@@ -6,16 +6,26 @@
 #include "bArray.h"
 //#include "date.h"
 
+struct no
+{
+	unsigned int pid;
+	struct no *px;
+};
+
 typedef struct post
 {
 	unsigned int *id;
 	unsigned long fundador;
 	unsigned char *name;
 	unsigned int score;
+	unsigned int comment_count;
+	unsigned int fav;
 	// Either.
 	unsigned char type; // 1 Q ; 2 A;
 	void *special;		// parent Id. // answer count.
 	//bArray *tags;
+	struct no *ans;
+
 	Date moment;
 
 } * Post;
@@ -35,8 +45,11 @@ Post createPost()
 	x->type = 0;
 	x->fundador = 0;
 	x->score = 0;
+	x->comment_count = 0;
+	x->fav = 0;
 	x->id = g_malloc(sizeof(unsigned int));
 	x->special = NULL;
+	x->ans = NULL;
 	//x->data = g_malloc (sizeof(struct date));
 	x->moment = createDate(0, 0, 0);
 	//x->tags = NULL;
@@ -45,12 +58,24 @@ Post createPost()
 
 void destroyPost(void *x)
 {
+	struct no *cur, *del;
 	Post y = (Post)x;
 	free_date(y->moment);
 	null_check(y->name);
 	g_free(y->id);
 	null_check(y->special);
 	g_free(y);
+
+	del = y->ans;
+
+	if (del)
+	{
+		for (cur = del->px; cur ; cur = cur->px){
+			g_free(del);
+			del = cur;
+		}
+		g_free(del);
+	}
 }
 
 //COMPARADORES
@@ -99,7 +124,7 @@ int post_compare(void *a, void *b, void *user_data) // não vai ser preciso.
 int inv_post_compare(void *a, void *b, void *user_data)
 {
 
-    return (-1) * post_compare(a, b, user_data);
+	return (-1) * post_compare(a, b, user_data);
 }
 
 int score_cmp(void *a, void *b, void *user_data)
@@ -114,7 +139,6 @@ int score_cmp(void *a, void *b, void *user_data)
 
 	return int_cmp(&anum, &bnum, user_data);
 }
-
 
 ////
 // Post getters
@@ -192,9 +216,19 @@ unsigned int getP_score(Post x)
 	return (x->score);
 }
 
+unsigned int getP_fav(Post x)
+{
+	return (x->fav);
+}
+
 unsigned char getP_type(Post x)
 {
 	return (x->type);
+}
+
+unsigned int getP_nComment(Post x)
+{
+	return x->comment_count;
 }
 
 Date getP_date_point(Post x)
@@ -211,6 +245,16 @@ Date getP_date(Post x)
 }
 
 // Post setters
+Post setP_addAns(Post x, unsigned int p){
+
+	struct no* cur = g_malloc( sizeof(struct no) );
+
+	cur->px  = x->ans;
+	cur->pid = p;
+	x->ans = cur;
+
+	return x;
+}
 
 Post setP_id(Post x, unsigned int o)
 {
@@ -237,24 +281,25 @@ Post setP_parentId(Post x, unsigned int o)
 	return x;
 }
 
-Post incP_ansCount(Post x)
-{
-	unsigned int *y;
-
-	if (x->type == 1)
-	{
-		y = x->special;
-		*y = *y + 1;
-	}
-	return x;
-}
-Post startP_ansCount(Post x)
+Post setP_ansCount(Post x, unsigned int n)
 {
 	unsigned int *y;
 
 	y = g_malloc(sizeof(unsigned int));
-	*y = 0;
+	*y = n;
 	x->special = y;
+	return x;
+}
+
+Post setP_fav(Post x, unsigned int n)
+{
+	x->fav = n;
+	return x;
+}
+
+Post setP_nComment(Post x, unsigned int n)
+{
+	x->comment_count = n;
 	return x;
 }
 

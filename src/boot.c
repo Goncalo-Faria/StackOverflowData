@@ -69,8 +69,6 @@ TAD_community load(TAD_community com, char *dump_path)
 
     com = reduce(com);
 
-
-
     return com;
 }
 
@@ -81,7 +79,7 @@ static TAD_community reduce(TAD_community com)
 
 static void link(void *key, void *value, void *user_data)
 {
-    Post parentPub, pub = (Post)value;
+    Post par, pub = (Post)value;
     TAD_community com = (TAD_community)user_data;
     Util usr;
     unsigned long founder = getP_fund(pub);
@@ -96,11 +94,9 @@ static void link(void *key, void *value, void *user_data)
             else
             {
                 usr = incU_A(usr);
-
-                parentPub = postSet_lookup(com, getP_parentId(pub));
-
-                if (parentPub)
-                    parentPub = incP_ansCount(parentPub);
+                par = postSet_lookup(com, getP_parentId(pub));
+                if (par)
+                    par = setP_addAns(par, getP_id(pub));
             }
 
             usr = bind_toBacia(usr, pub); //
@@ -205,22 +201,34 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
 
     if (getP_type(x) == 2)
     { // ans
-        //COUNTER++;
         getAtr(hold, node, "ParentId");
         x = setP_parentId(x, (unsigned int)atoi((const char *)hold));
         xmlFree(hold);
+
+        getAtr(hold, node, "CommentCount");
+
+        x = setP_nComment(x, (unsigned int)atoi((const char *)hold));
+        //printf("%s\n",(char*)hold);
+        xmlFree(hold);
+
     }
     else
     {
-        x = startP_ansCount(x);
+        getAtr(hold, node, "AnswerCount");
+        x = setP_ansCount(x, (unsigned int)atoi((const char *)hold));
+        xmlFree(hold);
+
+        /*
+        getAtr(hold, node, "FavoriteCount");
+        x = setP_fav(x, (unsigned int)atoi((const char *)hold));
+        xmlFree(hold);
+        */
     }
     // ADD SCORE.
     getAtr(hold, node, "Score");
     x = setP_score(x, (int)atoi((const char *)hold));
     //printf("%s\n",(char*)hold);
     xmlFree(hold);
-
-    // GET OWNER REF
 
     // GET POST TITLE
     getAtr(hold, node, "Title");
@@ -266,6 +274,10 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
         //printf("%s \n",(char*)hold);
         xmlFree(hold);
     }
+
+    getAtr(hold, node, "Reputation");
+    x = setU_rep(x, (unsigned long)atoi((const char *)hold));
+    xmlFree(hold);
 
     // get Display name
     getAtr(hold, node, "DisplayName");

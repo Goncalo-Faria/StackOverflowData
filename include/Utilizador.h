@@ -34,6 +34,8 @@ unsigned char *getU_name(Util x);
 unsigned char *getU_name_point(Util x);
 
 unsigned char *getU_bio(Util x);
+
+unsigned int getU_rep(Util x);
 // alloca memoria
 
 //Util setters
@@ -49,6 +51,8 @@ Util setU_name(Util x, const unsigned char *un);
 Util setU_bio(Util x, const unsigned char *un);
 
 Util add_toBacia(Util x, unsigned int *id, void *dados);
+
+Util setU_rep(Util x, unsigned int n);
 
 //Functions
 

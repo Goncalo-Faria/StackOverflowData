@@ -265,13 +265,11 @@ USER get_user_info(TAD_community com, long id)
     return send;
 }
 
-
-
 LONG_list both_participated(TAD_community com, long id1, long id2, int N)
 {
 
     Util usr1, usr2;
-    int p, pred, req=N;
+    int p, pred, req = N;
     Record box;
     Util sml, lgr;
     HEAP hp;
@@ -346,8 +344,8 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
                 set_list(ll, N - 1 - p++, (long)getP_id(u));
             }
 
-            for(p=p; p<req; p++)
-                set_list(ll,p,0);
+            for (p = p; p < req; p++)
+                set_list(ll, p, 0);
 
             destroy_H(hp);
         }
@@ -362,9 +360,8 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
                 u = get_atA(b, p);
                 set_list(ll, N - 1 - p, (long)getP_id(u));
             }
-            for(p=p; p<req; p++)
-                set_list(ll,p,0);
-            
+            for (p = p; p < req; p++)
+                set_list(ll, p, 0);
         }
     }
     else
@@ -375,4 +372,35 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
     g_free(box);
 
     return ll;
+}
+
+static float rank(TAD_community com, Post x)
+{
+    float r;
+    unsigned long founder = getP_fund(x);
+    Util u;
+    float rep, fav, cmm, scr;
+
+    if (founder)
+    {
+        u = userSet_id_lookup(com, founder);
+        if (u)
+        {
+            rep = (float)getU_rep(u);
+            fav = (float)getP_fav(x);
+            cmm = (float)getP_nComment(x);
+            scr = (float)getP_score(x);
+
+            r = rep * 0.25 + fav * 0.2 + cmm * 0.1 + scr * 0.45;
+        }
+        else
+        {
+            r = 0;
+        }
+    }
+    else
+    {
+        r = 0;
+    }
+    return r;
 }
