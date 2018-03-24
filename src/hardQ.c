@@ -120,6 +120,27 @@ static void make_pq(void *key, void *value, void *user_data)
     }
 }
 
+static void intr(void *key, void *value, void *user_data)
+{
+    Record box = (Record)user_data;
+    Record ll = (Record)box->fst;
+    int *counter = (int *)ll->snd;
+    struct no **cur = (struct no **)ll->fst;
+    struct no *new;
+    Util lrg = (Util)box->snd;
+    unsigned int pst = *(unsigned int *)key;
+
+    if (toBacia_contains(lrg, pst))
+    {
+
+        new = g_malloc(sizeof(struct no));
+        new->pid = pst;
+        new->px = *cur;
+        *cur = new;
+        *counter += 1;
+    }
+}
+
 // --2 FEITO
 LONG_list top_most_active(TAD_community com, int N)
 {
@@ -244,32 +265,13 @@ USER get_user_info(TAD_community com, long id)
     return send;
 }
 
-static void intr(void *key, void *value, void *user_data)
-{
-    Record box = (Record)user_data;
-    Record ll = (Record)box->fst;
-    int *counter = (int *)ll->snd;
-    struct no **cur = (struct no **)ll->fst;
-    struct no *new;
-    Util lrg = (Util)box->snd;
-    unsigned int pst = *(unsigned int *)key;
 
-    if (toBacia_contains(lrg, pst))
-    {
-
-        new = g_malloc(sizeof(struct no));
-        new->pid = pst;
-        new->px = *cur;
-        *cur = new;
-        *counter+=1;
-    }
-}
 
 LONG_list both_participated(TAD_community com, long id1, long id2, int N)
 {
 
     Util usr1, usr2;
-    int p, pred;
+    int p, pred, req=N;
     Record box;
     Util sml, lgr;
     HEAP hp;
@@ -288,22 +290,17 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
 
         sml = p ? usr2 : usr1;
         lgr = p ? usr1 : usr2;
-
+        p = 0;
         box = createRecord(createRecord(&cur, &p), lgr);
         box = toBacia_transversal(sml, intr, box);
 
-        printf("%d \n",p);
-        for (cur = cur; cur; cur = cur->px)
-            printf("%d \n", cur->pid);
-
-        pred = ( p < N );
+        pred = (p < N);
         N = pred ? p : N;
 
         b = init_A((unsigned long)N, NULL);
-
         del = NULL;
 
-        for (x = cur; N-- ; x = x->px)
+        for (x = cur; N--; x = x->px)
         {
 
             if (del)
@@ -311,7 +308,7 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
 
             u = postSet_lookup(com, x->pid);
             if (u)
-                b = add_to_A(b, u);
+                b = add_to_A(b, (void *)u);
 
             del = x;
         }
@@ -319,15 +316,15 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
         if (del)
             g_free(del);
 
-        if ( !pred )
+        if (!pred)
         { // ainda tem elementos a lista.
-            hp = Generalized_Priority_Queue(b, length_A(b), post_compare, yes, NULL);
+            hp = Generalized_Priority_Queue(b, length_A(b), inv_post_compare, yes, NULL);
             cur = x;
-            ll = create_list(length_A(b));
+            ll = create_list(req);
 
             del = NULL;
 
-            for (x = cur; x ; x = x->px)
+            for (x = cur; x; x = x->px)
             {
                 if (del)
                     g_free(del);
@@ -342,12 +339,15 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
                 g_free(del);
 
             p = 0;
-
+            N = length_H(hp);
             while (!empty_H(hp))
             {
                 u = rem_Heap(hp);
-                set_list(ll , p++ , (long)getP_id(u) );
+                set_list(ll, N - 1 - p++, (long)getP_id(u));
             }
+
+            for(p=p; p<req; p++)
+                set_list(ll,p,0);
 
             destroy_H(hp);
         }
@@ -355,13 +355,16 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
         {
             b = sort_A(b, post_ord);
             N = length_A(b);
-            ll = create_list(N);
+            ll = create_list(req);
 
             for (p = 0; p < N; p++)
             {
                 u = get_atA(b, p);
-                set_list(ll , p , (long)getP_id(u) );
+                set_list(ll, N - 1 - p, (long)getP_id(u));
             }
+            for(p=p; p<req; p++)
+                set_list(ll,p,0);
+            
         }
     }
     else

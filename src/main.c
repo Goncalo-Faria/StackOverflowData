@@ -15,13 +15,13 @@ int main(void)
     clock_t t1, t2;
     USER q5;
     Util usq2;
-    Post q6p, q7p;
+    Post q6p, q7p, q9p;
     STR_pair q1;
     LONG_pair q3;
-    LONG_list q2;
+    LONG_list q2, q9;
     long *l;
     LONG_list q6, q7;
-    Date begin = createDate(16, 1, 2011), end = createDate(3, 3, 2012);
+    Date begin = createDate(16, 1, 2011), end = createDate(3, 3, 2016);
     //int i, *the_test_tmp;
     int n;
     //int *bg, *ed;
@@ -39,7 +39,7 @@ int main(void)
 
     t1 = clock();
     com = init();
-    com = load(com, "android");
+    com = load(com, "askubuntu");
 
     t2 = clock();
     time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
@@ -51,8 +51,8 @@ int main(void)
     q1 = info_from_post(com, 30334);
     if (q1)
     {
-        printf("Publication name :: %s\n", get_fst_str(q1));
-        printf("Publicant name :: %s\n", get_snd_str(q1));
+        printf("Publication name :: \t %s\n", get_fst_str(q1));
+        printf("Publicant name :: \t %s\n", get_snd_str(q1));
         free_str_pair(q1);
     }
     else
@@ -64,7 +64,7 @@ int main(void)
     q2 = top_most_active(com, n);
     for (i = 0; i < n; i++)
     {
-        printf(">> %d <<", (int)get_list(q2, i));
+        printf(">> %d ", (int)get_list(q2, i));
         usq2 = userSet_id_lookup(com, get_list(q2, i));
         printf(" \t %d \n", getU_A(usq2) + getU_Q(usq2));
     }
@@ -78,8 +78,8 @@ int main(void)
     printf("from :: 16 - 01 - 2011\n");
     printf("to   :: 03 - 03 - 2013\n");
 
-    printf("Number of Questions :: %ld \n", get_fst_long(q3));
-    printf("Number of Answers :: %ld \n", get_snd_long(q3));
+    printf("Number of Questions ::\t %ld \n", get_fst_long(q3));
+    printf("Number of Answers   ::\t %ld \n", get_snd_long(q3));
     free_long_pair(q3);
 
     printf("______________________\n");
@@ -88,7 +88,7 @@ int main(void)
     if (q5)
     {
         printf("Short user bio :: \n%s \n", get_bio(q5));
-        printf("Last 10 posts :: \n");
+        printf("Last 10 posts  :: \n");
 
         l = get_10_latest_posts(q5);
 
@@ -101,7 +101,9 @@ int main(void)
 
                 pdate = getP_date_point(q6p);
                 printf(" - %d - %d - %d - \n", get_day(pdate), get_month(pdate), get_year(pdate));
-            } else printf(" Can't find that post bro\n");
+            }
+            else
+                printf(" Can't find that post bro\n");
         }
         g_free(l);
         free_user(q5);
@@ -117,31 +119,59 @@ int main(void)
 
     for (i = 0; i < n; i++)
     {
-        printf(">> %d <<  ", (int)get_list(q6, i));
+
         if ((unsigned int)get_list(q6, i))
         {
+            printf(">> %d   ", (int)get_list(q6, i));
             q6p = postSet_lookup(com, (unsigned int)get_list(q6, i));
-            printf(" < %d > \n", getP_score(q6p));
+            printf("\t < %d > \n", getP_score(q6p));
         }
+        else
+            printf(" Can't find that post bro\n");
     }
 
     g_free(q6);
 
     printf("______________________\n");
     printf("|->Q7\n\n");
-    n = 20;
+    n = 10;
     q7 = most_answered_questions(com, n, begin, end);
     for (i = 0; i < n; i++)
     {
-        printf(">> %d <<  ", (int)get_list(q7, i));
+
         if ((unsigned int)get_list(q7, i))
         {
+            printf(">> %d   ", (int)get_list(q7, i));
             q7p = postSet_lookup(com, (unsigned int)get_list(q7, i));
-            printf(" < %d > \n", getP_ansCount(q7p));
+            printf("\t < %d > \n", getP_ansCount(q7p));
         }
+        else
+            printf(" Can't find that post bro\n");
     }
     g_free(q7);
 
+    printf("______________________\n");
+    printf("|->Q9\n\n");
+    n = 40;
+    q9 = both_participated(com, 15811, 449, n);
+    if (q9)
+    {
+        for (i = 0; i < n; i++)
+        {
+
+            if ((unsigned int)get_list(q9, i))
+            {
+                printf(">> %d   ", (int)get_list(q9, i));
+                q9p = postSet_lookup(com, (unsigned int)get_list(q9, i));
+
+                pdate = getP_date_point(q9p);
+                printf("\t - %d - %d - %d - \n", get_day(pdate), get_month(pdate), get_year(pdate));
+            }
+            else
+                printf(" Can't find that post bro\n");
+        }
+    }
+    g_free(q9);
     clean(com);
     return 1;
 }

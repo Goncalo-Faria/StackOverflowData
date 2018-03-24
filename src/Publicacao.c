@@ -96,6 +96,12 @@ int post_compare(void *a, void *b, void *user_data) // não vai ser preciso.
 	return date_compare(x, y, user_data);
 }
 
+int inv_post_compare(void *a, void *b, void *user_data)
+{
+
+    return (-1) * post_compare(a, b, user_data);
+}
+
 int score_cmp(void *a, void *b, void *user_data)
 {
 	Post x = (Post)a;
