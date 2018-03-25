@@ -532,8 +532,6 @@ LONG_list contains_word(TAD_community com, char* word, int N)
     for(i = index; i< N; i++ )
         set_list((LONG_list) x->fst , i, 0);
 
-
-
     y=x->snd;
     g_free( y->fst );
     g_free( y );

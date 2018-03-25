@@ -62,11 +62,6 @@ TAD_community load(TAD_community com, char *dump_path)
     //->
     com = turnOn_array(com, (unsigned long)postSet_size(com));
     com = postSet_transversal(com, adder, com);
-
-    com = finalize_array(com);
-    //-
-    //show_date(com);
-
     com = reduce(com);
 
     return com;
@@ -74,7 +69,8 @@ TAD_community load(TAD_community com, char *dump_path)
 
 static TAD_community reduce(TAD_community com)
 {
-    return (TAD_community)postSet_transversal(com, link, (void *)com);
+    com = (TAD_community)postSet_transversal(com, link, (void *)com);
+    return finalize_array(com);
 }
 
 static void link(void *key, void *value, void *user_data)
@@ -102,6 +98,7 @@ static void link(void *key, void *value, void *user_data)
             usr = bind_toBacia(usr, pub); //
         }
     }
+    adder( key, value, com );
 }
 
 static TAD_community parser(TAD_community com, char *dump_path, char *file_name, parse_function f)
