@@ -90,7 +90,7 @@ TAD_community clean(TAD_community com)
 
     g_free(com);
 
-    return com;
+    return NULL;
 }
 /*
 
@@ -160,6 +160,12 @@ void *arraySeg_transversal(TAD_community com, Date begin, Date end, void (*funct
     return for_each_from_to(com->PostArray, begin, end, functor, post_src, user_data);
 }
 
+void *arrayRev_transversal(TAD_community com, int (*functor)(void *, void *), void *user_data)
+{
+    return for_each_rev(com->PostArray, functor, user_data);
+}
+
+
 void *show_date(TAD_community com)
 {
     for_each(com->PostArray, print, NULL);
@@ -176,7 +182,17 @@ TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x)
 
 void *userSet_id_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
 {
-    g_hash_table_foreach(com->userById, f, x);
+    //g_hash_table_foreach(com->userById, f, x);
+    
+    GHashTableIter iter;
+    void *key, *value;
+
+    g_hash_table_iter_init(&iter, com->userById);
+    while (g_hash_table_iter_next(&iter, &key, &value))
+    {
+        f(key, value, x);
+    }
+
     return x;
 }
 
@@ -203,8 +219,19 @@ Post postSet_lookup(TAD_community com, unsigned int num)
 }
 
 void *postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
-{
+{   
     g_hash_table_foreach(com->post, f, x);
+    
+    
+    GHashTableIter iter;
+    void *key, *value;
+
+    g_hash_table_iter_init(&iter, com->post);
+    while (g_hash_table_iter_next(&iter, &key, &value))
+    {
+        f(key, value, x);
+    }
+    
     return x;
 }
 

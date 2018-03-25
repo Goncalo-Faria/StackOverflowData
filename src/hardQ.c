@@ -3,6 +3,7 @@
 #include "Community.h"
 
 #include "bArray.h"
+#include <stdio.h>
 
 // Estruturas  privadas
 typedef struct record
@@ -240,7 +241,7 @@ USER get_user_info(TAD_community com, long id)
 
         for (i = 0; i < 10; i++)
             post_history[i] = 0;
-        
+
         rd = (Record)carrier->fst;
         destroy_A(rd->fst);
         g_free(carrier->fst);
@@ -450,6 +451,7 @@ static void *travel(Post x, void *user_data)
     Box a = (Box)cur->snd;
     float r;
 
+    printf(">> %d \n", (int)getP_id(x));
     r = rank(com, x);
 
     if (a)
@@ -458,6 +460,8 @@ static void *travel(Post x, void *user_data)
         {
             a->key = r;
             a->pid = x;
+
+            //printf("\t %f :: %d  | \n",r,(int)getP_id(x));
         }
     }
     else
@@ -475,7 +479,7 @@ LONG_list better_answer(TAD_community com, int id)
     Post p = postSet_lookup(com, (unsigned int)id);
     LONG_list ll = create_list(1);
 
-    if (p)
+    if (p && (getP_type(p) == 1))
     {
         a = createRecord((void *)com, NULL);
         a = postAnswer_transversal(p, travel, a);
@@ -494,4 +498,46 @@ LONG_list better_answer(TAD_community com, int id)
         set_list(ll, 0, 0);
 
     return ll;
+}
+
+static int match(void *value, void *user_data)
+{
+    Record bx = (Record)user_data;
+    Record cur = (Record)bx->fst;
+    Record count = (Record)cur->snd;
+
+    LONG_list k = (LONG_list)cur->fst;
+    int size = *(int *)count->fst;
+    int *index = (int *)count->snd;
+    char *nid = (char *)bx->snd;
+
+    if (strstr((char *)getP_name_point((Post)value), nid))
+    {
+        set_list(k, *index, getP_id(value));
+        *index += 1;
+    }
+
+    return (*index != size);
+}
+
+LONG_list contains_word(TAD_community com, char* word, int N)
+{
+    int index = 0;// ( list , ( ( &index , &size ) , word) )
+    int i;
+
+    Record y, x = createRecord( create_list(N) , createRecord( createRecord(&index , &N ) , word ) );
+    
+    x = arrayRev_transversal(com, match, x );
+
+    for(i = index; i< N; i++ )
+        set_list((LONG_list) x->fst , i, 0);
+
+
+
+    y=x->snd;
+    g_free( y->fst );
+    g_free( y );
+    g_free( x );
+
+    return ((LONG_list) x->fst);
 }

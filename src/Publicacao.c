@@ -1,8 +1,9 @@
-//#include "Publicacao.h"
+#include "Publicacao.h"
 #include <string.h>
 #include "interface.h"
 #include <glib.h>
 //#include "Community.h"
+#include <stdio.h>
 #include "bArray.h"
 //#include "date.h"
 
@@ -143,11 +144,10 @@ int score_cmp(void *a, void *b, void *user_data)
 
 void *postAnswer_transversal(Post x, void* (*p)(Post, void *), void *a){
 	struct no *cur;
-	if( x->type == 1 ){
+
+	if( x->type == 1 )
 		for(cur = x->ans; cur; cur = cur->px )
 			a = p( cur->pid , a );
-	}
-
 	return a;
 }
 
@@ -222,6 +222,11 @@ unsigned char *getP_name(Post x)
 	return tmp;
 }
 
+unsigned char *getP_name_point(Post x)
+{
+	return x->name;
+}
+
 unsigned int getP_score(Post x)
 {
 	return (x->score);
@@ -260,7 +265,6 @@ Post setP_addAns(Post x, Post val)
 {
 
 	struct no *cur = g_malloc(sizeof(struct no));
-
 	cur->px = x->ans;
 	cur->pid = val;
 	x->ans = cur;

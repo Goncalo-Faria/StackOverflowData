@@ -39,6 +39,8 @@ void *arraySeg_transversal(TAD_community com, Date begin, Date end,
                            void (*functor)(void *, void *),
                            void *user_data);
 
+void *arrayRev_transversal(TAD_community com, int (*functor)(void *, void *), void *user_data);
+
 HEAP array_Priority_Queue(TAD_community com,
                           unsigned long Qsize,
                           Fcompare q_cmp,

@@ -142,6 +142,14 @@ void *for_each(bArray x, appFunc functor, void *user_data)
     return for_each_from_to(x, NULL, NULL, functor, NULL, user_data);
 }
 
+void* for_each_rev(bArray x, filterFunc functor, void*user_data){
+
+    long i = x->use - 1 ;
+    while( functor( x->v[i] , user_data) && (i-- > -1) );
+
+    return user_data;
+}
+
 HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord, filterFunc functor, void *user_data)
 {
     long s, e;

@@ -43,6 +43,8 @@ unsigned char getP_type(Post x);
 
 unsigned int getP_nComment(Post x);
 
+unsigned char *getP_name_point(Post x);
+
 Date getP_date_point(Post x);
 
 Date getP_date(Post x);
