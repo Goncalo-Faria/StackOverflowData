@@ -520,22 +520,26 @@ static int match(void *value, void *user_data)
     return (*index != size);
 }
 
-LONG_list contains_word(TAD_community com, char* word, int N)
+LONG_list contains_word(TAD_community com, char *word, int N)
 {
-    int index = 0;// ( list , ( ( &index , &size ) , word) )
+    int index = 0; // ( list , ( ( &index , &size ) , word) )
     int i;
+    Record y, x;
+    if (com)
+    {
+        x = createRecord(create_list(N), createRecord(createRecord(&index, &N), word));
 
-    Record y, x = createRecord( create_list(N) , createRecord( createRecord(&index , &N ) , word ) );
-    
-    x = arrayRev_transversal(com, match, x );
+        x = arrayRev_transversal(com, match, x);
 
-    for(i = index; i< N; i++ )
-        set_list((LONG_list) x->fst , i, 0);
+        for (i = index; i < N; i++)
+            set_list((LONG_list)x->fst, i, 0);
 
-    y=x->snd;
-    g_free( y->fst );
-    g_free( y );
-    g_free( x );
-
-    return ((LONG_list) x->fst);
+        y = x->snd;
+        g_free(y->fst);
+        g_free(y);
+        g_free(x);
+        return ((LONG_list)x->fst);
+    }
+    else
+        return NULL;
 }

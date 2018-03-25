@@ -48,29 +48,33 @@ STR_pair info_from_post(TAD_community com, int id)
     Post x = NULL;
     STR_pair result;
     unsigned long userid;
-
-    x = postSet_lookup(com, id);
-    if (!x)
+    if (com)
     {
-        return create_str_pair("", "");
-    }
+        x = postSet_lookup(com, id);
+        if (!x)
+        {
+            return create_str_pair("", "");
+        }
 
-    str1 = getP_name(x);
-    userid = getP_fund(x);
+        str1 = getP_name(x);
+        userid = getP_fund(x);
 
-    y = userSet_id_lookup(com, userid);
-    if (!y)
-    {
+        y = userSet_id_lookup(com, userid);
+        if (!y)
+        {
+            g_free(str1);
+            return create_str_pair((char *)str1, "");
+        }
+        str2 = getU_name(y);
+        result = create_str_pair((char *)str1, (char *)str2);
+
         g_free(str1);
-        return create_str_pair((char *)str1, "");
+        g_free(str2);
+
+        return result;
     }
-    str2 = getU_name(y);
-    result = create_str_pair((char *)str1, (char *)str2);
-
-    g_free(str1);
-    g_free(str2);
-
-    return result;
+    else
+        return NULL;
 }
 
 // recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
@@ -79,7 +83,10 @@ STR_pair info_from_post(TAD_community com, int id)
 // --3 FEITO   ->
 LONG_pair total_posts(TAD_community com, Date begin, Date end)
 {
-    return (LONG_pair)arraySeg_transversal(com, begin, end, count, (void *)create_long_pair(0, 0));
+    if (com)
+        return (LONG_pair)arraySeg_transversal(com, begin, end, count, (void *)create_long_pair(0, 0));
+    else
+        return NULL;
 }
 
 // --6 FEITA
@@ -89,26 +96,29 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end)
     LONG_list ll;
     Post newp;
     HEAP x; //
-
-    x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, score_cmp, is_A, NULL);
-
-    ll = create_list(N);
-
-    for (i = 0; i < N; i++)
+    if (com)
     {
-        if (!empty_H(x))
-        {
-            newp = (Post)rem_Heap(x);
-            set_list(ll, N - 1 - i, (long)getP_id(newp));
-        }
-        else
-        {
-            set_list(ll, N - 1 - i, 0);
-        }
-    }
+        x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, score_cmp, is_A, NULL);
 
-    destroy_H(x);
-    return ll;
+        ll = create_list(N);
+
+        for (i = 0; i < N; i++)
+        {
+            if (!empty_H(x))
+            {
+                newp = (Post)rem_Heap(x);
+                set_list(ll, N - 1 - i, (long)getP_id(newp));
+            }
+            else
+            {
+                set_list(ll, N - 1 - i, 0);
+            }
+        }
+
+        destroy_H(x);
+        return ll;
+    }
+    return NULL;
 }
 
 LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end)
@@ -117,62 +127,28 @@ LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end
     LONG_list ll;
     Post newp;
     HEAP x; //
-
-    x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, nAns_cmp, is_Q, NULL);
-
-    ll = create_list(N);
-
-    for (i = 0; i < N; i++)
+    if (com)
     {
-        if (!empty_H(x))
+        x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, nAns_cmp, is_Q, NULL);
+
+        ll = create_list(N);
+
+        for (i = 0; i < N; i++)
         {
-            newp = (Post)rem_Heap(x);
-            set_list(ll, N - 1 - i, (long)getP_id(newp));
+            if (!empty_H(x))
+            {
+                newp = (Post)rem_Heap(x);
+                set_list(ll, N - 1 - i, (long)getP_id(newp));
+            }
+            else
+            {
+                set_list(ll, N - 1 - i, 0);
+            }
         }
-        else
-        {
-            set_list(ll, N - 1 - i, 0);
-        }
+
+        destroy_H(x);
+        return ll;
     }
-
-    destroy_H(x);
-    return ll;
+    else
+        return NULL;
 }
-// VERIFICAR SE O MORE_ANSWER ESTA CERTOOOOOOOOOOOOOOOOO'O''O'O'O'OO''O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'
-// VERIFICAR SE O MORE_ANSWER ESTA CERTOOOOOOOOOOOOOOOOO'O''O'O'O'OO''O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'O'
-// --7 FALTA ACABAR
-/*
-LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end){
-    int num;
-    LONG_list lista = create_list(N);
-    Post p = NULL;
-
-    Container carrier = createContainer(begin,end);
-    carrier->spec = (void*)limcreate_H (N,NULL);
-
-    postTree_transversal (com , more_answer , (void*) carrier );
-    // ja me mete em ordem decrescente
-    while(N>0){
-        p = (Post)rem_Heap( (HEAP)carrier->spec ,&num);
-        set_list(lista, N , getP_id (p))  ;
-        N++;
-    }
-    destroy_H (carrier->spec);
-    g_free(carrier);
-    destroyPost(p);
-
-    return lista;
-}
-*/
-
-/*
-}
-
-// --8 FALTA ACBABAR
-LONG_list contains_word(TAD community com, char* word, int N){
-    LONG_list lista = create_list (N);
-
-}
-
-
-*/

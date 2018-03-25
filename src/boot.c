@@ -1,7 +1,6 @@
 //#include "interface.h"
 #include <libxml/parser.h>
 
-#include <stdio.h> // temporario
 #include <string.h>
 #include <ctype.h>
 #include "Community.h"
@@ -49,19 +48,10 @@ static void adder(void *key, void *value, void *user_data)
 
 TAD_community load(TAD_community com, char *dump_path)
 {
-    //Util y;
-    //Post x;
-    //unsigned char* bio,*name;
-    //COUNTER=0;
     com = parser(com, dump_path, "Users", parseUser);
-    printf("Number of users loaded ::%d \n", userSet_size(com));
     com = parser(com, dump_path, "Posts", parsePost);
-    printf("Number of posts loaded ::%d \n", postSet_size(com));
 
-    //printf(" %d \n",COUNTER);
-    //->
     com = turnOn_array(com, (unsigned long)postSet_size(com));
-    com = postSet_transversal(com, adder, com);
     com = reduce(com);
 
     return com;
@@ -114,7 +104,6 @@ static TAD_community parser(TAD_community com, char *dump_path, char *file_name,
     ////////////////////////////////////////////7
     sprintf(docname, "%s/%s.xml", dump_path, file_name);
 
-    printf("%s\n", docname);
     doc = xmlParseFile(docname);
 
     if (!doc)
