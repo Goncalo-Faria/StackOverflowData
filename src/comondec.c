@@ -3,6 +3,7 @@
 #include <Utilizador.h>
 #include <glib.h>
 #include <date.h>
+#include <string.h>
 
 Record createRecord(void *fs, void *sn)
 {

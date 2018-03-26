@@ -81,50 +81,59 @@ void destroyPost(void *x)
 }
 
 //COMPARADORES
-int compare (const void*x , const void*y){
+
+void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a)
+{
+	struct no *cur;
+
+	if (x->type == 1)
+		for (cur = x->ans; cur; cur = cur->px)
+			a = p(cur->pid, a);
+	return a;
+}
+
+static int str_compare (const void*x , const void*y){
     const char *fst = (const char* )x;
     const char *snd = (const char* )y;
     return strcmp(fst,snd);
 }
 
-void *postAnswer_transversal(Post x, void* (*p)(Post, void *), void *a){
-	struct no *cur;
-
-	if( x->type == 1 )
-		for(cur = x->ans; cur; cur = cur->px )
-			a = p( cur->pid , a );
-	return a;
-}
-
 //////////
-Post parP_Tag ( Post x , const char *tag){
-    char tmp[1024];
-    bArray array;
-    char *l ,*ret;
-    int numtag =0; int i=0; 
-    long n =0; 
 
-    for (l = (char*) tag ; *l ; (*l)++){
-        if (*l == ';') numtag++;
-    }
-    //fazer funcao que da free
-    array = init_A (n , g_free);
-    ret = strstr ( tag , ";");
-   
-    while (ret){
-        (*ret)++;
-        for (l=ret ; *l ; (*l)++){
-            tmp[i++]= *l;
-        }
-        tmp[i]='\0';
-        array = add_to_A (x , (char *) tmp );
-        ret = strstr ( ret , ";");
-    }
-    
-    array = sort_A(x , compare);
-    x->tags = array;
-    return x;
-} 
+
+
+Post setP_tag(Post x, char *tag)
+{
+	char tmp[1024];
+	bArray b;
+	char *l, *ret;
+	int numtag = 0;
+	int i;
+	//printf("tag : %s \n",tag);
+	for (l = tag; *l; l++ )
+		if (*l == '<')
+			numtag++;
+
+	numtag = numtag;
+	b = init_A(numtag, g_free);
+	ret = strstr(tag, "<");
+
+	while (ret)
+	{
+		ret++;// avançar o '<'
+		i=0;
+		for (l = ret; *l && (*l != '>'); l++)
+			tmp[i++] = *l;
+		tmp[i] = '\0';
+
+		b = add_to_A( b , g_memdup(tmp, sizeof(char)*(strlen(tmp) + 1 ) ) );
+		ret = strstr(ret, "<");
+	}
+
+	b = sort_A(b, str_compare);
+	x->tags = b;
+	return x;
+}
 
 ////
 // Post getters
@@ -178,7 +187,7 @@ unsigned char *getP_name(Post x)
 	if (x->name)
 	{
 
-		tmp = (unsigned char*) g_memdup(x->name,  sizeof(char)*(strlen((const char *)x->name) + 1) );
+		tmp = (unsigned char *)g_memdup(x->name, sizeof(char) * (strlen((const char *)x->name) + 1));
 	}
 	return tmp;
 }
@@ -296,9 +305,9 @@ Post setP_fund(Post x, long f)
 
 Post setP_name(Post x, const unsigned char *un)
 {
-	int lenz =  (strlen((const char *)un) + 1);
+	int lenz = (strlen((const char *)un) + 1);
 	null_check(x->name);
-	x->name = (unsigned char*) g_memdup(un, sizeof(char) * lenz );
+	x->name = (unsigned char *)g_memdup(un, sizeof(char) * lenz);
 	return x;
 }
 

@@ -223,7 +223,7 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
     // ADD TAGS
     getAtr (hold , node ,"Tags");
     if(hold){
-        x = parP_Tag( x , (char*)hold );
+        x = setP_tag( x ,(char*) hold );
         xmlFree(hold);
     }
     // ADD SCORE.
