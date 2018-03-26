@@ -199,7 +199,6 @@ static void *travel(Post x, void *user_data)
     Box a = (Box)cur->snd;
     float r;
 
-    printf(">> %d \n", (int)getP_id(x));
     r = rank(com, x);
 
     if (a)
@@ -208,8 +207,6 @@ static void *travel(Post x, void *user_data)
         {
             a->key = r;
             a->pid = x;
-
-            //printf("\t %f :: %d  | \n",r,(int)getP_id(x));
         }
     }
     else
@@ -520,7 +517,7 @@ static int match(void *value, void *user_data)
     Record count = (Record)cur->fst;
 
     char *word = (char *)bx->fst;
-    
+
     LONG_list k = (LONG_list)cur->snd;
     int *index = (int *)count->fst;
     int size = *(int *)count->snd;

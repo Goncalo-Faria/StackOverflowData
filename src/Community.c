@@ -66,7 +66,6 @@ TAD_community init(void)
     TAD_community x = g_malloc(sizeof(struct TCD_community));
 
     x->userById = g_hash_table_new_full(g_int64_hash, g_int64_equal, NULL, destroyUtil);
-    //x->userByName = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, NULL);
 
     x->post = g_hash_table_new_full(g_int_hash, g_int_equal, NULL, destroyPost);
 
@@ -78,9 +77,6 @@ TAD_community init(void)
 TAD_community clean(TAD_community com)
 {
     g_hash_table_destroy(com->userById);
-
-    //if( com->userByName)
-    //  g_hash_table_destroy(com->userByName);
 
     g_hash_table_destroy(com->post);
 
@@ -200,8 +196,6 @@ Post postSet_lookup(TAD_community com, unsigned int num)
 
 void *postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
 {
-    g_hash_table_foreach(com->post, f, x);
-
     GHashTableIter iter;
     void *key, *value;
 
