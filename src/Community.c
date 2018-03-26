@@ -2,6 +2,7 @@
 #include "Community.h"
 #include <date.h>
 #include "bArray.h"
+#include "comondec.h"
 
 typedef struct TCD_community
 {
@@ -17,47 +18,11 @@ typedef struct TCD_community
 /*
 */
 
-int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data)
-{
-
-    Date x = (Date)a, y = (Date)b;
-
-    if (get_year(x) > get_year(y))
-        return 1;
-    else if (get_year(x) < get_year(y))
-        return -1;
-    //-----------------------------------------
-    if (get_month(x) > get_month(y))
-        return 1;
-    else if (get_month(x) < get_month(y))
-        return -1;
-    //-----------------------------------------
-    if (get_day(x) > get_day(y))
-        return 1;
-    else if (get_day(x) < get_day(y))
-        return -1;
-
-    return 0;
-}
-
 static int post_src(void *a, void *b, void *garb)
 { // Post, date.
     Post x = (Post)a;
 
     return (-1) * date_compare(getP_date_point(x), (Date)b, NULL);
-}
-int post_ord(const void *a, const void *b)
-{
-
-    Post an = *(Post *)a;
-    Post bn = *(Post *)b;
-
-    return date_compare(getP_date_point(an), getP_date_point(bn), NULL);
-}
-
-void gen_free_date(void *d)
-{
-    free_date((Date)d);
 }
 
 TAD_community init(void)
@@ -86,13 +51,6 @@ TAD_community clean(TAD_community com)
     g_free(com);
 
     return NULL;
-}
-
-int reverseCompare(void *a, void *b, void *fun)
-{
-
-    Fcompare the_func = (Fcompare)fun;
-    return (-1) * the_func(a, b, NULL);
 }
 
 int is_ON(TAD_community com)

@@ -61,26 +61,6 @@ void destroyUtil(void *x)
 }
 
 //COMPARE
-static int int_cmp(void *a, void *b, void *user_data)
-{
-	int *x = (int *)a;
-	int *y = (int *)b;
-
-	return (*y - *x);
-}
-
-int np_cmp(void *a, void *b, void *user_data)
-{
-	Util x = (Util)a;
-	Util y = (Util)b;
-
-	int anum, bnum;
-
-	anum = (int)(x->Q + x->A);
-	bnum = (int)(y->Q + y->A);
-
-	return int_cmp(&anum, &bnum, user_data);
-}
 
 // Util getters
 unsigned long getU_id(Util x)

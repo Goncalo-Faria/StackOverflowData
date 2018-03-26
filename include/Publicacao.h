@@ -11,11 +11,6 @@ Post createPost();
 //destroy a specify post
 void destroyPost(void *x);
 
-int post_compare(void *a, void *b, void *user_data);
-int inv_post_compare(void *a, void *b, void *user_data);
-int score_cmp(void *a, void *b, void *user_data);
-int nAns_cmp(void *a, void *b, void *user_data);
-
 void *postAnswer_transversal(Post x, void* (*p)(Post, void *), void *a);
 //cria o especifico arrays com as tags
 

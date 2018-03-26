@@ -17,8 +17,6 @@ void destroyUtil(void *x);
 
 //void setDate ( Post x ,int d,int m ,int a);
 
-int np_cmp(void *a, void *b, void *user_data);
-
 // User getters
 unsigned long getU_id(Util x);
 

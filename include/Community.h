@@ -57,9 +57,4 @@ HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end,
                              int (*filter)(void *, void *),
                              void *user_data);
 
-
-int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data);
-int reverseCompare(void *a, void *b, void *fun);
-int post_ord(const void *a, const void *b);
-
 #endif
