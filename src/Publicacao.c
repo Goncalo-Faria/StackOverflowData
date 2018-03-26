@@ -3,7 +3,7 @@
 #include "interface.h"
 #include <glib.h>
 //#include "Community.h"
-#include <stdio.h>
+//#include <stdio.h>
 #include "bArray.h"
 //#include "date.h"
 
