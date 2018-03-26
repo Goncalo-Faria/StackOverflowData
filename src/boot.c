@@ -1,6 +1,6 @@
 //#include "interface.h"
 #include <libxml/parser.h>
-
+#include "Publicacao.h"
 #include <string.h>
 #include <ctype.h>
 #include "Community.h"
@@ -219,6 +219,12 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
         x = setP_fav(x, (unsigned int)atoi((const char *)hold));
         xmlFree(hold);
         */
+    }
+    // ADD TAGS
+    getAtr (hold , node ,"Tags");
+    if(hold){
+        x = parP_Tag( x , (char*)hold );
+        xmlFree(hold);
     }
     // ADD SCORE.
     getAtr(hold, node, "Score");
