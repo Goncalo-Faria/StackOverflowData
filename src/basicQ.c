@@ -172,10 +172,15 @@ STR_pair info_from_post(TAD_community com, int id)
     {
         x = postSet_lookup(com, id);
         if (!x)
-        {
             return create_str_pair("", "");
-        }
 
+        if (getP_type(x) == 2)
+        {
+            x = postSet_lookup(com, getP_parentId(x));
+            if (!x)
+                return create_str_pair("", "");
+                
+        }
         str1 = getP_name(x);
         userid = getP_fund(x);
 

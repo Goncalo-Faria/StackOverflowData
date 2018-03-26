@@ -53,7 +53,7 @@ Post createPost()
 	x->ans = NULL;
 	//x->data = g_malloc (sizeof(struct date));
 	x->moment = createDate(0, 0, 0);
-	//x->tags = NULL;
+	x->tags = NULL;
 	return x;
 }
 
@@ -68,6 +68,9 @@ void destroyPost(void *x)
 	g_free(y);
 
 	del = y->ans;
+
+	if( y->tags )
+		destroy_A(y->tags);
 
 	if (del)
 	{
