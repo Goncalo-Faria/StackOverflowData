@@ -158,16 +158,7 @@ TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x)
 
 void *userSet_id_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
 {
-    //g_hash_table_foreach(com->userById, f, x);
-
-    GHashTableIter iter;
-    void *key, *value;
-
-    g_hash_table_iter_init(&iter, com->userById);
-    while (g_hash_table_iter_next(&iter, &key, &value))
-    {
-        f(key, value, x);
-    }
+    g_hash_table_foreach(com->userById, f, x);
 
     return x;
 }
@@ -196,15 +187,7 @@ Post postSet_lookup(TAD_community com, unsigned int num)
 
 void *postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
 {
-    GHashTableIter iter;
-    void *key, *value;
-
-    g_hash_table_iter_init(&iter, com->post);
-    while (g_hash_table_iter_next(&iter, &key, &value))
-    {
-        f(key, value, x);
-    }
-
+    g_hash_table_foreach(com->post, f, x);
     return x;
 }
 
