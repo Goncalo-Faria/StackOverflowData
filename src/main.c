@@ -5,73 +5,75 @@
 #include "Community.h"
 #include "stdlib.h"
 
+#include <malloc.h>
 //tmp
 #include "bArray.h"
 #include "heap.h"
 #include <time.h>
 
-int main(int argc, char*argv[] )
+/*
+int main(int argc, char *argv[])
 {
     clock_t t1, t2;
     double time_spent = 0;
+    int i,n;
     TAD_community com;
 
-    if( argc < 2 ){
+    if (argc < 2)
+    {
         printf("--------------------------------------------------------\n");
         printf("\tIndica o path quando invocas o programa\n");
         printf("--------------------------------------------------------\n");
         exit(-1);
-    }  
-    
-    t1 = clock();
-    com = init();
-    com = load(com, argv[1] );
-    clean(com);
-    t2 = clock();
-    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    }
+    n=20;
+    for (i = 0; i < n; i++)
+    {
+        t1 = clock();
+        com = init();
+        com = load(com, argv[1]);
+        clean(com);
+        t2 = clock();
+        time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    }
+    printf("time: %f", (float)time_spent/n);
 
-    printf("time: %f",(float)time_spent );
-    
-    return(1);
+    return (1);
 }
+*/
 
-/*
-int main(int argc, char*argv[] )
+int main(int argc, char *argv[])
 {
     clock_t t1, t2;
     USER q5;
     Util usq2;
-    Post q6p, q7p, q9p;
+    Post q6p, q7p, q9p, q8p;
     STR_pair q1;
     LONG_pair q3;
-    LONG_list q2, q9;
+    char *tmp;
     long *l;
-    LONG_list q6, q7;
+    LONG_list q9, q2, q6, q10, q7, q8;
     Date begin = createDate(16, 1, 2011), end = createDate(3, 3, 2016);
-    //int i, *the_test_tmp;
     int n;
     //int *bg, *ed;
     Date pdate;
-
-    //bArray the_test;
-    //int **envoy;
-    //HEAP the_fst_beap,Pq;
     TAD_community com;
     int i;
     double time_spent = 0;
     //double sum;
     //10.084375
     //10.430469
-    if( argc < 2 ){
+    if (argc < 2)
+    {
         printf("--------------------------------------------------------\n");
         printf("\tIndica o path quando invocas o programa\n");
         printf("--------------------------------------------------------\n");
         exit(-1);
-    }  
+    }
 
     t1 = clock();
     com = init();
-    com = load(com, argv[1] );
+    com = load(com, argv[1]);
 
     t2 = clock();
     time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
@@ -83,8 +85,12 @@ int main(int argc, char*argv[] )
     q1 = info_from_post(com, 30334);
     if (q1)
     {
-        printf("Publication name :: \t %s\n", get_fst_str(q1));
+        tmp = get_fst_str(q1);
+        printf("Publication name :: \t %s\n", tmp);
+        g_free(tmp);
+        tmp = get_snd_str(q1);
         printf("Publicant name :: \t %s\n", get_snd_str(q1));
+        g_free(tmp);
         free_str_pair(q1);
     }
     else
@@ -94,13 +100,16 @@ int main(int argc, char*argv[] )
     printf("|->Q2\n\n");
     n = 40;
     q2 = top_most_active(com, n);
-    for (i = 0; i < n; i++)
+    if (q2)
     {
-        printf(">> %d ", (int)get_list(q2, i));
-        usq2 = userSet_id_lookup(com, get_list(q2, i));
-        printf(" \t %d \n", getU_A(usq2) + getU_Q(usq2));
+        for (i = 0; i < n; i++)
+        {
+            printf(">> %d ", (int)get_list(q2, i));
+            usq2 = userSet_id_lookup(com, get_list(q2, i));
+            printf(" \t %d \n", getU_A(usq2) + getU_Q(usq2));
+        }
+        free_list(q2);
     }
-    free_list(q2);
 
     printf("______________________\n");
     printf("|->Q3\n\n");
@@ -119,7 +128,8 @@ int main(int argc, char*argv[] )
     q5 = get_user_info(com, 16575);
     if (q5)
     {
-        printf("Short user bio :: \n%s \n", get_bio(q5));
+        tmp = get_bio(q5);
+        printf("Short user bio :: \n%s \n", tmp);
         printf("Last 10 posts  :: \n");
 
         l = get_10_latest_posts(q5);
@@ -137,7 +147,8 @@ int main(int argc, char*argv[] )
             else
                 printf(" Can't find that post bro\n");
         }
-        g_free(l);
+        //g_free(tmp);
+        //g_free(l);
         free_user(q5);
     }
     else
@@ -148,18 +159,20 @@ int main(int argc, char*argv[] )
 
     n = 50;
     q6 = most_voted_answers(com, n, begin, end);
-
-    for (i = 0; i < n; i++)
+    if (q6)
     {
-
-        if ((unsigned int)get_list(q6, i))
+        for (i = 0; i < n; i++)
         {
-            printf(">> %d   ", (int)get_list(q6, i));
-            q6p = postSet_lookup(com, (unsigned int)get_list(q6, i));
-            printf("\t < %d > \n", getP_score(q6p));
+
+            if ((unsigned int)get_list(q6, i))
+            {
+                printf(">> %d   ", (int)get_list(q6, i));
+                q6p = postSet_lookup(com, (unsigned int)get_list(q6, i));
+                printf("\t < %d > \n", getP_score(q6p));
+            }
+            else
+                printf(" Can't find that post bro\n");
         }
-        else
-            printf(" Can't find that post bro\n");
     }
 
     g_free(q6);
@@ -168,20 +181,42 @@ int main(int argc, char*argv[] )
     printf("|->Q7\n\n");
     n = 10;
     q7 = most_answered_questions(com, n, begin, end);
-    for (i = 0; i < n; i++)
-    {
 
-        if ((unsigned int)get_list(q7, i))
+    if (q7)
+    {
+        for (i = 0; i < n; i++)
         {
-            printf(">> %d   ", (int)get_list(q7, i));
-            q7p = postSet_lookup(com, (unsigned int)get_list(q7, i));
-            printf("\t < %d > \n", getP_ansCount(q7p));
+
+            if ((unsigned int)get_list(q7, i))
+            {
+                printf(">> %d   ", (int)get_list(q7, i));
+                q7p = postSet_lookup(com, (unsigned int)get_list(q7, i));
+                printf("\t < %d > \n", getP_ansCount(q7p));
+            }
+            else
+                printf(" Can't find that post bro\n");
         }
-        else
-            printf(" Can't find that post bro\n");
     }
     g_free(q7);
 
+    printf("______________________\n");
+    printf("|->Q8\n\n");
+    n = 40;
+    q8 = contains_word(com, "store", n);
+    if (q8)
+    {
+        for (i = 0; i < n; i++)
+        {
+            if ((unsigned int)get_list(q8, i))
+            {
+                q8p = postSet_lookup(com, (unsigned int)get_list(q8, i));
+                pdate = getP_date_point(q8p);
+                if (q8p)
+                    printf(" %d ||  %d-%d-%d || \t name : : %s || \n", i + 1,get_day(pdate),get_month(pdate),get_year(pdate), getP_name_point(q8p));
+            }
+        }
+    }
+    g_free(q8);
     printf("______________________\n");
     printf("|->Q9\n\n");
     n = 10;
@@ -203,16 +238,22 @@ int main(int argc, char*argv[] )
                 printf(" Can't find that post bro\n");
         }
     }
+    g_free(begin);
+    g_free(end);
     g_free(q9);
+
+    printf("______________________\n");
+    printf("|->Q10\n\n");
+
+    q10 = better_answer(com, 30334);
+    if (q10)
+    {
+        if (get_list(q10, 0))
+        {
+            printf("----1>| %ld |<1----\n", get_list(q10, 0));
+            g_free(q10);
+        }
+    }
     clean(com);
     return 1;
 }
-*/
-
-/**
- *
- * 
- * 
- * 
- *  
-  */

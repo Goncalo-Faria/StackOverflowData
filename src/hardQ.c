@@ -227,7 +227,7 @@ LONG_list top_most_active(TAD_community com, int N)
     Util c;
     HEAP hp;
     bArray extreme;
-    if ( is_ON(com))
+    if (is_ON(com))
     {
         flag = g_malloc(sizeof(char));
         *flag = 0;
@@ -377,7 +377,7 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
     struct no *del, *x, *cur = NULL;
 
     LONG_list ll;
-    if ( is_ON(com))
+    if (is_ON(com))
     {
         usr1 = userSet_id_lookup(com, id1);
         usr2 = userSet_id_lookup(com, id2);
@@ -484,7 +484,7 @@ LONG_list better_answer(TAD_community com, int id)
     Post p = postSet_lookup(com, (unsigned int)id);
     LONG_list ll = create_list(1);
 
-    if ( is_ON(com) )
+    if (is_ON(com))
     {
         if (p && (getP_type(p) == 1))
         {
@@ -517,15 +517,23 @@ static int match(void *value, void *user_data)
     Record count = (Record)cur->fst;
 
     char *word = (char *)bx->fst;
+    char *title;
 
     LONG_list k = (LONG_list)cur->snd;
     int *index = (int *)count->fst;
     int size = *(int *)count->snd;
+    title = (char *)getP_name_point((Post)value);
 
-    if (strstr((char *)getP_name_point((Post)value), word))
+    //printf(" ||| %s \n",title);
+
+    if (title && ( getP_type((Post)value) == 1) )
     {
-        set_list(k, *index, getP_id(value));
-        *index += 1;
+
+        if (strstr(title, word))
+        {
+            set_list(k, *index, getP_id(value));
+            *index += 1;
+        }
     }
 
     return (*index != size);
@@ -536,20 +544,25 @@ LONG_list contains_word(TAD_community com, char *word, int N)
     int index = 0; // ( list , ( ( &index , &size ) , word) )
     int i;
     Record y, x;
-    if ( is_ON(com) )
+    LONG_list ll = create_list(N);
+    if (is_ON(com))
     {
-        x = createRecord(word, createRecord( createRecord(&index, &N), create_list(N) ));
+        x = createRecord(word, createRecord(createRecord(&index, &N), ll));
 
         x = arrayRev_transversal(com, match, x);
-
-        for (i = index; i < N; i++)
-            set_list((LONG_list)x->fst, i, 0);
-
+        if (index >= 0)
+        {
+            for (i = index; i < N; i++){ //caso não haja N match's.
+                
+                set_list(ll, i, 0);
+            }
+        }
         y = x->snd;
+
         g_free(y->fst);
         g_free(y);
         g_free(x);
-        return ((LONG_list)x->fst);
+        return (ll);
     }
     else
         return NULL;

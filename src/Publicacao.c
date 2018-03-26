@@ -335,10 +335,9 @@ Post setP_fund(Post x, long f)
 
 Post setP_name(Post x, const unsigned char *un)
 {
-
+	int lenz =  (strlen((const char *)un) + 1);
 	null_check(x->name);
-	x->name = g_malloc(sizeof(unsigned char) * (strlen((const char *)un) + 1));
-	strcpy((char *)x->name, (const char *)un);
+	x->name = (unsigned char*) g_memdup(un, sizeof(char) * lenz );
 	return x;
 }
 

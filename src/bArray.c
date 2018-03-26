@@ -2,7 +2,6 @@
 #include <glib.h>
 
 #include <stdlib.h>
-//#include <stdio.h>
 
 #define full(x) (x->use == x->size)
 
@@ -145,8 +144,7 @@ void *for_each(bArray x, appFunc functor, void *user_data)
 void* for_each_rev(bArray x, filterFunc functor, void*user_data){
 
     long i = x->use - 1 ;
-    while( functor( x->v[i] , user_data) && (i-- > -1) );
-
+    while( (i >= 0) && functor( x->v[i] , user_data)  ) i--;
     return user_data;
 }
 
