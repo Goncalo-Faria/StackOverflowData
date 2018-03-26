@@ -5,6 +5,7 @@
 #include "Community.h"
 #include <stdio.h>
 #include <comondec.h>
+#include <ctype.h>
 //#include "interface.h"
 
 #include <bArray.h>
@@ -14,9 +15,9 @@
 #define inc_snd_long(x) set_snd_long(x, 1 + get_snd_long(x))
 
 // Métodos publicos.
-STR_pair info_from_post(TAD_community com, int id);                                //#1
-LONG_list top_most_active(TAD_community com, int N);                               //#2
-LONG_pair total_posts(TAD_community com, Date begin, Date end);                    //#3
+STR_pair info_from_post(TAD_community com, int id);             //#1
+LONG_list top_most_active(TAD_community com, int N);            //#2
+LONG_pair total_posts(TAD_community com, Date begin, Date end); //#3
 
 USER get_user_info(TAD_community com, long id);                                    //#5
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end);      //#6
@@ -31,25 +32,39 @@ static int match(void *value, void *user_data)
     Record count = (Record)cur->fst;
 
     char *word = (char *)bx->fst;
-    char *title;
+    char *title, *org, *x;
 
+    int lenz;
     LONG_list k = (LONG_list)cur->snd;
     int *index = (int *)count->fst;
     int size = *(int *)count->snd;
-    title = (char *)getP_name_point((Post)value);
 
-    //printf(" ||| %s \n",title);
-
-    if (title && ( getP_type((Post)value) == 1) )
+    org = (char *)getP_name_point((Post)value);
+    if (org)
     {
+        lenz = (strlen(org) + 3);
+        title = g_malloc(sizeof(char) * lenz);
 
-        if (strstr(title, word))
+        *title = ' ';
+        strcpy(title + 1, org);
+        title[lenz - 1] = '\0';
+        title[lenz - 2] = ' ';
+
+        for (x = title; *x; x++)
+            *x = tolower(*x);
+
+        if ((getP_type((Post)value) == 1))
         {
-            set_list(k, *index, getP_id(value));
-            *index += 1;
-        }
-    }
 
+            if (strstr(title, word))
+            {
+                set_list(k, *index, getP_id(value));
+                *index += 1;
+            }
+        }
+
+        g_free(title);
+    }
     return (*index != size);
 }
 
@@ -258,16 +273,25 @@ LONG_list contains_word(TAD_community com, char *word, int N)
     int index = 0; // ( list , ( ( &index , &size ) , word) )
     int i;
     Record y, x;
-    LONG_list ll = create_list(N);
+    char *cur, *wordcpy;
+    LONG_list ll;
     if (is_ON(com))
     {
-        x = createRecord(word, createRecord(createRecord(&index, &N), ll));
+        wordcpy = g_malloc(sizeof(char *) * (strlen(word) + 3));
+        ll = create_list(N);
+        sprintf(wordcpy, " %s ", word);
+
+        for (cur = wordcpy; *cur; cur++)
+            *cur = tolower(*cur);
+
+        x = createRecord(wordcpy, createRecord(createRecord(&index, &N), ll));
 
         x = arrayRev_transversal(com, match, x);
         if (index >= 0)
         {
-            for (i = index; i < N; i++){ //caso não haja N match's.
-                
+            for (i = index; i < N; i++)
+            { //caso não haja N match's.
+
                 set_list(ll, i, 0);
             }
         }
@@ -276,6 +300,7 @@ LONG_list contains_word(TAD_community com, char *word, int N)
         g_free(y->fst);
         g_free(y);
         g_free(x);
+        g_free(wordcpy);
         return (ll);
     }
     else

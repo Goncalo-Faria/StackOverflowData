@@ -143,8 +143,7 @@ unsigned char *getP_name(Post x)
 	if (x->name)
 	{
 
-		tmp = g_malloc(sizeof(unsigned char) * (strlen((const char *)x->name) + 1));
-		strcpy((char *)tmp, (const char *)x->name);
+		tmp = (unsigned char*) g_memdup(x->name,  sizeof(char)*(strlen((const char *)x->name) + 1) );
 	}
 	return tmp;
 }
