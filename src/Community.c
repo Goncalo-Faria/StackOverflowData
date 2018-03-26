@@ -3,8 +3,6 @@
 #include <date.h>
 #include "bArray.h"
 
-#include <stdio.h>
-
 typedef struct TCD_community
 {
     GHashTable *userById;
@@ -12,6 +10,7 @@ typedef struct TCD_community
     //GHashTable *userByName;
     bArray PostArray;
     GHashTable *post;
+    int ac;
 
 } * TAD_community;
 
@@ -21,7 +20,6 @@ typedef struct TCD_community
 int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data)
 {
 
-    // user data será sempre null;
     Date x = (Date)a, y = (Date)b;
 
     if (get_year(x) > get_year(y))
@@ -73,6 +71,7 @@ TAD_community init(void)
     x->post = g_hash_table_new_full(g_int_hash, g_int_equal, NULL, destroyPost);
 
     x->PostArray = NULL;
+    x->ac = 0;
     return x;
 }
 
@@ -92,30 +91,28 @@ TAD_community clean(TAD_community com)
 
     return NULL;
 }
-/*
-
-TAD_community terminate_UbyName( TAD_community com ){
-    g_hash_table_destroy(com->userByName);
-    com->userByName = NULL;
-    return com;
-}
-Util userSet_name_lookup(TAD_community com, unsigned char *name)
-{
-    return (Util)g_hash_table_lookup(com->userByName, name);
-}
-TAD_community userSet_insert_name(TAD_community com, unsigned char *key, Util x)
-{
-    g_hash_table_insert(com->userByName, (void *)key, (void *)x);
-    return com;
-}
-
-*/
 
 int reverseCompare(void *a, void *b, void *fun)
 {
 
     Fcompare the_func = (Fcompare)fun;
     return (-1) * the_func(a, b, NULL);
+}
+
+int is_ON(TAD_community com)
+{
+
+    if (com)
+        return com->ac;
+    else
+        return 0;
+}
+
+TAD_community activate(TAD_community com)
+{
+
+    com->ac = 1;
+    return com;
 }
 
 TAD_community turnOn_array(TAD_community com, unsigned long n)
@@ -145,16 +142,6 @@ HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end, unsigned l
     return from_to_Priority_Queue(com->PostArray, begin, end, Qsize, q_cmp, post_src, filter, user_data);
 }
 
-static void print(void *x, void *y)
-{
-
-    //Post a = (Post)x;
-    //Date d = getP_date_point(a);
-
-    Date d = x;
-    printf(" %d-%d-%d \n", get_day(d), get_month(d), get_year(d));
-}
-
 void *arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *), void *user_data)
 {
     return for_each_from_to(com->PostArray, begin, end, functor, post_src, user_data);
@@ -163,13 +150,6 @@ void *arraySeg_transversal(TAD_community com, Date begin, Date end, void (*funct
 void *arrayRev_transversal(TAD_community com, int (*functor)(void *, void *), void *user_data)
 {
     return for_each_rev(com->PostArray, functor, user_data);
-}
-
-
-void *show_date(TAD_community com)
-{
-    for_each(com->PostArray, print, NULL);
-    return NULL;
 }
 
 // USER HASHTABLE;
@@ -183,7 +163,7 @@ TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x)
 void *userSet_id_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
 {
     //g_hash_table_foreach(com->userById, f, x);
-    
+
     GHashTableIter iter;
     void *key, *value;
 
@@ -219,10 +199,9 @@ Post postSet_lookup(TAD_community com, unsigned int num)
 }
 
 void *postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x)
-{   
+{
     g_hash_table_foreach(com->post, f, x);
-    
-    
+
     GHashTableIter iter;
     void *key, *value;
 
@@ -231,7 +210,7 @@ void *postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), 
     {
         f(key, value, x);
     }
-    
+
     return x;
 }
 

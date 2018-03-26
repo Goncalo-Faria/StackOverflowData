@@ -15,6 +15,10 @@ typedef int (*Fcompare)(void *, void *, void *);
 TAD_community init(void);
 TAD_community clean(TAD_community com);
 
+
+TAD_community activate(TAD_community com);
+int is_ON( TAD_community com );
+
 // USER HASHTABLE;
 TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x);
 //TAD_community  userSet_insert_name(TAD_community com, unsigned char *key, Util x);
@@ -53,7 +57,6 @@ HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end,
                              int (*filter)(void *, void *),
                              void *user_data);
 
-void *show_date(TAD_community com);
 
 int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data);
 int reverseCompare(void *a, void *b, void *fun);

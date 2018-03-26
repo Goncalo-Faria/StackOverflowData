@@ -159,258 +159,6 @@ static void intr(void *key, void *value, void *user_data)
     }
 }
 
-// --2 FEITO
-LONG_list top_most_active(TAD_community com, int N)
-{
-    unsigned long i;
-    char *flag;
-    Record x;
-    LONG_list ll = NULL;
-    Util c;
-    HEAP hp;
-    bArray extreme;
-    if (com)
-    {
-        flag = g_malloc(sizeof(char));
-        *flag = 0;
-        x = createRecord(init_A((unsigned long)N, NULL), flag);
-
-        x = userSet_id_transversal(com, make_pq, (void *)x);
-        ll = create_list(N);
-        //
-
-        if ((*(char *)x->snd) == 1)
-        {
-            hp = (HEAP)x->fst;
-        }
-        else
-        {
-            extreme = (bArray)x->fst;
-            hp = Generalized_Priority_Queue(extreme, length_A(extreme), np_cmp, yes, NULL);
-            destroy_A(extreme);
-        }
-
-        //x contem    se x->snd ==1  HEAP
-        //x contem    se x->snd ==0  bArray
-        //
-
-        for (i = 0; i < N; i++)
-        {
-
-            if (!empty_H(hp))
-            {
-
-                c = rem_Heap(hp);
-                set_list(ll, N - 1 - i, (long)getU_id(c));
-            }
-            else
-            {
-                set_list(ll, i, 0);
-            }
-        }
-
-        g_free(flag);
-        g_free(x);
-        destroy_H(hp);
-    }
-    return ll;
-}
-
-USER get_user_info(TAD_community com, long id)
-{
-    char *flag = g_malloc(sizeof(char));
-    HEAP hp;
-    bArray extreme;
-
-    long post_history[10];
-    char *short_bio = NULL;
-    int i;
-
-    Post the_post;
-    USER send;
-    Record rd;
-
-    *flag = 0;
-
-    Record carrier = createRecord(createRecord((void *)init_A(10, NULL), (void *)com), (void *)flag); // usar post compare.
-
-    Util x = userSet_id_lookup(com, (unsigned long)id);
-
-    if (!x)
-    {
-
-        for (i = 0; i < 10; i++)
-            post_history[i] = 0;
-
-        rd = (Record)carrier->fst;
-        destroy_A(rd->fst);
-        g_free(carrier->fst);
-        g_free(flag);
-        g_free(carrier);
-        return create_user("", post_history);
-    }
-    short_bio = (char *)getU_bio(x);
-
-    if (!short_bio)
-    {
-        short_bio = g_malloc(sizeof(char));
-        *short_bio = '\0';
-    }
-
-    // x->bio;
-    carrier = toBacia_transversal(x, collect_top10, carrier); //
-
-    rd = (Record)carrier->fst;
-
-    if ((*(char *)carrier->snd) == 1)
-    {
-        hp = (HEAP)rd->fst;
-    }
-    else
-    {
-        extreme = (bArray)rd->fst;
-        hp = Generalized_Priority_Queue(extreme, length_A(extreme), post_compare, yes, NULL);
-        destroy_A(extreme);
-    }
-    //->>>>
-
-    for (i = 0; i < 10; i++)
-    { // vai do novo para o velho. (cronologia inversa)
-
-        if (!empty_H(hp))
-        {
-
-            the_post = (Post)rem_Heap(hp);
-            post_history[i] = (long)getP_id(the_post);
-        }
-        else
-        {
-            post_history[i] = 0;
-        }
-    }
-
-    send = create_user(short_bio, post_history);
-
-    g_free(short_bio);
-    g_free(flag);
-
-    g_free(carrier->fst);
-    g_free(carrier);
-
-    destroy_H(hp);
-
-    return send;
-}
-
-LONG_list both_participated(TAD_community com, long id1, long id2, int N)
-{
-
-    Util usr1, usr2;
-    int p, pred, req = N;
-    Record box;
-    Util sml, lgr;
-    HEAP hp;
-    bArray b;
-    Post u;
-    struct no *del, *x, *cur = NULL;
-
-    LONG_list ll;
-
-    usr1 = userSet_id_lookup(com, id1);
-    usr2 = userSet_id_lookup(com, id2);
-
-    if (usr1 && usr2)
-    {
-        p = toBacia_size(usr1) > toBacia_size(usr2);
-
-        sml = p ? usr2 : usr1;
-        lgr = p ? usr1 : usr2;
-        p = 0;
-        box = createRecord(createRecord(&cur, &p), lgr);
-        box = toBacia_transversal(sml, intr, box);
-
-        pred = (p < N);
-        N = pred ? p : N;
-
-        b = init_A((unsigned long)N, NULL);
-        del = NULL;
-
-        for (x = cur; N--; x = x->px)
-        {
-
-            if (del)
-                g_free(del);
-
-            u = postSet_lookup(com, x->pid);
-            if (u)
-                b = add_to_A(b, (void *)u);
-
-            del = x;
-        }
-
-        if (del)
-            g_free(del);
-
-        if (!pred)
-        { // ainda tem elementos a lista.
-            hp = Generalized_Priority_Queue(b, length_A(b), inv_post_compare, yes, NULL);
-            cur = x;
-            ll = create_list(req);
-
-            del = NULL;
-
-            for (x = cur; x; x = x->px)
-            {
-                if (del)
-                    g_free(del);
-
-                u = postSet_lookup(com, x->pid);
-                if (u)
-                    hp = add_in_Place_H(hp, u);
-
-                del = x;
-            }
-            if (del)
-                g_free(del);
-
-            p = 0;
-            N = length_H(hp);
-            while (!empty_H(hp))
-            {
-                u = rem_Heap(hp);
-                set_list(ll, N - 1 - p++, (long)getP_id(u));
-            }
-
-            for (p = p; p < req; p++)
-                set_list(ll, p, 0);
-
-            destroy_H(hp);
-        }
-        else
-        {
-            b = sort_A(b, post_ord);
-            N = length_A(b);
-            ll = create_list(req);
-
-            for (p = 0; p < N; p++)
-            {
-                u = get_atA(b, p);
-                set_list(ll, N - 1 - p, (long)getP_id(u));
-            }
-            for (p = p; p < req; p++)
-                set_list(ll, p, 0);
-        }
-    }
-    else
-        return NULL;
-
-    destroy_A(b);
-    g_free(box->fst);
-    g_free(box);
-
-    return ll;
-}
-
 static float rank(TAD_community com, Post x) //x
 {
     float r;
@@ -472,6 +220,266 @@ static void *travel(Post x, void *user_data)
     return (void *)cur;
 }
 
+// --2 FEITO
+LONG_list top_most_active(TAD_community com, int N)
+{
+    unsigned long i;
+    char *flag;
+    Record x;
+    LONG_list ll = NULL;
+    Util c;
+    HEAP hp;
+    bArray extreme;
+    if ( is_ON(com))
+    {
+        flag = g_malloc(sizeof(char));
+        *flag = 0;
+        x = createRecord(init_A((unsigned long)N, NULL), flag);
+
+        x = userSet_id_transversal(com, make_pq, (void *)x);
+        ll = create_list(N);
+        //
+
+        if ((*(char *)x->snd) == 1)
+        {
+            hp = (HEAP)x->fst;
+        }
+        else
+        {
+            extreme = (bArray)x->fst;
+            hp = Generalized_Priority_Queue(extreme, length_A(extreme), np_cmp, yes, NULL);
+            destroy_A(extreme);
+        }
+
+        //x contem    se x->snd ==1  HEAP
+        //x contem    se x->snd ==0  bArray
+        //
+
+        for (i = 0; i < N; i++)
+        {
+
+            if (!empty_H(hp))
+            {
+
+                c = rem_Heap(hp);
+                set_list(ll, N - 1 - i, (long)getU_id(c));
+            }
+            else
+            {
+                set_list(ll, i, 0);
+            }
+        }
+
+        g_free(flag);
+        g_free(x);
+        destroy_H(hp);
+    }
+    return ll;
+}
+
+USER get_user_info(TAD_community com, long id)
+{
+    char *flag = g_malloc(sizeof(char));
+    HEAP hp;
+    bArray extreme;
+
+    long post_history[10];
+    char *short_bio = NULL;
+    int i;
+
+    Post the_post;
+    USER send;
+    Util x;
+    Record rd, carrier;
+
+    *flag = 0;
+    if (is_ON(com))
+    {
+        carrier = createRecord(createRecord((void *)init_A(10, NULL), (void *)com), (void *)flag); // usar post compare.
+
+        x = userSet_id_lookup(com, (unsigned long)id);
+
+        if (!x)
+        {
+            for (i = 0; i < 10; i++)
+                post_history[i] = 0;
+
+            rd = (Record)carrier->fst;
+            destroy_A(rd->fst);
+            g_free(carrier->fst);
+            g_free(flag);
+            g_free(carrier);
+            return create_user("", post_history);
+        }
+        short_bio = (char *)getU_bio(x);
+
+        if (!short_bio)
+        {
+            short_bio = g_malloc(sizeof(char));
+            *short_bio = '\0';
+        }
+
+        // x->bio;
+        carrier = toBacia_transversal(x, collect_top10, carrier); //
+
+        rd = (Record)carrier->fst;
+
+        if ((*(char *)carrier->snd) == 1)
+        {
+            hp = (HEAP)rd->fst;
+        }
+        else
+        {
+            extreme = (bArray)rd->fst;
+            hp = Generalized_Priority_Queue(extreme, length_A(extreme), post_compare, yes, NULL);
+            destroy_A(extreme);
+        }
+        //->>>>
+
+        for (i = 0; i < 10; i++)
+        { // vai do novo para o velho. (cronologia inversa)
+
+            if (!empty_H(hp))
+            {
+
+                the_post = (Post)rem_Heap(hp);
+                post_history[i] = (long)getP_id(the_post);
+            }
+            else
+            {
+                post_history[i] = 0;
+            }
+        }
+
+        send = create_user(short_bio, post_history);
+
+        g_free(short_bio);
+        g_free(flag);
+
+        g_free(carrier->fst);
+        g_free(carrier);
+
+        destroy_H(hp);
+
+        return send;
+    }
+    else
+        return NULL;
+}
+
+LONG_list both_participated(TAD_community com, long id1, long id2, int N)
+{
+
+    Util usr1, usr2;
+    int p, pred, req = N;
+    Record box;
+    Util sml, lgr;
+    HEAP hp;
+    bArray b;
+    Post u;
+    struct no *del, *x, *cur = NULL;
+
+    LONG_list ll;
+    if ( is_ON(com))
+    {
+        usr1 = userSet_id_lookup(com, id1);
+        usr2 = userSet_id_lookup(com, id2);
+
+        if (usr1 && usr2)
+        {
+            p = toBacia_size(usr1) > toBacia_size(usr2);
+
+            sml = p ? usr2 : usr1;
+            lgr = p ? usr1 : usr2;
+            p = 0;
+            box = createRecord(createRecord(&cur, &p), lgr);
+            box = toBacia_transversal(sml, intr, box);
+
+            pred = (p < N);
+            N = pred ? p : N;
+
+            b = init_A((unsigned long)N, NULL);
+            del = NULL;
+
+            for (x = cur; N--; x = x->px)
+            {
+
+                if (del)
+                    g_free(del);
+
+                u = postSet_lookup(com, x->pid);
+                if (u)
+                    b = add_to_A(b, (void *)u);
+
+                del = x;
+            }
+
+            if (del)
+                g_free(del);
+
+            if (!pred)
+            { // ainda tem elementos a lista.
+                hp = Generalized_Priority_Queue(b, length_A(b), inv_post_compare, yes, NULL);
+                cur = x;
+                ll = create_list(req);
+
+                del = NULL;
+
+                for (x = cur; x; x = x->px)
+                {
+                    if (del)
+                        g_free(del);
+
+                    u = postSet_lookup(com, x->pid);
+                    if (u)
+                        hp = add_in_Place_H(hp, u);
+
+                    del = x;
+                }
+                if (del)
+                    g_free(del);
+
+                p = 0;
+                N = length_H(hp);
+                while (!empty_H(hp))
+                {
+                    u = rem_Heap(hp);
+                    set_list(ll, N - 1 - p++, (long)getP_id(u));
+                }
+
+                for (p = p; p < req; p++)
+                    set_list(ll, p, 0);
+
+                destroy_H(hp);
+            }
+            else
+            {
+                b = sort_A(b, post_ord);
+                N = length_A(b);
+                ll = create_list(req);
+
+                for (p = 0; p < N; p++)
+                {
+                    u = get_atA(b, p);
+                    set_list(ll, N - 1 - p, (long)getP_id(u));
+                }
+                for (p = p; p < req; p++)
+                    set_list(ll, p, 0);
+            }
+        }
+        else
+            return NULL;
+
+        destroy_A(b);
+        g_free(box->fst);
+        g_free(box);
+
+        return ll;
+    }
+    else
+        return NULL;
+}
+
 LONG_list better_answer(TAD_community com, int id)
 {
     Record a;
@@ -479,39 +487,45 @@ LONG_list better_answer(TAD_community com, int id)
     Post p = postSet_lookup(com, (unsigned int)id);
     LONG_list ll = create_list(1);
 
-    if (p && (getP_type(p) == 1))
+    if ( is_ON(com) )
     {
-        a = createRecord((void *)com, NULL);
-        a = postAnswer_transversal(p, travel, a);
+        if (p && (getP_type(p) == 1))
+        {
+            a = createRecord((void *)com, NULL);
+            a = postAnswer_transversal(p, travel, a);
 
-        bx = (Box)a->snd;
+            bx = (Box)a->snd;
 
-        if (bx)
-            set_list(ll, 0, (long)getP_id(bx->pid));
+            if (bx)
+                set_list(ll, 0, (long)getP_id(bx->pid));
+            else
+                set_list(ll, 0, 0);
+
+            g_free(bx);
+            g_free(a);
+        }
         else
             set_list(ll, 0, 0);
 
-        g_free(bx);
-        g_free(a);
+        return ll;
     }
     else
-        set_list(ll, 0, 0);
-
-    return ll;
+        return NULL;
 }
 
 static int match(void *value, void *user_data)
 {
     Record bx = (Record)user_data;
-    Record cur = (Record)bx->fst;
-    Record count = (Record)cur->snd;
+    Record cur = (Record)bx->snd;
+    Record count = (Record)cur->fst;
 
-    LONG_list k = (LONG_list)cur->fst;
-    int size = *(int *)count->fst;
-    int *index = (int *)count->snd;
-    char *nid = (char *)bx->snd;
+    char *word = (char *)bx->fst;
+    
+    LONG_list k = (LONG_list)cur->snd;
+    int *index = (int *)count->fst;
+    int size = *(int *)count->snd;
 
-    if (strstr((char *)getP_name_point((Post)value), nid))
+    if (strstr((char *)getP_name_point((Post)value), word))
     {
         set_list(k, *index, getP_id(value));
         *index += 1;
@@ -525,9 +539,9 @@ LONG_list contains_word(TAD_community com, char *word, int N)
     int index = 0; // ( list , ( ( &index , &size ) , word) )
     int i;
     Record y, x;
-    if (com)
+    if ( is_ON(com) )
     {
-        x = createRecord(create_list(N), createRecord(createRecord(&index, &N), word));
+        x = createRecord(word, createRecord( createRecord(&index, &N), create_list(N) ));
 
         x = arrayRev_transversal(com, match, x);
 

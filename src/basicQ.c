@@ -48,7 +48,7 @@ STR_pair info_from_post(TAD_community com, int id)
     Post x = NULL;
     STR_pair result;
     unsigned long userid;
-    if (com)
+    if (is_ON(com))
     {
         x = postSet_lookup(com, id);
         if (!x)
@@ -77,13 +77,10 @@ STR_pair info_from_post(TAD_community com, int id)
         return NULL;
 }
 
-// recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
-// estou a assumir que recebo uma AVL;
-
 // --3 FEITO   ->
 LONG_pair total_posts(TAD_community com, Date begin, Date end)
 {
-    if (com)
+    if (is_ON(com))
         return (LONG_pair)arraySeg_transversal(com, begin, end, count, (void *)create_long_pair(0, 0));
     else
         return NULL;
@@ -96,7 +93,7 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end)
     LONG_list ll;
     Post newp;
     HEAP x; //
-    if (com)
+    if (is_ON(com))
     {
         x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, score_cmp, is_A, NULL);
 
@@ -127,7 +124,7 @@ LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end
     LONG_list ll;
     Post newp;
     HEAP x; //
-    if (com)
+    if (is_ON(com))
     {
         x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, nAns_cmp, is_Q, NULL);
 

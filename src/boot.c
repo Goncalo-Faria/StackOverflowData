@@ -48,12 +48,23 @@ static void adder(void *key, void *value, void *user_data)
 
 TAD_community load(TAD_community com, char *dump_path)
 {
-    com = parser(com, dump_path, "Users", parseUser);
-    com = parser(com, dump_path, "Posts", parsePost);
+    TAD_community tmp;
+
+    tmp = parser(com, dump_path, "Users", parseUser);
+    if (!tmp)
+        return com;
+    else
+        com = tmp;
+
+    tmp = parser(com, dump_path, "Posts", parsePost);
+    if (!tmp)
+        return com;
+    else
+        com = tmp;
 
     com = turnOn_array(com, (unsigned long)postSet_size(com));
     com = reduce(com);
-
+    com = activate(com);
     return com;
 }
 
@@ -82,13 +93,13 @@ static void link(void *key, void *value, void *user_data)
                 usr = incU_A(usr);
                 par = postSet_lookup(com, getP_parentId(pub));
                 if (par)
-                    par = setP_addAns(par, pub );
+                    par = setP_addAns(par, pub);
             }
 
             usr = bind_toBacia(usr, pub); //
         }
     }
-    adder( key, value, com );
+    adder(key, value, com);
 }
 
 static TAD_community parser(TAD_community com, char *dump_path, char *file_name, parse_function f)
@@ -107,14 +118,14 @@ static TAD_community parser(TAD_community com, char *dump_path, char *file_name,
     doc = xmlParseFile(docname);
 
     if (!doc)
-        return com;
+        return NULL;
 
     root_element = xmlDocGetRootElement(doc);
 
     if (!root_element)
     {
         xmlFreeDoc(doc);
-        return com;
+        return NULL;
     }
     node = root_element;
     strcpy(docname, file_name);
@@ -123,7 +134,7 @@ static TAD_community parser(TAD_community com, char *dump_path, char *file_name,
     if (xmlStrcmp(node->name, (const xmlChar *)docname))
     {
         xmlFreeDoc(doc);
-        return com;
+        return NULL;
     }
     node = node->xmlChildrenNode;
 
@@ -196,7 +207,6 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
         x = setP_nComment(x, (unsigned int)atoi((const char *)hold));
         //printf("%s\n",(char*)hold);
         xmlFree(hold);
-
     }
     else
     {
