@@ -18,7 +18,7 @@ typedef struct post
 	// Either.
 	unsigned char type; // 1 Q ; 2 A;
 	void *special;		// parent Id. // answer count.
-	//bArray *tags;
+	bArray tags;
 	struct no *ans;
 
 	Date moment;
@@ -81,6 +81,11 @@ void destroyPost(void *x)
 }
 
 //COMPARADORES
+int compare (const void*x , const void*y){
+    const char *fst = (const char* )x;
+    const char *snd = (const char* )y;
+    return strcmp(fst,snd);
+}
 
 void *postAnswer_transversal(Post x, void* (*p)(Post, void *), void *a){
 	struct no *cur;
@@ -90,6 +95,36 @@ void *postAnswer_transversal(Post x, void* (*p)(Post, void *), void *a){
 			a = p( cur->pid , a );
 	return a;
 }
+
+//////////
+Post parP_Tag ( Post x , const char *tag){
+    char tmp[1024];
+    bArray array;
+    char *l ,*ret;
+    int numtag =0; int i=0; 
+    long n =0; 
+
+    for (l = (char*) tag ; *l ; (*l)++){
+        if (*l == ';') numtag++;
+    }
+    //fazer funcao que da free
+    array = init_A (n , g_free);
+    ret = strstr ( tag , ";");
+   
+    while (ret){
+        (*ret)++;
+        for (l=ret ; *l ; (*l)++){
+            tmp[i++]= *l;
+        }
+        tmp[i]='\0';
+        array = add_to_A (x , (char *) tmp );
+        ret = strstr ( ret , ";");
+    }
+    
+    array = sort_A(x , compare);
+    x->tags = array;
+    return x;
+} 
 
 ////
 // Post getters

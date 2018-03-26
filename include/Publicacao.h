@@ -14,6 +14,10 @@ void destroyPost(void *x);
 void *postAnswer_transversal(Post x, void* (*p)(Post, void *), void *a);
 //cria o especifico arrays com as tags
 
+//Coloca me as tags no post
+Post parP_Tag ( Post x , const char *tag);
+
+int compare (const void*x , const void*y);
 // Post getters
 
 unsigned int getP_id(Post x);
