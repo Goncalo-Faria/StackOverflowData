@@ -25,7 +25,7 @@ HEAP create_H(freeFunc in_free, Fcompare ff, void *usr_d);
 HEAP create_fixed_H(ENTRY *v, unsigned long n, freeFunc in_free, Fcompare h, void *usr_d);
 void destroy_H(HEAP x);
 HEAP add_Heap(HEAP x, void *n);
-HEAP add_in_Place_H(HEAP x, void *n);
+HEAP add_in_Place_H_signal(HEAP x, void *n, int *flag);
 void *rem_Heap(HEAP x);
 int empty_H(HEAP x);
 unsigned long length_H(HEAP x);
@@ -113,11 +113,13 @@ void *rem_Heap(HEAP x)
     return NULL;
 }
 
-HEAP add_in_Place_H(HEAP x, void *n)
+HEAP add_in_Place_H_signal(HEAP x, void *n, int *flag)
 { // no topo tem o máximo.
 
     if (x->cmp(x->v[0], n, x->user_data) > 0)
     {
+        if (flag)
+            *flag = 1;
 
         if (x->dataCl)
             x->dataCl(x->v[0]);
@@ -127,6 +129,8 @@ HEAP add_in_Place_H(HEAP x, void *n)
     }
     else
     {
+        if (flag)
+            *flag = 0;
 
         if (x->dataCl)
             x->dataCl(n);

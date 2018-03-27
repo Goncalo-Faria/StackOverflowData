@@ -3,14 +3,15 @@
 #include <date.h>
 #include "bArray.h"
 #include "comondec.h"
+#include <string.h>
 
 typedef struct TCD_community
 {
     GHashTable *userById;
 
-    //GHashTable *userByName;
     bArray PostArray;
     GHashTable *post;
+    GHashTable *tagconv;
     int ac;
 
 } * TAD_community;
@@ -34,8 +35,11 @@ TAD_community init(void)
 
     x->post = g_hash_table_new_full(g_int_hash, g_int_equal, NULL, destroyPost);
 
+    x->tagconv = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
+
     x->PostArray = NULL;
     x->ac = 0;
+
     return x;
 }
 
@@ -47,6 +51,8 @@ TAD_community clean(TAD_community com)
 
     if (com->PostArray)
         destroy_A(com->PostArray);
+
+    g_hash_table_destroy(com->tagconv);
 
     g_free(com);
 
@@ -60,6 +66,30 @@ int is_ON(TAD_community com)
         return com->ac;
     else
         return 0;
+}
+
+unsigned int tagSet_size(TAD_community com)
+{
+    return (unsigned int)g_hash_table_size(com->tagconv);
+}
+
+unsigned int code_tag(TAD_community com, char *word)
+{
+    unsigned int *x = (unsigned int *)g_hash_table_lookup(com->tagconv, word);
+
+    if (x)
+        return *x;
+    else
+        return 0;
+}
+
+TAD_community assign_tag(TAD_community com, char *key, unsigned int code)
+{
+
+    unsigned int *value = g_malloc(sizeof(unsigned int));
+    *value = code;
+    g_hash_table_insert(com->tagconv, g_memdup(key, sizeof(char) * (strlen(key) + 1)) , value);
+    return com;
 }
 
 TAD_community activate(TAD_community com)

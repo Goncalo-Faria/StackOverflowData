@@ -13,9 +13,10 @@ void destroyPost(void *x);
 
 void *postAnswer_transversal(Post x, void* (*p)(Post, void *), void *a);
 //cria o especifico arrays com as tags
-
 //Coloca me as tags no post
-Post setP_tag( Post x , char *tag);
+Post setP_tag( Post x , char *tag, void* set);
+
+void *postTag_transversal(Post x, void (*p)(unsigned int, void *), void *a);
 
 int compare (const void*x , const void*y);
 // Post getters
@@ -36,7 +37,7 @@ unsigned int getP_ansCount(Post x);
 
 unsigned int getP_score(Post x);
 
-unsigned int getP_fav(Post x);
+int getP_votes(Post x);
 
 unsigned char getP_type(Post x);
 
@@ -65,7 +66,9 @@ Post setP_type(Post x, unsigned char t);
 
 Post setP_id(Post x, unsigned int o);
 
-Post setP_fav(Post x,unsigned int n);
+Post setP_upVote(Post x);
+
+Post setP_downVote(Post x);
 
 Post setP_date(Post x, int d, int m, int a);
 

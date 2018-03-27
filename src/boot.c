@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "Community.h"
+#include <stdio.h>
 //#include <Bloco.h>
 #include <glib.h>
 
@@ -32,6 +33,8 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node);
 static TAD_community parser(TAD_community com, char *dump_path, char *file_name, parse_function f);
 static TAD_community parsePost(TAD_community com, const xmlNode *node);
 //static TAD_community parseHistory(TAD_community com, const xmlNode *node);
+static TAD_community parseTag(TAD_community com, const xmlNode *node);
+static TAD_community parseVotes(TAD_community com, const xmlNode *node);
 static TAD_community reduce(TAD_community com);
 static void link(void *key, void *value, void *user_data);
 //
@@ -50,6 +53,12 @@ TAD_community load(TAD_community com, char *dump_path)
 {
     TAD_community tmp;
 
+    tmp = parser(com, dump_path, "Tags", parseTag);
+    if (!tmp)
+        return com;
+    else
+        com = tmp;
+
     tmp = parser(com, dump_path, "Users", parseUser);
     if (!tmp)
         return com;
@@ -57,6 +66,12 @@ TAD_community load(TAD_community com, char *dump_path)
         com = tmp;
 
     tmp = parser(com, dump_path, "Posts", parsePost);
+    if (!tmp)
+        return com;
+    else
+        com = tmp;
+
+    tmp = parser(com, dump_path, "Votes", parseVotes);
     if (!tmp)
         return com;
     else
@@ -213,17 +228,12 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
         getAtr(hold, node, "AnswerCount");
         x = setP_ansCount(x, (unsigned int)atoi((const char *)hold));
         xmlFree(hold);
-
-        /*
-        getAtr(hold, node, "FavoriteCount");
-        x = setP_fav(x, (unsigned int)atoi((const char *)hold));
-        xmlFree(hold);
-        */
     }
     // ADD TAGS
-    getAtr (hold , node ,"Tags");
-    if(hold){
-        x = setP_tag( x ,(char*) hold );
+    getAtr(hold, node, "Tags");
+    if (hold)
+    {
+        x = setP_tag(x, (char *)hold, com);
         xmlFree(hold);
     }
     // ADD SCORE.
@@ -278,7 +288,7 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
     }
 
     getAtr(hold, node, "Reputation");
-    x = setU_rep(x, (unsigned long)atoi((const char *)hold));
+    x = setU_rep(x, (unsigned int)atoi((const char *)hold));
     xmlFree(hold);
 
     // get Display name
@@ -291,76 +301,52 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
     return com;
 }
 
-/*
-static TAD_community parseHistory(TAD_community com, const xmlNode *node)
+static TAD_community parseTag(TAD_community com, const xmlNode *node)
 {
 
     xmlChar *hold = NULL;
-    Util x = NULL;
-    Post y, tmp = NULL;
-    unsigned long userId;
-    unsigned int postId;
-    unsigned int hType;
-    unsigned char *name;
+    unsigned int id;
 
-    getAtr(hold, node, "PostHistoryTypeId");
-    hType = (unsigned int)atoi((const char *)hold);
+    getAtr(hold, node, "Id");
+    id = (unsigned int)atol((const char *)hold);
     xmlFree(hold);
 
-    if (hType != 1)
-        return com;
-
-    getAtr(hold, node, "UserId");
-    if (hold)
-    {
-        userId = (unsigned long)atol((const char *)hold);
-        xmlFree(hold);
-        x = userSet_id_lookup(com, userId);
-        if (!x)
-            return com;
-    }
-    else
-    {
-        getAtr(hold, node, "UserDisplayName");
-        name = (unsigned char *)hold;
-        if (!name)
-            return com;
-        x = userSet_name_lookup(com, name);
-        xmlFree(hold);
-        if (!x)
-            return com;
-        userId = getU_id(x);
-    }
-
-    getAtr(hold, node, "PostId");
-    postId = (unsigned int)atoi((const char *)hold);
+    getAtr(hold, node, "TagName");
+    com = assign_tag(com, (char *)hold, id);
     xmlFree(hold);
-
-    y = postSet_lookup(com, postId);
-
-    if (!y)
-        return com;
-
-    if (getP_type(y) == 1)
-    {
-        x = incU_Q(x);
-    }
-
-    if (getP_type(y) == 2)
-    {
-        x = incU_A(x);
-        // Acrescentar ao numero de respostas.
-        //tmp = postSet_lookup(com, getP_parentId(y));
-        //if (!tmp)
-          //  tmp = incP_ansCount(tmp);
-    }
-
-    y = setP_fund(y, userId);
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    x = bind_toBacia(x, y); //
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     return com;
 }
 
-*/
+static TAD_community parseVotes(TAD_community com, const xmlNode *node)
+{
+
+    xmlChar *hold = NULL;
+    int c;
+    Post x;
+
+    getAtr(hold, node, "VoteTypeId");
+    c = (int)atoi((const char *)hold);
+    xmlFree(hold);
+
+    if (c == 2)
+    {
+        getAtr(hold, node, "PostId");
+        x = postSet_lookup(com, (unsigned int)atoi((const char *)hold));
+        xmlFree(hold);
+
+        if (x)
+            x = setP_upVote(x);
+    }
+    else if (c == 3)
+    {
+        getAtr(hold, node, "PostId");
+        x = postSet_lookup(com, (unsigned int)atoi((const char *)hold));
+        xmlFree(hold);
+
+        if (x)
+            x = setP_downVote(x);
+    }
+
+    return com;
+}

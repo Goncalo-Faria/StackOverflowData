@@ -2,7 +2,7 @@
 #include <string.h>
 #include "interface.h"
 #include <glib.h>
-//#include "Community.h"
+#include "Community.h"
 //#include <stdio.h>
 #include "bArray.h"
 //#include "date.h"
@@ -14,13 +14,15 @@ typedef struct post
 	unsigned char *name;
 	unsigned int score;
 	unsigned int comment_count;
-	unsigned int fav;
+	int votes;
 	// Either.
 	unsigned char type; // 1 Q ; 2 A;
 	void *special;		// parent Id. // answer count.
-	bArray tags;
-	struct no *ans;
 
+	//bArray tags;
+	struct bo *tags;
+
+	struct no *ans;
 	Date moment;
 
 } * Post;
@@ -29,6 +31,12 @@ struct no
 {
 	Post pid;
 	struct no *px;
+};
+
+struct bo
+{
+	unsigned int pid;
+	struct bo *px;
 };
 
 static void null_check(void *x)
@@ -47,7 +55,7 @@ Post createPost()
 	x->fundador = 0;
 	x->score = 0;
 	x->comment_count = 0;
-	x->fav = 0;
+	x->votes = 0;
 	x->id = g_malloc(sizeof(unsigned int));
 	x->special = NULL;
 	x->ans = NULL;
@@ -59,28 +67,37 @@ Post createPost()
 
 void destroyPost(void *x)
 {
-	struct no *cur, *del;
+	struct no *cur1, *del1;
+	struct bo *cur2, *del2;
 	Post y = (Post)x;
 	free_date(y->moment);
 	null_check(y->name);
 	g_free(y->id);
 	null_check(y->special);
-	g_free(y);
 
-	del = y->ans;
-
-	if( y->tags )
-		destroy_A(y->tags);
-
-	if (del)
+	del1 = y->ans;
+	if (del1)
 	{
-		for (cur = del->px; cur; cur = cur->px)
+		for (cur1 = del1->px; cur1; cur1 = cur1->px)
 		{
-			g_free(del);
-			del = cur;
+			g_free(del1);
+			del1 = cur1;
 		}
-		g_free(del);
+		g_free(del1);
 	}
+
+	del2 = y->tags;
+	if (del2)
+	{
+		for (cur2 = del2->px; cur2; cur2 = cur2->px)
+		{
+			g_free(del2);
+			del2 = cur2;
+		}
+		g_free(del2);
+	}
+
+	g_free(y);
 }
 
 //COMPARADORES
@@ -95,46 +112,47 @@ void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a)
 	return a;
 }
 
-static int str_compare (const void*x , const void*y){
-    const char *fst = (const char* )x;
-    const char *snd = (const char* )y;
-    return strcmp(fst,snd);
+void *postTag_transversal(Post x, void (*p)(unsigned int, void *), void *a)
+{
+	struct bo *cur;
+
+	for (cur = x->tags; cur; cur = cur->px)
+	{
+		p(cur->pid, a);
+	}
+
+	return a;
 }
 
 //////////
+static struct bo *add_to_ll(struct bo *x, unsigned int val)
+{
+	struct bo *new = g_malloc(sizeof(struct bo));
+	new->pid = val;
+	new->px = x;
+	return new;
+}
 
-
-
-Post setP_tag(Post x, char *tag)
+Post setP_tag(Post x, char *tag, void* set)
 {
 	char tmp[1024];
-	bArray b;
 	char *l, *ret;
-	int numtag = 0;
 	int i;
-	//printf("tag : %s \n",tag);
-	for (l = tag; *l; l++ )
-		if (*l == '<')
-			numtag++;
+	TAD_community com = (TAD_community)set;
 
-	numtag = numtag;
-	b = init_A(numtag, g_free);
 	ret = strstr(tag, "<");
-
 	while (ret)
 	{
-		ret++;// avançar o '<'
-		i=0;
+		ret++; // avançar o '<'
+		i = 0;
 		for (l = ret; *l && (*l != '>'); l++)
 			tmp[i++] = *l;
+		
 		tmp[i] = '\0';
-
-		b = add_to_A( b , g_memdup(tmp, sizeof(char)*(strlen(tmp) + 1 ) ) );
+		x->tags = add_to_ll(x->tags, code_tag(com, tmp));
 		ret = strstr(ret, "<");
 	}
 
-	b = sort_A(b, str_compare);
-	x->tags = b;
 	return x;
 }
 
@@ -205,9 +223,9 @@ unsigned int getP_score(Post x)
 	return (x->score);
 }
 
-unsigned int getP_fav(Post x)
+int getP_votes(Post x)
 {
-	return (x->fav);
+	return (x->votes);
 }
 
 unsigned char getP_type(Post x)
@@ -280,9 +298,15 @@ Post setP_ansCount(Post x, unsigned int n)
 	return x;
 }
 
-Post setP_fav(Post x, unsigned int n)
+Post setP_upVote(Post x)
 {
-	x->fav = n;
+	x->votes += 1;
+	return x;
+}
+
+Post setP_downVote(Post x)
+{
+	x->votes -= 1;
 	return x;
 }
 

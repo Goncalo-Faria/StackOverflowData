@@ -60,6 +60,15 @@ int int_cmp(void *a, void *b, void *user_data)
     return (*y - *x);
 }
 
+int rep_cmp(void *a, void *b, void *user_data)
+{
+    int anum, bnum;
+
+    anum =(int)getU_rep((Util)a);
+    bnum =(int)getU_rep((Util)b);
+    return int_cmp(&anum, &bnum, user_data);
+}
+
 int post_compare(void *a, void *b, void *user_data) // não vai ser preciso.
 {
 
@@ -68,6 +77,16 @@ int post_compare(void *a, void *b, void *user_data) // não vai ser preciso.
 
     return date_compare(x, y, user_data);
 }
+
+int tag_count_cmp(void *a, void *b, void *user_data)
+{
+
+    Record x = (Record)a;
+    Record y = (Record)b;
+
+    return int_cmp(x->snd, y->snd, user_data);
+}
+
 
 int inv_post_compare(void *a, void *b, void *user_data)
 {
@@ -88,15 +107,15 @@ int np_cmp(void *a, void *b, void *user_data)
     return int_cmp(&anum, &bnum, user_data);
 }
 
-int score_cmp(void *a, void *b, void *user_data)
+int votes_cmp(void *a, void *b, void *user_data)
 {
     Post x = (Post)a;
     Post y = (Post)b;
 
     int anum, bnum;
 
-    anum = (int)getP_score(x);
-    bnum = (int)getP_score(y);
+    anum = (int)getP_votes(x);
+    bnum = (int)getP_votes(y);
 
     return int_cmp(&anum, &bnum, user_data);
 }

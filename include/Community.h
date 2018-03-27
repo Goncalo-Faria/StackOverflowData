@@ -19,6 +19,10 @@ TAD_community clean(TAD_community com);
 TAD_community activate(TAD_community com);
 int is_ON( TAD_community com );
 
+unsigned int code_tag(TAD_community com, char *word);
+TAD_community assign_tag(TAD_community com, char *key, unsigned int code);
+
+
 // USER HASHTABLE;
 TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x);
 //TAD_community  userSet_insert_name(TAD_community com, unsigned char *key, Util x);

@@ -179,7 +179,7 @@ STR_pair info_from_post(TAD_community com, int id)
             x = postSet_lookup(com, getP_parentId(x));
             if (!x)
                 return create_str_pair("", "");
-                
+
         }
         str1 = getP_name(x);
         userid = getP_fund(x);
@@ -218,7 +218,7 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end)
     HEAP x; //
     if (is_ON(com))
     {
-        x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, score_cmp, is_A, NULL);
+        x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, votes_cmp, is_A, NULL);
 
         ll = create_list(N);
 
@@ -314,7 +314,7 @@ LONG_list contains_word(TAD_community com, char *word, int N)
 
 USER get_user_info(TAD_community com, long id)
 {
-    char *flag = g_malloc(sizeof(char));
+    char flag;
     HEAP hp;
     bArray extreme;
 
@@ -327,10 +327,10 @@ USER get_user_info(TAD_community com, long id)
     Util x;
     Record rd, carrier;
 
-    *flag = 0;
+    flag = 0;
     if (is_ON(com))
     {
-        carrier = createRecord(createRecord((void *)init_A(10, NULL), (void *)com), (void *)flag); // usar post compare.
+        carrier = createRecord(createRecord((void *)init_A(10, NULL), (void *)com), (void *)&flag); // usar post compare.
 
         x = userSet_id_lookup(com, (unsigned long)id);
 
@@ -342,7 +342,6 @@ USER get_user_info(TAD_community com, long id)
             rd = (Record)carrier->fst;
             destroy_A(rd->fst);
             g_free(carrier->fst);
-            g_free(flag);
             g_free(carrier);
             return create_user("", post_history);
         }
@@ -389,7 +388,6 @@ USER get_user_info(TAD_community com, long id)
         send = create_user(short_bio, post_history);
 
         g_free(short_bio);
-        g_free(flag);
 
         g_free(carrier->fst);
         g_free(carrier);
@@ -405,7 +403,7 @@ USER get_user_info(TAD_community com, long id)
 LONG_list top_most_active(TAD_community com, int N)
 {
     unsigned long i;
-    char *flag;
+    char flag;
     Record x;
     LONG_list ll = NULL;
     Util c;
@@ -413,9 +411,8 @@ LONG_list top_most_active(TAD_community com, int N)
     bArray extreme;
     if (is_ON(com))
     {
-        flag = g_malloc(sizeof(char));
-        *flag = 0;
-        x = createRecord(init_A((unsigned long)N, NULL), flag);
+        flag = 0;
+        x = createRecord(init_A((unsigned long)N, NULL), &flag);
 
         x = userSet_id_transversal(com, make_pq, (void *)x);
         ll = create_list(N);
@@ -451,7 +448,6 @@ LONG_list top_most_active(TAD_community com, int N)
             }
         }
 
-        g_free(flag);
         g_free(x);
         destroy_H(hp);
     }
