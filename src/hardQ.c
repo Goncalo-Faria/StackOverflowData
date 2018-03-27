@@ -3,7 +3,6 @@
 #include "Community.h"
 
 #include "bArray.h"
-#include <stdio.h>
 #include <comondec.h>
 
 // Estruturas  privadas
@@ -24,11 +23,15 @@ typedef struct bo
 /////
 
 // Métodos Publicos
-LONG_list both_participated(TAD_community com, long id1, long id2, int N);    //#9
-LONG_list better_answer(TAD_community com, int id);                           //#10
-LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end); //#11
+LONG_list both_participated(TAD_community com, long id1, long id2, int N);        //#9
+LONG_list better_answer(TAD_community com, int id);                               //#10
 
 // Métodos Privados.
+static float rank(TAD_community com, Post x);
+static void intr(void *key, void *value, void *user_data);
+static void *travel(Post x, void *user_data);
+
+//-------------------------------------------------------------------------------------
 
 static Box createBox(float key, Post pid)
 {
@@ -38,12 +41,13 @@ static Box createBox(float key, Post pid)
     send->pid = pid;
     return send;
 }
+
 static float rank(TAD_community com, Post x) //x
 {
     float r;
     unsigned long founder;
     Util u;
-    float rep, fav, cmm, scr;
+    float rep, vot, cmm, scr;
 
     founder = getP_fund(x);
     if (founder)
@@ -52,11 +56,11 @@ static float rank(TAD_community com, Post x) //x
         if (u)
         {
             rep = (float)getU_rep(u);
-            fav = (float)getP_votes(x);
+            vot = (float)getP_votes(x);
             cmm = (float)getP_nComment(x);
             scr = (float)getP_score(x);
 
-            r = rep * 0.25 + fav * 0.2 + cmm * 0.1 + scr * 0.45;
+            r = rep * 0.25 + vot * 0.2 + cmm * 0.1 + scr * 0.45;
         }
         else
         {
@@ -70,6 +74,7 @@ static float rank(TAD_community com, Post x) //x
 
     return r;
 }
+
 static void intr(void *key, void *value, void *user_data)
 {
     Record box = (Record)user_data;
@@ -256,185 +261,6 @@ LONG_list better_answer(TAD_community com, int id)
         else
             set_list(ll, 0, 0);
 
-        return ll;
-    }
-    else
-        return NULL;
-}
-
-static void make_pq1(void *key, void *value, void *user_data)
-{
-    Record x = (Record)user_data;
-    char *flag = (char *)(x->snd);
-    bArray rd1;
-    HEAP rd2;
-
-    if (!*flag)
-    { // ainda está no array.
-        rd1 = (bArray)x->fst;
-        if (!is_full(rd1))
-        { //não está cheio o array
-            rd1 = add_to_A(rd1, value);
-        }
-        else
-        { // está cheio o array
-            rd2 = Generalized_Priority_Queue(rd1, length_A(rd1), rep_cmp, yes, NULL);
-            destroy_A(rd1);
-            *flag = 1;
-            x->fst = rd2;
-        }
-    }
-    else
-    { // já está na heap.
-        rd2 = (HEAP)x->fst;
-        rd2 = add_in_Place_H(rd2, value);
-    }
-}
-// Post  // data
-
-static void hist_tag(unsigned int tag, void *user_data)
-{
-
-    int *c;
-    int *key;
-    GHashTable *htable_tag = (GHashTable *)user_data;
-
-    if (g_hash_table_contains(htable_tag, &tag))
-    {
-        c = g_hash_table_lookup(htable_tag, &tag);
-        *c += 1;
-    }
-    else
-    {
-        c = g_malloc(sizeof(int));
-        key = g_malloc(sizeof(unsigned int));
-        *c = 1;
-        *key = tag;
-
-        g_hash_table_insert(htable_tag, key, c);
-    }
-}
-
-static void fil_hash(void *b, void *user_data)
-{
-    Post p = (Post)b;
-    unsigned long f = getP_fund(p);
-    Record x = (Record)user_data;
-    GHashTable *htable_usr = (GHashTable *)x->fst;
-    GHashTable *htable_tag = (GHashTable *)x->snd;
-
-    if (g_hash_table_contains(htable_usr, &f))
-    {
-        htable_tag = postTag_transversal(p, hist_tag, htable_tag);
-    }
-}
-
-static void tag_count_free(void *y)
-{
-    Record x = (Record)y;
-    g_free(x->snd);
-    g_free(x->fst);
-    g_free(x);
-}
-static void make_pq2(void *key, void *value, void *user_data)
-{
-    Record x = (Record)user_data;
-    char *flag = (char *)(x->snd);
-    bArray rd1;
-    HEAP rd2;
-    int sig;
-
-    if (!*flag)
-    { // ainda está no array.
-        rd1 = (bArray)x->fst;
-        if (!is_full(rd1))
-        { //não está cheio o array
-            rd1 = add_to_A(rd1, createRecord(key, value));
-        }
-        else
-        { // está cheio o array
-            rd2 = Generalized_Priority_Queue(rd1, length_A(rd1), tag_count_cmp, yes, NULL);
-            destroy_A(rd1);
-            *flag = 1;
-            x->fst = rd2;
-        }
-    }
-    else
-    { // já está na heap.
-        rd2 = (HEAP)x->fst;
-        x = createRecord(key, value);
-        rd2 = add_in_Place_H_signal(rd2, x, &sig);
-
-        if (!sig)
-            tag_count_free(x);
-    }
-}
-
-LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
-{
-    HEAP hp;
-    GHashTable *htable_usr, *htable_tag;
-    Util cur;
-    //bArray extreme;
-    Record x;
-    LONG_list ll;
-    int flag;
-    long i;
-
-    if (is_ON(com))
-    {
-        flag = 0;
-
-        x = userSet_id_transversal(com, make_pq1, (void *)createRecord(init_A((unsigned long)N, NULL), &flag));
-
-        htable_usr = g_hash_table_new_full(g_int64_hash, g_int64_equal, NULL, NULL);
-        htable_tag = g_hash_table_new_full(g_int_hash, g_int_equal, NULL, NULL);
-
-        if (flag)
-        {
-            hp = (HEAP)x->fst;
-            while (!empty_H(hp))
-            {
-                cur = (Util)rem_Heap(hp);
-                g_hash_table_insert(htable_usr, getU_id_point(cur), cur);
-            }
-            destroy_H(hp);
-            g_free(x);
-
-            x = arraySeg_transversal(com, begin, end, fil_hash, createRecord(htable_usr, htable_tag));
-
-            g_free(x);
-            g_hash_table_destroy(htable_usr);
-
-            // > ha um erro a gerir memória.
-            flag = 0;
-            x = createRecord(init_A(N, NULL), &flag);
-            g_hash_table_foreach(htable_tag, make_pq2, x);
-            if (flag)
-            { // tudo na heap.
-                hp = (HEAP)x->fst;
-                g_hash_table_destroy(htable_tag);
-                g_free(x);
-
-                N = length_H(hp);
-                ll = create_list(N);
-
-                while (!empty_H(hp))
-                {
-                    x = (Record)rem_Heap(hp);
-
-                    i = (long)x->fst;
-                    if (x)
-                    {
-                        set_list(ll, --N, (long)i);
-                        tag_count_free(x);
-                    }
-                    else
-                        set_list(ll, --N, 0);
-                }
-            }
-        }
-        //else
         return ll;
     }
     else

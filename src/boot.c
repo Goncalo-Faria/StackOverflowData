@@ -133,14 +133,14 @@ static TAD_community parser(TAD_community com, char *dump_path, char *file_name,
     doc = xmlParseFile(docname);
 
     if (!doc)
-        return NULL;
+        return com;
 
     root_element = xmlDocGetRootElement(doc);
 
     if (!root_element)
     {
         xmlFreeDoc(doc);
-        return NULL;
+        return com;
     }
     node = root_element;
     strcpy(docname, file_name);
@@ -149,7 +149,7 @@ static TAD_community parser(TAD_community com, char *dump_path, char *file_name,
     if (xmlStrcmp(node->name, (const xmlChar *)docname))
     {
         xmlFreeDoc(doc);
-        return NULL;
+        return com;
     }
     node = node->xmlChildrenNode;
 
