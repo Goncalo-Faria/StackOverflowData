@@ -1,12 +1,12 @@
 #include <glib.h>
 #include <string.h>
 #include "Community.h"
-
 #include "bArray.h"
 #include <comondec.h>
 
-// Estruturas  privadas
+//-------------------------------------------------------------------------------------
 
+// Estruturas privadas.
 struct no
 {
     unsigned int pid;
@@ -19,8 +19,6 @@ typedef struct bo
     Post pid;
 
 } * Box;
-
-/////
 
 // Métodos Publicos
 LONG_list both_participated(TAD_community com, long id1, long id2, int N);        //#9
@@ -120,6 +118,8 @@ static void *travel(Post x, void *user_data)
 
     return (void *)cur;
 }
+
+//-------------------------------------------------------------------------------------
 
 LONG_list both_participated(TAD_community com, long id1, long id2, int N)
 {

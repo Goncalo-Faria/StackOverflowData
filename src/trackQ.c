@@ -1,20 +1,17 @@
 #include <glib.h>
 #include <string.h>
 #include "Community.h"
-
 #include "bArray.h"
-
-#include <stdio.h>
 #include <comondec.h>
 
-// Métodos publicos.
+//-------------------------------------------------------------------------------------
 
+// Métodos publicos.
 LONG_list top_most_active(TAD_community com, int N);                          //#2
 USER get_user_info(TAD_community com, long id);                               //#5
 LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end); //#11
 
 // Métodos privados.
-
 static void get_active(void *key, void *value, void *user_data);
 static void collect_top10(void *key, void *value, void *user_data);
 static void gather_rep(void *key, void *value, void *user_data);
@@ -163,6 +160,8 @@ static void get_active(void *key, void *value, void *user_data)
     // ( NULL, value , user_data, np_cmp )
     user_data = standart_make_pq(NULL, value, user_data, np_cmp);
 }
+
+//-------------------------------------------------------------------------------------
 
 LONG_list top_most_active(TAD_community com, int N)
 {

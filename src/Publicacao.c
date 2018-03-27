@@ -3,9 +3,11 @@
 #include "interface.h"
 #include <glib.h>
 #include "Community.h"
-//#include <stdio.h>
 #include "bArray.h"
-//#include "date.h"
+
+//-------------------------------------------------------------------------------------
+
+// Estruturas.
 
 typedef struct post
 {
@@ -18,10 +20,7 @@ typedef struct post
 	// Either.
 	unsigned char type; // 1 Q ; 2 A;
 	void *special;		// parent Id. // answer count.
-
-	//bArray tags;
 	struct bo *tags;
-
 	struct no *ans;
 	Date moment;
 
@@ -39,14 +38,68 @@ struct bo
 	struct bo *px;
 };
 
+// Métodos Publicos.
+
+Post createPost();
+void destroyPost(void *x);
+
+void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a);
+void *postTag_transversal(Post x, void (*p)(unsigned int, void *), void *a);
+
+unsigned int getP_id(Post x);
+unsigned int *getP_id_point(Post x);
+unsigned int getP_parentId(Post x);
+unsigned int *getP_parentId_point(Post x);
+unsigned long getP_fund(Post x);
+unsigned char *getP_name(Post x);
+unsigned int getP_ansCount(Post x);
+unsigned int getP_score(Post x);
+int getP_votes(Post x);
+unsigned char getP_type(Post x);
+unsigned int getP_nComment(Post x);
+unsigned char *getP_name_point(Post x);
+Date getP_date_point(Post x);
+Date getP_date(Post x);
+
+Post setP_id(Post x, unsigned int o);
+Post setP_parentId(Post x, unsigned int o);
+Post setP_fund(Post x, long f);
+Post setP_ansCount(Post x, unsigned int n);
+Post setP_name(Post x, const unsigned char *un);
+Post setP_score(Post x, unsigned int s);
+Post setP_type(Post x, unsigned char t);
+Post setP_id(Post x, unsigned int o);
+Post setP_upVote(Post x);
+Post setP_downVote(Post x);
+Post setP_date(Post x, int d, int m, int a);
+Post setP_nComment(Post x, unsigned int n);
+Post setP_addAns(Post x, Post val);
+Post setP_tag(Post x, char *tag, void *set);
+
+// Métodos privados.
+
+static void null_check(void *x);
+static struct bo *add_to_ll(struct bo *x, unsigned int val);
+
+//-------------------------------------------------------------------------------------
+
 static void null_check(void *x)
 {
 	if (x)
 		g_free(x);
 }
 
-// Métodos publicos.
+static struct bo *add_to_ll(struct bo *x, unsigned int val)
+{
+	struct bo *new = g_malloc(sizeof(struct bo));
+	new->pid = val;
+	new->px = x;
+	return new;
+}
 
+//-------------------------------------------------------------------------------------
+
+// construtores.
 Post createPost()
 {
 	Post x = g_malloc(sizeof(struct post));
@@ -100,8 +153,7 @@ void destroyPost(void *x)
 	g_free(y);
 }
 
-//COMPARADORES
-
+//travessias
 void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a)
 {
 	struct no *cur;
@@ -124,39 +176,6 @@ void *postTag_transversal(Post x, void (*p)(unsigned int, void *), void *a)
 	return a;
 }
 
-//////////
-static struct bo *add_to_ll(struct bo *x, unsigned int val)
-{
-	struct bo *new = g_malloc(sizeof(struct bo));
-	new->pid = val;
-	new->px = x;
-	return new;
-}
-
-Post setP_tag(Post x, char *tag, void* set)
-{
-	char tmp[1024];
-	char *l, *ret;
-	int i;
-	TAD_community com = (TAD_community)set;
-
-	ret = strstr(tag, "<");
-	while (ret)
-	{
-		ret++; // avançar o '<'
-		i = 0;
-		for (l = ret; *l && (*l != '>'); l++)
-			tmp[i++] = *l;
-		
-		tmp[i] = '\0';
-		x->tags = add_to_ll(x->tags, code_tag(com, tmp));
-		ret = strstr(ret, "<");
-	}
-
-	return x;
-}
-
-////
 // Post getters
 unsigned int getP_id(Post x)
 {
@@ -259,6 +278,29 @@ Post setP_addAns(Post x, Post val)
 	cur->px = x->ans;
 	cur->pid = val;
 	x->ans = cur;
+
+	return x;
+}
+
+Post setP_tag(Post x, char *tag, void *set)
+{
+	char tmp[1024];
+	char *l, *ret;
+	int i;
+	TAD_community com = (TAD_community)set;
+
+	ret = strstr(tag, "<");
+	while (ret)
+	{
+		ret++; // avançar o '<'
+		i = 0;
+		for (l = ret; *l && (*l != '>'); l++)
+			tmp[i++] = *l;
+
+		tmp[i] = '\0';
+		x->tags = add_to_ll(x->tags, code_tag(com, tmp));
+		ret = strstr(ret, "<");
+	}
 
 	return x;
 }

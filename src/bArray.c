@@ -1,24 +1,21 @@
 #include <bArray.h>
 #include <glib.h>
-
 #include <stdlib.h>
 
-#define full(x) (x->use == x->size)
+//-------------------------------------------------------------------------------------
 
+//defines
+#define full(x) (x->use == x->size)
 #define get_start(x, from, cmp) find(x, from, cmp, -1)
 #define get_end(x, from, cmp) find(x, from, cmp, 1)
 
+//Estruturas.
 typedef struct brray
 {
-
     void **v;
     unsigned long size;
     unsigned long use;
-    //cmpFunc a;
     freeFunc b;
-
-    //void *user_data;
-
     int ord;
 
 } * bArray;
@@ -27,6 +24,7 @@ typedef struct brray
 bArray init_A(unsigned long n, freeFunc dados);
 bArray add_to_A(bArray x, void *ele);
 void destroy_A(bArray x);
+void* get_atA( bArray b, unsigned long i);
 bArray sort_A(bArray x, int (*cmp)(const void *, const void *));
 void *for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
 void *for_each(bArray x, appFunc functor, void *user_data);
@@ -38,7 +36,113 @@ static void *fmap(bArray ll, unsigned long start, unsigned long n, appFunc funct
 static long find(bArray x, void *from, cmpFunc comp, int flag);
 static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp, filterFunc functor, void *user_data);
 
-// >>>>><
+//-------------------------------------------------------------------------------------
+
+static void *fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data)
+{
+
+    unsigned long i;
+    unsigned long sum = start + n;
+
+    if (start >= ll->use || !ll->ord)
+        return user_data;
+
+    if (start + n > ll->use)
+        sum = ll->use;
+
+    for (i = start; i < sum; i++)
+        functor(ll->v[i], user_data);
+
+    return user_data;
+}
+
+static long find(bArray x, void *from, cmpFunc comp, int flag)
+{
+    long inicio, fim, meio;
+    long res = 0;
+
+    if (!x->size || !x->ord || !from)
+        return -1;
+    else
+    {
+
+        inicio = 0;
+        fim = x->use - 1;
+
+        while (inicio < fim)
+        {
+
+            meio = (inicio + fim) / 2;
+
+            if (comp(x->v[meio], from, NULL) == 0)
+            {
+                res = meio;
+                break;
+            }
+
+            else if (comp(x->v[meio], from, NULL) < 0)
+            {
+                fim = meio - 1;
+            }
+
+            else if (comp(x->v[meio], from, NULL) > 0)
+            {
+                inicio = meio + 1;
+                // res = fim-1;
+            }
+        }
+    }
+    /* caso nao encontre e o elemento mais proximo seja o da posicao 0 return 0;
+     * caso nao ecnontre e o elemento mais perto !=0 entao -> -1
+     */
+    res = meio;
+
+    if (flag == -1)
+    {
+        while (!(comp(x->v[res], from, NULL) > 0) && res > 0)
+            res--;
+        res = res ? (res + 1) : res;
+    }
+    else
+    {
+        while (!(comp(x->v[res], from, NULL) < 0) && res < x->use)
+            res++;
+        res = res ? (res - 1) : res;
+    }
+    return res;
+}
+
+static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp, filterFunc functor, void *user_data)
+{
+
+    HEAP x;
+    unsigned long i;
+    long r = ll->use - start;
+    ENTRY *the_v = ll->v;
+
+    if (!alt_cmp)
+        return NULL;
+
+    if (start + Qsize > ll->use || Qsize <= 0)
+    { // barco fora
+        return NULL;
+    }
+
+    the_v = the_v + start;
+
+    if (num_elem >= r) // os que quero sao maior que os disponiveis.
+        num_elem = r;
+
+    x = create_fixed_H(the_v, Qsize, NULL, alt_cmp, NULL);
+
+    for (i = Qsize; i < num_elem; i++)
+        if (functor(the_v[i], user_data))
+            x = add_in_Place_H(x, the_v[i]);
+
+    return x;
+}
+
+//-------------------------------------------------------------------------------------
 
 int is_full(bArray x)
 {
@@ -173,108 +277,4 @@ HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsiz
 HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp, filterFunc functor, void *user_data)
 {
     return GenP(ll, 0, Qsize, ll->use, q_cmp, functor, user_data);
-}
-
-static void *fmap(bArray ll, unsigned long start, unsigned long n, appFunc functor, void *user_data)
-{
-
-    unsigned long i;
-    unsigned long sum = start + n;
-
-    if (start >= ll->use || !ll->ord)
-        return user_data;
-
-    if (start + n > ll->use)
-        sum = ll->use;
-
-    for (i = start; i < sum; i++)
-        functor(ll->v[i], user_data);
-
-    return user_data;
-}
-
-static long find(bArray x, void *from, cmpFunc comp, int flag)
-{
-    long inicio, fim, meio;
-    long res = 0;
-
-    if (!x->size || !x->ord || !from)
-        return -1;
-    else
-    {
-
-        inicio = 0;
-        fim = x->use - 1;
-
-        while (inicio < fim)
-        {
-
-            meio = (inicio + fim) / 2;
-
-            if (comp(x->v[meio], from, NULL) == 0)
-            {
-                res = meio;
-                break;
-            }
-
-            else if (comp(x->v[meio], from, NULL) < 0)
-            {
-                fim = meio - 1;
-            }
-
-            else if (comp(x->v[meio], from, NULL) > 0)
-            {
-                inicio = meio + 1;
-                // res = fim-1;
-            }
-        }
-    }
-    /* caso nao encontre e o elemento mais proximo seja o da posicao 0 return 0;
-     * caso nao ecnontre e o elemento mais perto !=0 entao -> -1
-     */
-    res = meio;
-
-    if (flag == -1)
-    {
-        while (!(comp(x->v[res], from, NULL) > 0) && res > 0)
-            res--;
-        res = res ? (res + 1) : res;
-    }
-    else
-    {
-        while (!(comp(x->v[res], from, NULL) < 0) && res < x->use)
-            res++;
-        res = res ? (res - 1) : res;
-    }
-    return res;
-}
-
-static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned long num_elem, cmpFunc alt_cmp, filterFunc functor, void *user_data)
-{
-
-    HEAP x;
-    unsigned long i;
-    long r = ll->use - start;
-    ENTRY *the_v = ll->v;
-
-    if (!alt_cmp)
-        return NULL;
-
-    if (start + Qsize > ll->use || Qsize <= 0)
-    { // barco fora
-        return NULL;
-    }
-
-    the_v = the_v + start;
-
-    if (num_elem >= r) // os que quero sao maior que os disponiveis.
-        num_elem = r;
-
-    x = create_fixed_H(the_v, Qsize, NULL, alt_cmp, NULL);
-
-    for (i = Qsize; i < num_elem; i++)
-        if (functor(the_v[i], user_data))
-            x = add_in_Place_H(x, the_v[i]);
-
-    return x;
 }

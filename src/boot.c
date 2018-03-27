@@ -1,22 +1,13 @@
-//#include "interface.h"
 #include <libxml/parser.h>
 #include "Publicacao.h"
 #include <string.h>
 #include <ctype.h>
 #include "Community.h"
-#include <stdio.h>
-//#include <Bloco.h>
 #include <glib.h>
 
-/**
- *  Main structure.
- * 
- * 
- * PostTypeId =1 pergunta;
- * 
- * PostTypeId = 2 resposta;
- * */
+//-------------------------------------------------------------------------------------
 
+//defines
 #define getAtr(hold, n, str) hold = xmlGetProp(n, (const xmlChar *)str)
 
 #define convert_to_lowercase(p, str)       \
@@ -25,62 +16,26 @@
 
 typedef TAD_community (*parse_function)(TAD_community, const xmlNode *);
 
-//int COUNTER;
-
+// Métodos publicos.
 TAD_community load(TAD_community com, char *dump_path); // #0
 
+//Métodos privados.
 static TAD_community parseUser(TAD_community com, const xmlNode *node);
 static TAD_community parser(TAD_community com, char *dump_path, char *file_name, parse_function f);
 static TAD_community parsePost(TAD_community com, const xmlNode *node);
-//static TAD_community parseHistory(TAD_community com, const xmlNode *node);
 static TAD_community parseTag(TAD_community com, const xmlNode *node);
 static TAD_community parseVotes(TAD_community com, const xmlNode *node);
 static TAD_community reduce(TAD_community com);
 static void link(void *key, void *value, void *user_data);
-//
+static void adder(void *key, void *value, void *user_data);
 
-// recebe uma avl tree e retira de la as datas , para um su-array defenido no glib
-// estou a assumir que recebo uma AVL;
+//-------------------------------------------------------------------------------------
 
 static void adder(void *key, void *value, void *user_data)
 {
     TAD_community com = (TAD_community)user_data;
 
     insert_array(com, (Post)value);
-}
-
-TAD_community load(TAD_community com, char *dump_path)
-{
-    TAD_community tmp;
-
-    tmp = parser(com, dump_path, "Tags", parseTag);
-    if (!tmp)
-        return com;
-    else
-        com = tmp;
-
-    tmp = parser(com, dump_path, "Users", parseUser);
-    if (!tmp)
-        return com;
-    else
-        com = tmp;
-
-    tmp = parser(com, dump_path, "Posts", parsePost);
-    if (!tmp)
-        return com;
-    else
-        com = tmp;
-
-    tmp = parser(com, dump_path, "Votes", parseVotes);
-    if (!tmp)
-        return com;
-    else
-        com = tmp;
-
-    com = turnOn_array(com, (unsigned long)postSet_size(com));
-    com = reduce(com);
-    com = activate(com);
-    return com;
 }
 
 static TAD_community reduce(TAD_community com)
@@ -348,5 +303,41 @@ static TAD_community parseVotes(TAD_community com, const xmlNode *node)
             x = setP_downVote(x);
     }
 
+    return com;
+}
+
+//-------------------------------------------------------------------------------------
+
+TAD_community load(TAD_community com, char *dump_path)
+{
+    TAD_community tmp;
+
+    tmp = parser(com, dump_path, "Tags", parseTag);
+    if (!tmp)
+        return com;
+    else
+        com = tmp;
+
+    tmp = parser(com, dump_path, "Users", parseUser);
+    if (!tmp)
+        return com;
+    else
+        com = tmp;
+
+    tmp = parser(com, dump_path, "Posts", parsePost);
+    if (!tmp)
+        return com;
+    else
+        com = tmp;
+
+    tmp = parser(com, dump_path, "Votes", parseVotes);
+    if (!tmp)
+        return com;
+    else
+        com = tmp;
+
+    com = turnOn_array(com, (unsigned long)postSet_size(com));
+    com = reduce(com);
+    com = activate(com);
     return com;
 }

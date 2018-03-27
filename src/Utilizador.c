@@ -1,28 +1,52 @@
 #include "Utilizador.h"
-//#include <stdlib.h>
 #include <string.h>
 #include <interface.h>
 #include <glib.h>
-//#include <stdio.h>
-//#include "date.h"
 
+//-------------------------------------------------------------------------------------
+
+//Estruturas
 typedef struct utilizador
 {
-
 	unsigned long *id;
 	unsigned char *name;
 	unsigned int Q;
 	unsigned int A;
 	unsigned char *bio;
 	GHashTable *bacia;
-
 	unsigned int rep;
-	//	unsigned int AGE;
-	//	unsigned char loc[100];
-	//	unsigned int UV;
-	//	unsigned int DV;
 
 } * Util;
+
+//Métodos publicos.
+Util createUtil();
+void destroyUtil(void *x);
+unsigned long getU_id(Util x);
+unsigned long *getU_id_point(Util x);
+unsigned int getU_Q(Util x);
+unsigned int getU_A(Util x);
+unsigned char *getU_name(Util x);
+unsigned char *getU_name_point(Util x);
+unsigned char *getU_bio(Util x);
+unsigned int getU_rep(Util x);
+Util incU_Q(Util x);
+Util incU_A(Util x);
+Util setU_id(Util x, unsigned long num);
+Util setU_name(Util x, const unsigned char *un);
+Util setU_bio(Util x, const unsigned char *un);
+Util add_toBacia(Util x, unsigned int *id, void *dados);
+Util setU_rep(Util x, unsigned int n);
+Util add_toBacia(Util x, unsigned int *id, void *dados);
+int belongs_toBacia(Util x, unsigned int Parent_id, char flag);
+void *toBacia_transversal(Util x, void (*f)(void *, void *, void *), void *y);
+unsigned int *toBacia_lookup(Util x, unsigned int Parent_id);
+unsigned int toBacia_size(Util x);
+int toBacia_contains(Util x, unsigned int key);
+
+//Métodos privados.
+static void null_check(void *x);
+
+//-------------------------------------------------------------------------------------
 
 static void null_check(void *x)
 {
@@ -30,7 +54,7 @@ static void null_check(void *x)
 		g_free(x);
 }
 
-// create -- destroy -- getters (P e respostas)
+//-------------------------------------------------------------------------------------
 
 Util createUtil()
 {
@@ -60,9 +84,6 @@ void destroyUtil(void *x)
 	g_free(y);
 }
 
-//COMPARE
-
-// Util getters
 unsigned long getU_id(Util x)
 {
 
@@ -123,7 +144,6 @@ unsigned char *getU_bio(Util x)
 }
 
 //Util setters
-
 Util incU_Q(Util x)
 {
 	x->Q++;
@@ -173,7 +193,6 @@ Util add_toBacia(Util x, unsigned int *id, void *dados)
 	return x;
 }
 
-// O que acontece na eventualidade de 2 ter uma resposta no post que criou? em datas diferentes.
 int belongs_toBacia(Util x, unsigned int Parent_id, char flag)
 {
 

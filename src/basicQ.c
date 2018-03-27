@@ -1,16 +1,15 @@
-//#include "Bloco.h"
-//#include <stdlib.h>
+
 #include <glib.h>
 #include <string.h>
 #include "Community.h"
 #include <stdio.h>
 #include <comondec.h>
 #include <ctype.h>
-//#include "interface.h"
-
 #include <bArray.h>
 
-// macros
+//-------------------------------------------------------------------------------------
+
+// defines
 #define inc_fst_long(x) set_fst_long(x, 1 + get_fst_long(x))
 #define inc_snd_long(x) set_snd_long(x, 1 + get_snd_long(x))
 
@@ -80,6 +79,8 @@ static void count(void *value, void *user_data)
     else
         inc_snd_long(k); // não é Questão.
 }
+
+//-------------------------------------------------------------------------------------
 
 STR_pair info_from_post(TAD_community com, int id)
 {
