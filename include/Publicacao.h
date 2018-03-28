@@ -50,6 +50,19 @@ Date getP_date(Post x);
 
 //Post setters ---------------------------------------------------------------
 
+Post setP_id(Post x, unsigned int o);
+//incrementa uma unidade nos votos do post e devolve o post
+Post setP_upVote(Post x);
+//decrementa uma unidade nos votos do post e devolve o post
+Post setP_downVote(Post x);
+//coloca uma determinada data no post e devovle o post
+Post setP_date(Post x, int d, int m, int a);
+//coloca um determinado numero de comentarios no post e devolve o post
+Post setP_nComment(Post x, unsigned int n);
+//agrupa as respostas de um Post (perguntas) e devolve o post
+Post setP_addAns(Post x, Post val);
+//coloca uma determinada tag no post e devolve o post
+Post setP_tag(Post x, char *tag, void *set);
 //coloca um Id num post e devolve o post
 Post setP_id(Post x, unsigned int o);
 //coloca um Id do pai no post e devolve o post
@@ -65,17 +78,4 @@ Post setP_score(Post x, unsigned int s);
 //coloca o tipo (de um post) no post e devolve o post
 Post setP_type(Post x, unsigned char t);
 //coloca o id num post e devolve o post
-Post setP_id(Post x, unsigned int o);
-//incrementa uma unidade nos votos do post e devolve o post
-Post setP_upVote(Post x);
-//decrementa uma unidade nos votos do post e devolve o post
-Post setP_downVote(Post x);
-//coloca uma determinada data no post e devovle o post
-Post setP_date(Post x, int d, int m, int a);
-//coloca um determinado numero de comentarios no post e devolve o post
-Post setP_nComment(Post x, unsigned int n);
-//agrupa as respostas de um Post (perguntas) e devolve o post
-Post setP_addAns(Post x, Post val);
-//coloca uma determinada tag no post e devolve o post
-Post setP_tag(Post x, char *tag, void *set);
 #endif
