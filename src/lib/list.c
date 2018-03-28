@@ -3,14 +3,14 @@
 
 struct llist {
   int size;
-  int * list;
+  long * list;
 };
 
 LONG_list create_list(int size) {
     if(size <= 0) return NULL;
     LONG_list l = malloc(sizeof(struct llist));
     l->size = size;
-    l->list = malloc(sizeof(int) * size);
+    l->list = malloc(sizeof(long) * size);
     return l;
 }
 
