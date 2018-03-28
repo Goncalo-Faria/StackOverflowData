@@ -4,7 +4,6 @@
 #include "interface.h"
 #include "Publicacao.h"
 #include "Utilizador.h"
-
 #include "heap.h"
 
 //#include "date.h"
@@ -19,10 +18,10 @@ TAD_community turnOn_array(TAD_community com, unsigned long n);
 TAD_community finalize_array(TAD_community com);
 TAD_community assign_tag(TAD_community com, char *key, unsigned int code);
 TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x);
-TAD_community postSet_insert(TAD_community com, unsigned int *key, Post x);
+TAD_community postSet_insert(TAD_community com, unsigned long *key, Post x);
 TAD_community insert_array(TAD_community com, Post x);
 Util userSet_id_lookup(TAD_community com, unsigned long num);
-Post postSet_lookup(TAD_community com, unsigned int num);
+Post postSet_lookup(TAD_community com, unsigned long num);
 unsigned int userSet_size(TAD_community com);
 unsigned int postSet_size(TAD_community com);
 int is_ON(TAD_community com);

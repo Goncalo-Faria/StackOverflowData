@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <string.h>
+#include <interface.h>
 #include "Community.h"
 #include "bArray.h"
 #include <comondec.h>
@@ -18,7 +19,7 @@ static void gather_rep(void *key, void *value, void *user_data);
 static void make_histogram(void *key, void *value, void *user_data);
 static void tag_count_free(void *y);
 static void fil_hash(void *b, void *user_data);
-static void hist_tag(unsigned int tag, void *user_data);
+static void hist_tag(unsigned long tag, void *user_data);
 static void *standart_make_pq(void (*freeCap)(void *), void *value, void *user_data, int (*Hcmp)(void *, void *, void *));
 
 //-------------------------------------------------------------------------------------
@@ -59,7 +60,7 @@ static void collect_top10(void *key, void *value, void *user_data)
         rd = standart_make_pq(NULL, pub, rd, inv_post_compare);
 }
 
-static void hist_tag(unsigned int tag, void *user_data)
+static void hist_tag(unsigned long tag, void *user_data)
 {
 
     int *c;
@@ -201,7 +202,7 @@ LONG_list top_most_active(TAD_community com, int N)
             set_list(ll, i, (long)getU_id(c));
         }
 
-        for (i = j; i < N; j++)
+        for (i = j; i < N; i++)
             set_list(ll, i, 0);
 
         g_free(rd);

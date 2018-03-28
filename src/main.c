@@ -11,7 +11,7 @@
 #include "heap.h"
 #include <time.h>
 
-/*
+
 int main(int argc, char *argv[])
 {
     clock_t t1, t2;
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
         printf("--------------------------------------------------------\n");
         exit(-1);
     }
-    n=20;
+    n=40;
     for (i = 0; i < n; i++)
     {
         t1 = clock();
@@ -40,8 +40,9 @@ int main(int argc, char *argv[])
 
     return (1);
 }
-*/
 
+
+/*
 int main(int argc, char *argv[])
 {
     clock_t t1, t2;
@@ -52,7 +53,7 @@ int main(int argc, char *argv[])
     LONG_pair q3;
     char *tmp;
     long *l;
-    LONG_list q9, q2, q6, q10, q7, q8;
+    LONG_list q9, q2, q6, q10, q7, q8,q11;
     Date begin = createDate(16, 1, 2011), end = createDate(3, 3, 2016);
     int n;
     //int *bg, *ed;
@@ -98,13 +99,13 @@ int main(int argc, char *argv[])
 
     printf("______________________\n");
     printf("|->Q2\n\n");
-    n = 40;
+    n = 30;
     q2 = top_most_active(com, n);
     if (q2)
     {
         for (i = 0; i < n; i++)
         {
-            printf(">> %d ", (int)get_list(q2, i));
+            printf("| %d >> %d ",i+1, (int)get_list(q2, i));
             usq2 = userSet_id_lookup(com, get_list(q2, i));
             printf(" \t %d \n", getU_A(usq2) + getU_Q(usq2));
         }
@@ -168,7 +169,7 @@ int main(int argc, char *argv[])
             {
                 printf(">> %d   ", (int)get_list(q6, i));
                 q6p = postSet_lookup(com, (unsigned int)get_list(q6, i));
-                printf("\t < %d > \n", getP_score(q6p));
+                printf("\t < %d > \n", getP_votes(q6p));
             }
             else
                 printf(" Can't find that post bro\n");
@@ -202,7 +203,7 @@ int main(int argc, char *argv[])
     printf("______________________\n");
     printf("|->Q8\n\n");
     n = 40;
-    q8 = contains_word(com, "store", n);
+    q8 = contains_word(com, "PLAY", n);
     if (q8)
     {
         for (i = 0; i < n; i++)
@@ -212,7 +213,7 @@ int main(int argc, char *argv[])
                 q8p = postSet_lookup(com, (unsigned int)get_list(q8, i));
                 pdate = getP_date_point(q8p);
                 if (q8p)
-                    printf(" %d ||  %d-%d-%d || \t name : : %s || \n", i + 1,get_day(pdate),get_month(pdate),get_year(pdate), getP_name_point(q8p));
+                    printf(" %d ||  %d-%d-%d || \t name : : %s || \n", i + 1, get_day(pdate), get_month(pdate), get_year(pdate), getP_name_point(q8p));
             }
         }
     }
@@ -238,8 +239,7 @@ int main(int argc, char *argv[])
                 printf(" Can't find that post bro\n");
         }
     }
-    g_free(begin);
-    g_free(end);
+
     g_free(q9);
 
     printf("______________________\n");
@@ -254,6 +254,23 @@ int main(int argc, char *argv[])
             g_free(q10);
         }
     }
+
+    printf("______________________\n");
+    printf("|->Q11\n\n");
+
+    n=30;
+    q11 = most_used_best_rep( com, n , begin, end);
+    if( q11 ){
+        for( i=0;i<n; i++ )
+            if (get_list(q11,i)){
+                printf(">> %d  || %ld \n", (int)i+1,get_list(q11,i) );
+            }
+        g_free(q11);
+    }
+
+    g_free(begin);
+    g_free(end);
     clean(com);
     return 1;
 }
+*/

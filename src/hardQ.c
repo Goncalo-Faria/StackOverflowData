@@ -9,7 +9,7 @@
 // Estruturas privadas.
 struct no
 {
-    unsigned int pid;
+    unsigned long pid;
     struct no *px;
 };
 
@@ -21,8 +21,8 @@ typedef struct bo
 } * Box;
 
 // Métodos Publicos
-LONG_list both_participated(TAD_community com, long id1, long id2, int N);        //#9
-LONG_list better_answer(TAD_community com, int id);                               //#10
+LONG_list both_participated(TAD_community com, long id1, long id2, int N); //#9
+long better_answer(TAD_community com, long id);                            //#10
 
 // Métodos Privados.
 static float rank(TAD_community com, Post x);
@@ -81,7 +81,7 @@ static void intr(void *key, void *value, void *user_data)
     struct no **cur = (struct no **)ll->fst;
     struct no *new;
     Util lrg = (Util)box->snd;
-    unsigned int pst = *(unsigned int *)key;
+    unsigned long pst = *(unsigned long *)key;
 
     if (toBacia_contains(lrg, pst))
     {
@@ -234,12 +234,12 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
         return NULL;
 }
 
-LONG_list better_answer(TAD_community com, int id)
+long better_answer(TAD_community com, long id)
 {
     Record a;
     Box bx;
-    Post p = postSet_lookup(com, (unsigned int)id);
-    LONG_list ll = create_list(1);
+    Post p = postSet_lookup(com, (unsigned long)id);
+    long ll;
 
     if (is_ON(com))
     {
@@ -251,18 +251,18 @@ LONG_list better_answer(TAD_community com, int id)
             bx = (Box)a->snd;
 
             if (bx)
-                set_list(ll, 0, (long)getP_id(bx->pid));
+                ll = (long)getP_id(bx->pid);
             else
-                set_list(ll, 0, 0);
+                ll = 0;
 
             g_free(bx);
             g_free(a);
         }
         else
-            set_list(ll, 0, 0);
+            ll = 0;
 
         return ll;
     }
     else
-        return NULL;
+        return 0 ;
 }

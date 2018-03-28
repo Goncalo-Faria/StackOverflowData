@@ -15,11 +15,11 @@ void destroyPost(void *x);
 //guarda as respostas de um post com type->1
 void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a);
 //
-void *postTag_transversal(Post x, void (*p)(unsigned int, void *), void *a);
+void *postTag_transversal(Post x, void (*p)(unsigned long, void *), void *a);
 
 //Post setters ---------------------------------------------------------------
 
-Post setP_id(Post x, unsigned int o);
+Post setP_id(Post x, unsigned long o);
 //incrementa uma unidade nos votos do post e devolve o post
 Post setP_upVote(Post x);
 //decrementa uma unidade nos votos do post e devolve o post
@@ -33,11 +33,11 @@ Post setP_addAns(Post x, Post val);
 //coloca uma determinada tag no post e devolve o post
 Post setP_tag(Post x, char *tag, void *set);
 //coloca um Id num post e devolve o post
-Post setP_id(Post x, unsigned int o);
+Post setP_id(Post x, unsigned long o);
 //coloca um Id do pai no post e devolve o post
-Post setP_parentId(Post x, unsigned int o);
+Post setP_parentId(Post x, unsigned long o);
 //coloca o fundador no post e devolve o post
-Post setP_fund(Post x, long f);
+Post setP_fund(Post x, unsigned long f);
 //coloca o numero de respostas no post e devolve o post
 Post setP_ansCount(Post x, unsigned int n);
 //coloca o nome no post e devolve o post
@@ -51,13 +51,13 @@ Post setP_type(Post x, unsigned char t);
 //Post getters ---------------------------------------------------------------
 
 //devolve o Id de um post
-unsigned int getP_id(Post x);
+unsigned long getP_id(Post x);
 //devolve um apontador para o Id de um post
-unsigned int *getP_id_point(Post x);
+unsigned long *getP_id_point(Post x);
 //devolve o ParentId de um post de um post
-unsigned int getP_parentId(Post x);
+unsigned long getP_parentId(Post x);
 //devolve o apontador para o ParentID de um post
-unsigned int *getP_parentId_point(Post x);
+unsigned long *getP_parentId_point(Post x);
 //devolve o fundador de um post
 unsigned long getP_fund(Post x);
 //devolve o nome de um post

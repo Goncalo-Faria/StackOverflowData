@@ -1,6 +1,7 @@
 
 #include <glib.h>
 #include <string.h>
+#include <interface.h>
 #include "Community.h"
 #include <stdio.h>
 #include <comondec.h>
@@ -14,7 +15,7 @@
 #define inc_snd_long(x) set_snd_long(x, 1 + get_snd_long(x))
 
 // Métodos publicos.
-STR_pair info_from_post(TAD_community com, int id);                                //#1
+STR_pair info_from_post(TAD_community com, long id);                                //#1
 LONG_pair total_posts(TAD_community com, Date begin, Date end);                    //#3
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end);      //#6
 LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end); //#7
@@ -82,7 +83,7 @@ static void count(void *value, void *user_data)
 
 //-------------------------------------------------------------------------------------
 
-STR_pair info_from_post(TAD_community com, int id)
+STR_pair info_from_post(TAD_community com, long id)
 {
     unsigned char *str1, *str2;
     Util y = NULL;

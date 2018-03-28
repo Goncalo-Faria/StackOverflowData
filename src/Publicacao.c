@@ -1,6 +1,5 @@
 #include "Publicacao.h"
 #include <string.h>
-#include "interface.h"
 #include <glib.h>
 #include "Community.h"
 #include "bArray.h"
@@ -11,7 +10,7 @@
 
 typedef struct post
 {
-	unsigned int *id;
+	unsigned long *id;
 	unsigned long fundador;
 	unsigned char *name;
 	unsigned int score;
@@ -34,7 +33,7 @@ struct no
 
 struct bo
 {
-	unsigned int pid;
+	unsigned long pid;
 	struct bo *px;
 };
 
@@ -44,12 +43,12 @@ Post createPost();
 void destroyPost(void *x);
 
 void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a);
-void *postTag_transversal(Post x, void (*p)(unsigned int, void *), void *a);
+void *postTag_transversal(Post x, void (*p)(unsigned long, void *), void *a);
 
-unsigned int getP_id(Post x);
-unsigned int *getP_id_point(Post x);
-unsigned int getP_parentId(Post x);
-unsigned int *getP_parentId_point(Post x);
+unsigned long getP_id(Post x);
+unsigned long *getP_id_point(Post x);
+unsigned long getP_parentId(Post x);
+unsigned long *getP_parentId_point(Post x);
 unsigned long getP_fund(Post x);
 unsigned char *getP_name(Post x);
 unsigned int getP_ansCount(Post x);
@@ -61,14 +60,14 @@ unsigned char *getP_name_point(Post x);
 Date getP_date_point(Post x);
 Date getP_date(Post x);
 
-Post setP_id(Post x, unsigned int o);
-Post setP_parentId(Post x, unsigned int o);
-Post setP_fund(Post x, long f);
+Post setP_id(Post x, unsigned long o);
+Post setP_parentId(Post x, unsigned long o);
+Post setP_fund(Post x, unsigned long f);
 Post setP_ansCount(Post x, unsigned int n);
 Post setP_name(Post x, const unsigned char *un);
 Post setP_score(Post x, unsigned int s);
 Post setP_type(Post x, unsigned char t);
-Post setP_id(Post x, unsigned int o);
+Post setP_id(Post x, unsigned long o);
 Post setP_upVote(Post x);
 Post setP_downVote(Post x);
 Post setP_date(Post x, int d, int m, int a);
@@ -79,7 +78,7 @@ Post setP_tag(Post x, char *tag, void *set);
 // Métodos privados.
 
 static void null_check(void *x);
-static struct bo *add_to_ll(struct bo *x, unsigned int val);
+static struct bo *add_to_ll(struct bo *x, unsigned long val);
 
 //-------------------------------------------------------------------------------------
 
@@ -89,7 +88,7 @@ static void null_check(void *x)
 		g_free(x);
 }
 
-static struct bo *add_to_ll(struct bo *x, unsigned int val)
+static struct bo *add_to_ll(struct bo *x, unsigned long val)
 {
 	struct bo *new = g_malloc(sizeof(struct bo));
 	new->pid = val;
@@ -109,7 +108,7 @@ Post createPost()
 	x->score = 0;
 	x->comment_count = 0;
 	x->votes = 0;
-	x->id = g_malloc(sizeof(unsigned int));
+	x->id = g_malloc(sizeof(unsigned long));
 	x->special = NULL;
 	x->ans = NULL;
 	//x->data = g_malloc (sizeof(struct date));
@@ -164,7 +163,7 @@ void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a)
 	return a;
 }
 
-void *postTag_transversal(Post x, void (*p)(unsigned int, void *), void *a)
+void *postTag_transversal(Post x, void (*p)(unsigned long, void *), void *a)
 {
 	struct bo *cur;
 
@@ -177,20 +176,20 @@ void *postTag_transversal(Post x, void (*p)(unsigned int, void *), void *a)
 }
 
 // Post getters
-unsigned int getP_id(Post x)
+unsigned long getP_id(Post x)
 {
-	unsigned int *y = x->id;
+	unsigned long *y = x->id;
 	return (*y);
 }
 
-unsigned int *getP_id_point(Post x)
+unsigned long *getP_id_point(Post x)
 {
 	return (x->id);
 }
 
-unsigned int getP_parentId(Post x)
+unsigned long getP_parentId(Post x)
 {
-	unsigned int *y;
+	unsigned long *y;
 	if (x->type == 2)
 	{ //answer
 		y = x->special;
@@ -210,9 +209,9 @@ unsigned int getP_ansCount(Post x)
 	return 0;
 }
 
-unsigned int *getP_parentId_point(Post x)
+unsigned long *getP_parentId_point(Post x)
 {
-	return ((unsigned int *)x->special);
+	return ((unsigned long *)x->special);
 }
 
 unsigned long getP_fund(Post x)
@@ -305,20 +304,20 @@ Post setP_tag(Post x, char *tag, void *set)
 	return x;
 }
 
-Post setP_id(Post x, unsigned int o)
+Post setP_id(Post x, unsigned long o)
 {
-	unsigned int *y = x->id;
+	unsigned long *y = x->id;
 	*y = o;
 	return x;
 }
 
-Post setP_parentId(Post x, unsigned int o)
+Post setP_parentId(Post x, unsigned long o)
 {
-	unsigned int *y;
+	unsigned long *y;
 
 	if (!x->special)
 	{ // é null
-		y = g_malloc(sizeof(unsigned int));
+		y = g_malloc(sizeof(unsigned long) );
 		*y = o;
 		x->special = y;
 	}
@@ -366,7 +365,7 @@ Post setP_date(Post x, int d, int m, int a)
 	return x;
 }
 
-Post setP_fund(Post x, long f)
+Post setP_fund(Post x, unsigned long f)
 {
 	x->fundador = f;
 	return x;

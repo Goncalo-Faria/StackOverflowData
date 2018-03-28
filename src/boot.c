@@ -1,5 +1,6 @@
 #include <libxml/parser.h>
 #include "Publicacao.h"
+#include <interface.h>
 #include <string.h>
 #include <ctype.h>
 #include "Community.h"
@@ -143,7 +144,7 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
     // GET POST ID <LONG> getatr( hold , n , str )
 
     getAtr(hold, node, "Id");
-    x = setP_id(x, (unsigned int)atoi((const char *)hold));
+    x = setP_id(x, (unsigned long)atol((const char *)hold));
     xmlFree(hold);
 
     // printf( " id: : %d \n",getP_id(x) );
@@ -169,7 +170,7 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
     if (getP_type(x) == 2)
     { // ans
         getAtr(hold, node, "ParentId");
-        x = setP_parentId(x, (unsigned int)atoi((const char *)hold));
+        x = setP_parentId(x, (unsigned long)atol((const char *)hold));
         xmlFree(hold);
 
         getAtr(hold, node, "CommentCount");
@@ -236,7 +237,6 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
 
     if (hold)
     {
-
         x = setU_bio(x, (unsigned char *)hold);
         //printf("%s \n",(char*)hold);
         xmlFree(hold);
@@ -260,10 +260,10 @@ static TAD_community parseTag(TAD_community com, const xmlNode *node)
 {
 
     xmlChar *hold = NULL;
-    unsigned int id;
+    unsigned long id;
 
     getAtr(hold, node, "Id");
-    id = (unsigned int)atol((const char *)hold);
+    id = (unsigned long)atol((const char *)hold);
     xmlFree(hold);
 
     getAtr(hold, node, "TagName");
@@ -287,7 +287,7 @@ static TAD_community parseVotes(TAD_community com, const xmlNode *node)
     if (c == 2)
     {
         getAtr(hold, node, "PostId");
-        x = postSet_lookup(com, (unsigned int)atoi((const char *)hold));
+        x = postSet_lookup(com, (unsigned long)atol((const char *)hold));
         xmlFree(hold);
 
         if (x)
@@ -296,7 +296,7 @@ static TAD_community parseVotes(TAD_community com, const xmlNode *node)
     else if (c == 3)
     {
         getAtr(hold, node, "PostId");
-        x = postSet_lookup(com, (unsigned int)atoi((const char *)hold));
+        x = postSet_lookup(com, (unsigned long)atol((const char *)hold));
         xmlFree(hold);
 
         if (x)

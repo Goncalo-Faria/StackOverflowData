@@ -26,10 +26,10 @@ TAD_community turnOn_array(TAD_community com, unsigned long n);
 TAD_community finalize_array(TAD_community com);
 TAD_community assign_tag(TAD_community com, char *key, unsigned int code);
 TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x);
-TAD_community postSet_insert(TAD_community com, unsigned int *key, Post x);
+TAD_community postSet_insert(TAD_community com, unsigned long *key, Post x);
 TAD_community insert_array(TAD_community com, Post x);
 Util userSet_id_lookup(TAD_community com, unsigned long num);
-Post postSet_lookup(TAD_community com, unsigned int num);
+Post postSet_lookup(TAD_community com, unsigned long num);
 unsigned int userSet_size(TAD_community com);
 unsigned int postSet_size(TAD_community com);
 int is_ON(TAD_community com);
@@ -39,7 +39,7 @@ void *arrayRev_transversal(TAD_community com, int (*functor)(void *, void *), vo
 void *postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x);
 void *userSet_id_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x);
 HEAP array_Priority_Queue(TAD_community com, unsigned long Qsize, Fcompare q_cmp, int (*filter)(void *, void *), void *user_data);
-HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end,unsigned long Qsize,Fcompare q_cmp,int (*filter)(void *, void *), void *user_data);
+HEAP arraySeg_Priority_Queue(TAD_community com, Date begin, Date end, unsigned long Qsize, Fcompare q_cmp, int (*filter)(void *, void *), void *user_data);
 
 //Métodos privados.
 static int post_src(void *a, void *b, void *garb);
@@ -62,7 +62,7 @@ TAD_community init(void)
 
     x->userById = g_hash_table_new_full(g_int64_hash, g_int64_equal, NULL, destroyUtil);
 
-    x->post = g_hash_table_new_full(g_int_hash, g_int_equal, NULL, destroyPost);
+    x->post = g_hash_table_new_full(g_int64_hash, g_int64_equal, NULL, destroyPost);
 
     x->tagconv = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
 
@@ -191,13 +191,13 @@ unsigned int userSet_size(TAD_community com)
 }
 
 // POST HASHTABLE
-TAD_community postSet_insert(TAD_community com, unsigned int *key, Post x)
+TAD_community postSet_insert(TAD_community com, unsigned long *key, Post x)
 {
     g_hash_table_insert(com->post, (void *)key, (void *)x);
     return com;
 }
 
-Post postSet_lookup(TAD_community com, unsigned int num)
+Post postSet_lookup(TAD_community com, unsigned long num)
 {
     return (Post)g_hash_table_lookup(com->post, &num);
 }

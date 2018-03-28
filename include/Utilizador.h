@@ -63,7 +63,7 @@ Util setU_name(Util x, const unsigned char *un);
 Util setU_bio(Util x, const unsigned char *un);
 
 //adiciona na bacia de um user um id e dados e devolve o util
-Util add_toBacia(Util x, unsigned int *id, void *dados);
+Util add_toBacia(Util x, unsigned long *id, void *dados);
 
 //adiciona no user uma reputacao e devolve o util
 Util setU_rep(Util x, unsigned int n);
@@ -73,19 +73,19 @@ Util setU_rep(Util x, unsigned int n);
 //Util add_toBacia(Util x, unsigned int *id, void *dados);
 
 //devolve um inteiro 1 se for pergunta ou 2 se for resposta e pertencer ha bacia
-int belongs_toBacia(Util x, unsigned int Parent_id, char flag);
+int belongs_toBacia(Util x, unsigned long Parent_id, char flag);
 
 //percorre a bacia aletrando-a com uma determinada funcao
 void* toBacia_transversal(Util x, void (*f)(void *, void *, void *), void *y);
 
 //devolve a posicao de um elemento na bacia
-unsigned int *toBacia_lookup(Util x, unsigned int Parent_id);
+unsigned long *toBacia_lookup(Util x, unsigned long Parent_id);
 
 //devolve o tamanho da bacia
 unsigned int toBacia_size( Util x);
 
 //verifica se uma determinada key se econtra num user e devolve um boolean(int)
-int toBacia_contains(Util x, unsigned int key);
+int toBacia_contains(Util x, unsigned long key);
 
 //coloca no bacia do user um determinado post
 Util bind_toBacia(Util x, Post y);

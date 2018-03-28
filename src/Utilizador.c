@@ -1,6 +1,5 @@
 #include "Utilizador.h"
 #include <string.h>
-#include <interface.h>
 #include <glib.h>
 
 //-------------------------------------------------------------------------------------
@@ -34,14 +33,13 @@ Util incU_A(Util x);
 Util setU_id(Util x, unsigned long num);
 Util setU_name(Util x, const unsigned char *un);
 Util setU_bio(Util x, const unsigned char *un);
-Util add_toBacia(Util x, unsigned int *id, void *dados);
+Util add_toBacia(Util x, unsigned long *id, void *dados);
 Util setU_rep(Util x, unsigned int n);
-Util add_toBacia(Util x, unsigned int *id, void *dados);
-int belongs_toBacia(Util x, unsigned int Parent_id, char flag);
+int belongs_toBacia(Util x, unsigned long Parent_id, char flag);
 void *toBacia_transversal(Util x, void (*f)(void *, void *, void *), void *y);
-unsigned int *toBacia_lookup(Util x, unsigned int Parent_id);
+unsigned long *toBacia_lookup(Util x, unsigned long Parent_id);
 unsigned int toBacia_size(Util x);
-int toBacia_contains(Util x, unsigned int key);
+int toBacia_contains(Util x, unsigned long key);
 
 //Métodos privados.
 static void null_check(void *x);
@@ -53,7 +51,6 @@ static void null_check(void *x)
 	if (x)
 		g_free(x);
 }
-
 //-------------------------------------------------------------------------------------
 
 Util createUtil()
@@ -66,7 +63,7 @@ Util createUtil()
 	x->A = 0;
 	x->rep = 0;
 
-	x->bacia = g_hash_table_new_full(g_int_hash, g_int_equal, NULL, NULL); // key é post.
+	x->bacia = g_hash_table_new_full(g_int64_hash, g_int64_equal, NULL, NULL); // key é post.
 
 	return x;
 }
@@ -187,13 +184,13 @@ Util setU_bio(Util x, const unsigned char *un)
 	return x;
 }
 
-Util add_toBacia(Util x, unsigned int *id, void *dados)
+Util add_toBacia(Util x, unsigned long *id, void *dados)
 {
 	g_hash_table_insert(x->bacia, (void *)id, dados);
 	return x;
 }
 
-int belongs_toBacia(Util x, unsigned int Parent_id, char flag)
+int belongs_toBacia(Util x, unsigned long Parent_id, char flag)
 {
 
 	GHashTable *set = x->bacia;
@@ -220,12 +217,12 @@ unsigned int toBacia_size(Util x)
 	return g_hash_table_size(x->bacia);
 }
 
-int toBacia_contains(Util x, unsigned int key)
+int toBacia_contains(Util x, unsigned long key)
 {
 	return g_hash_table_contains(x->bacia, &key);
 }
 
-unsigned int *toBacia_lookup(Util x, unsigned int Parent_id)
+unsigned long *toBacia_lookup(Util x, unsigned long Parent_id)
 {
 
 	return g_hash_table_lookup(x->bacia, &Parent_id);
@@ -242,7 +239,7 @@ Util bind_toBacia(Util x, Post y)
 {
 
 	int flag;
-	unsigned int tmpid = getP_id(y), tmppr;
+	unsigned long tmpid = getP_id(y), tmppr;
 
 	if (getP_type(y) == 1)
 	{ // Questão. y post x user
