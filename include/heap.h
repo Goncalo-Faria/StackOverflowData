@@ -17,13 +17,28 @@ typedef struct heap *HEAP;
 
 // Max heap.
 
+//cria uma heap e devolve a heap
 HEAP create_H(freeFunc in_free, Fcompare ff, void *usr_d);
+
+//cria uma heap fixa e devolve a heap
 HEAP create_fixed_H(ENTRY *v, unsigned long n, freeFunc in_free, Fcompare h, void *usr_d);
+
+//destroi uma especifica heap
 void destroy_H(HEAP x);
+
+//adiciona um elemento na heap e devolve a heap
 HEAP add_Heap(HEAP x, void *n);
+
+//removemos uma determinada heap
 void *rem_Heap(HEAP x);
+
+//adiciona um elemento na heap e devolve a heap
 HEAP add_in_Place_H_signal(HEAP x, void *n, int *flag);
+
+//verifica se a heap esta vazia
 int empty_H(HEAP x);
+
+//devolve o tamanho da heap
 unsigned long length_H(HEAP x);
 
 #endif
