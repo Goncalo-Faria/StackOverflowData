@@ -6,36 +6,6 @@
 typedef struct post *Post;
 // Métodos Publicos.
 
-//devolve o Id de um post
-unsigned int getP_id(Post x);
-//devolve um apontador para o Id de um post
-unsigned int *getP_id_point(Post x);
-//devolve o ParentId 
-//destroi um especifico post
-void destroyPost(void *x);de um post de um post
-unsigned int getP_parentId(Post x);
-//devolve o apontador para o ParentID de um post
-unsigned int *getP_parentId_point(Post x);
-//devolve o fundador de um post
-unsigned long getP_fund(Post x);
-//devolve o nome de um post
-unsigned char *getP_name(Post x);
-//devolve o apontador para o nome de um post
-unsigned char *getP_name_point(Post x);
-//
-unsigned int getP_ansCount(Post x);
-//devolve o score de um post
-unsigned int getP_score(Post x);
-//devolve o numero de votos de um post
-int getP_votes(Post x);
-//devolve o tipo de um post
-unsigned char getP_type(Post x);
-//devolve o numero de respostas de um post
-unsigned int getP_nComment(Post x);
-//devolve o apontador da data de um post
-Date getP_date_point(Post x);
-//devolve a data de um post
-Date getP_date(Post x);
 //cria e devolve um post
 Post createPost();
 
@@ -77,7 +47,6 @@ Post setP_score(Post x, unsigned int s);
 //coloca o tipo (de um post) no post e devolve o post
 Post setP_type(Post x, unsigned char t);
 //coloca o id num post e devolve o post
-#endif
 
 //Post getters ---------------------------------------------------------------
 
@@ -110,3 +79,4 @@ Date getP_date_point(Post x);
 //devolve a data de um post
 Date getP_date(Post x);
 
+#endif
