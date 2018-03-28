@@ -49,7 +49,8 @@ void *for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFun
 //percorre todo o bArray
 void *for_each(bArray x, appFunc functor, void *user_data);
 
-//void *for_each_rev(bArray x, filterFunc functor, void *user_data);
+//usada no bArray VERRRRR
+void *for_each_rev(bArray x, filterFunc functor, void *user_data);
 
 HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp, filterFunc functor, void *user_data);
 
