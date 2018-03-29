@@ -235,19 +235,28 @@ USER get_user_info(TAD_community com, long id)
 
         if (!x)
         {
+            g_free(getFst(carrier));
+            g_free(carrier);
+            return NULL;
+        }
+
+        carrier = toBacia_transversal(x, collect_top10, carrier);
+
+        if (!flag)
+        {
             rd = (Record)getFst(carrier);
 
             extreme = (bArray)getFst(rd);
             hp = Generalized_Priority_Queue(extreme, length_A(extreme), inv_post_compare, yes, NULL);
-
             destroy_A(extreme);
+
         }
         else
         {
             rd = (Record)getFst(carrier);
             hp = (HEAP)getFst(rd);
         }
-        //->>>>
+
         j = length_H(hp);
         for (i = j - 1; i >= 0; i--)
         { // vai do novo para o velho. (cronologia inversa)
@@ -263,7 +272,7 @@ USER get_user_info(TAD_community com, long id)
 
         g_free(short_bio);
 
-        g_free(rd );
+        g_free(rd);
         g_free(carrier);
 
         destroy_H(hp);
