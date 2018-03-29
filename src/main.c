@@ -11,7 +11,7 @@
 #include "heap.h"
 #include <time.h>
 
-
+/*
 int main(int argc, char *argv[])
 {
     clock_t t1, t2;
@@ -40,9 +40,8 @@ int main(int argc, char *argv[])
 
     return (1);
 }
+*/
 
-
-/*
 int main(int argc, char *argv[])
 {
     clock_t t1, t2;
@@ -53,7 +52,8 @@ int main(int argc, char *argv[])
     LONG_pair q3;
     char *tmp;
     long *l;
-    LONG_list q9, q2, q6, q10, q7, q8,q11;
+    LONG_list q9, q2, q6, q7, q8,q11;
+    long q10;
     Date begin = createDate(16, 1, 2011), end = createDate(3, 3, 2016);
     int n;
     //int *bg, *ed;
@@ -221,7 +221,7 @@ int main(int argc, char *argv[])
     printf("______________________\n");
     printf("|->Q9\n\n");
     n = 10;
-    q9 = both_participated(com, 15811, 449, n);
+    q9 = both_participated(com, 5342, 16575, n);
     if (q9)
     {
         for (i = 0; i < n; i++)
@@ -245,20 +245,21 @@ int main(int argc, char *argv[])
     printf("______________________\n");
     printf("|->Q10\n\n");
 
-    q10 = better_answer(com, 30334);
+    q10 = better_answer(com, 35580);
     if (q10)
     {
-        if (get_list(q10, 0))
-        {
-            printf("----1>| %ld |<1----\n", get_list(q10, 0));
-            g_free(q10);
-        }
+        
+            printf("----1>| %ld |<1----\n", q10 );
+            //g_free(q10);
+            q9p = postSet_lookup(com, (unsigned long)q10);
+
+            printf(" ----1>| votes _%d ! comment _%d ! score _%d ! \n",(int)getP_votes(q9p),(int)getP_nComment(q9p),(int)getP_score(q9p) );
     }
 
     printf("______________________\n");
     printf("|->Q11\n\n");
 
-    n=30;
+    n=10;
     q11 = most_used_best_rep( com, n , begin, end);
     if( q11 ){
         for( i=0;i<n; i++ )
@@ -273,4 +274,4 @@ int main(int argc, char *argv[])
     clean(com);
     return 1;
 }
-*/
+

@@ -13,7 +13,7 @@ typedef struct utilizador
 	unsigned int A;
 	unsigned char *bio;
 	GHashTable *bacia;
-	unsigned int rep;
+	int rep;
 
 } * Util;
 
@@ -27,14 +27,14 @@ unsigned int getU_A(Util x);
 unsigned char *getU_name(Util x);
 unsigned char *getU_name_point(Util x);
 unsigned char *getU_bio(Util x);
-unsigned int getU_rep(Util x);
+int getU_rep(Util x);
 Util incU_Q(Util x);
 Util incU_A(Util x);
 Util setU_id(Util x, unsigned long num);
 Util setU_name(Util x, const unsigned char *un);
 Util setU_bio(Util x, const unsigned char *un);
 Util add_toBacia(Util x, unsigned long *id, void *dados);
-Util setU_rep(Util x, unsigned int n);
+Util setU_rep(Util x, int n);
 int belongs_toBacia(Util x, unsigned long Parent_id, char flag);
 void *toBacia_transversal(Util x, void (*f)(void *, void *, void *), void *y);
 unsigned long *toBacia_lookup(Util x, unsigned long Parent_id);
@@ -98,7 +98,7 @@ unsigned int getU_Q(Util x)
 	return (x->Q);
 }
 
-unsigned int getU_rep(Util x)
+int getU_rep(Util x)
 {
 	return (x->rep);
 }
@@ -161,7 +161,7 @@ Util setU_id(Util x, unsigned long num)
 	return x;
 }
 
-Util setU_rep(Util x, unsigned int n)
+Util setU_rep(Util x, int n)
 {
 	x->rep = n;
 	return (x);

@@ -40,10 +40,10 @@ unsigned char *getU_name_point(Util x);
 
 //devolve a bio de um user
 unsigned char *getU_bio(Util x);
+//alloc memoria
 
 //devolve a repetutacao de um user
-unsigned int getU_rep(Util x);
-// alloca memoria
+int getU_rep(Util x);
 
 //Util setters -----------------------------------------------------------------
 
@@ -66,7 +66,7 @@ Util setU_bio(Util x, const unsigned char *un);
 Util add_toBacia(Util x, unsigned long *id, void *dados);
 
 //adiciona no user uma reputacao e devolve o util
-Util setU_rep(Util x, unsigned int n);
+Util setU_rep(Util x, int n);
 
 //Functions --------------------------------------------------------------------
 

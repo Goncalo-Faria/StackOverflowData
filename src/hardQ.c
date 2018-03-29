@@ -3,7 +3,6 @@
 #include "Community.h"
 #include "bArray.h"
 #include <comondec.h>
-
 //-------------------------------------------------------------------------------------
 
 // Estruturas privadas.

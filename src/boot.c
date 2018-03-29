@@ -136,19 +136,13 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
     xmlChar *hold;
     char buffer[100];
     int dia, mes, ano;
-    //unsigned int *ident;
     Post x = NULL;
     x = (Post)createPost();
-    //ident = g_malloc ( sizeof( unsigned int ) );
-
-    // GET POST ID <LONG> getatr( hold , n , str )
 
     getAtr(hold, node, "Id");
     x = setP_id(x, (unsigned long)atol((const char *)hold));
     xmlFree(hold);
 
-    // printf( " id: : %d \n",getP_id(x) );
-    //printf("cool\n");
     // GET POST DATE
     getAtr(hold, node, "CreationDate");
     sscanf((const char *)hold, "%d-%d-%d%s", &ano, &mes, &dia, buffer);
@@ -162,7 +156,6 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
 
     if (getP_type(x) > 2)
     {
-        //printf("trigger\n");
         destroyPost(x);
         return com;
     }
@@ -195,7 +188,6 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
     // ADD SCORE.
     getAtr(hold, node, "Score");
     x = setP_score(x, (int)atoi((const char *)hold));
-    //printf("%s\n",(char*)hold);
     xmlFree(hold);
 
     // GET POST TITLE
@@ -221,13 +213,9 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
 
     xmlChar *hold = NULL;
     Util x = NULL;
-    //unsigned long childCount = xmlChildElementCount(node),i;
-    //printf("erros\n");
     x = (Util)createUtil();
-    //ident = g_malloc ( sizeof( unsigned long ));
 
     // get user id
-
     getAtr(hold, node, "Id");
     x = setU_id(x, (unsigned long)atol((const char *)hold));
     xmlFree(hold);
@@ -238,12 +226,11 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
     if (hold)
     {
         x = setU_bio(x, (unsigned char *)hold);
-        //printf("%s \n",(char*)hold);
         xmlFree(hold);
     }
 
     getAtr(hold, node, "Reputation");
-    x = setU_rep(x, (unsigned int)atoi((const char *)hold));
+    x = setU_rep(x, (int)atoi((const char *)hold));
     xmlFree(hold);
 
     // get Display name
@@ -252,7 +239,6 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
     xmlFree(hold);
 
     com = userSet_insert_id(com, getU_id_point(x), x);
-    //com = userSet_insert_name(com, getU_name_point(x), x);
     return com;
 }
 

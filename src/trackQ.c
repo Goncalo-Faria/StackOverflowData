@@ -240,6 +240,7 @@ USER get_user_info(TAD_community com, long id)
             return NULL;
         }
 
+        short_bio = (char *)getU_bio(x);
         carrier = toBacia_transversal(x, collect_top10, carrier);
 
         if (!flag)
@@ -249,7 +250,6 @@ USER get_user_info(TAD_community com, long id)
             extreme = (bArray)getFst(rd);
             hp = Generalized_Priority_Queue(extreme, length_A(extreme), inv_post_compare, yes, NULL);
             destroy_A(extreme);
-
         }
         else
         {

@@ -43,7 +43,7 @@ Post setP_ansCount(Post x, unsigned int n);
 //coloca o nome no post e devolve o post
 Post setP_name(Post x, const unsigned char *un);
 //coloca o score no post e devolve o post
-Post setP_score(Post x, unsigned int s);
+Post setP_score(Post x, int s);
 //coloca o tipo (de um post) no post e devolve o post
 Post setP_type(Post x, unsigned char t);
 //coloca o id num post e devolve o post
@@ -67,7 +67,7 @@ unsigned char *getP_name_point(Post x);
 //
 unsigned int getP_ansCount(Post x);
 //devolve o score de um post
-unsigned int getP_score(Post x);
+int getP_score(Post x);
 //devolve o numero de votos de um post
 int getP_votes(Post x);
 //devolve o tipo de um post
