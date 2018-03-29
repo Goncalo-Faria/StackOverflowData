@@ -30,16 +30,14 @@ static void count(void *value, void *user_data);
 static int match(void *value, void *user_data)
 {
     Record bx = (Record)user_data;
-    Record cur = (Record)bx->snd;
-    Record count = (Record)cur->fst;
-
-    char *word = (char *)bx->fst;
-    char *title, *org, *x;
+    Record cur = (Record)getSnd( bx );
+    Record count = (Record)getFst( cur);
+    char *title, *org, *x, *word = (char *)getFst(bx);
 
     int lenz;
-    LONG_list k = (LONG_list)cur->snd;
-    int *index = (int *)count->fst;
-    int size = *(int *)count->snd;
+    LONG_list k = (LONG_list)getSnd(cur);
+    int *index = (int *)getFst( count);
+    int size = *(int *)getSnd(count);
 
     org = (char *)getP_name_point((Post)value);
     if (org)
@@ -221,9 +219,9 @@ LONG_list contains_word(TAD_community com, char *word, int N)
                 set_list(ll, i, 0);
             }
         }
-        y = x->snd;
+        y = getSnd(x);
 
-        g_free(y->fst);
+        g_free( getFst(y));
         g_free(y);
         g_free(x);
         g_free(wordcpy);

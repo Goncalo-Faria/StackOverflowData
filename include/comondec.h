@@ -1,13 +1,14 @@
 #ifndef __COMMON_DEF__
 #define __COMMON_DEF__
 
-typedef struct record
-{
-    void *fst;
-    void *snd;
-} * Record;
+typedef struct record * Record;
 
 Record createRecord(void *fs, void *sn);
+
+void* getFst( Record x);
+void* getSnd( Record x);
+Record setFst(Record x, void *val);
+Record setSnd(Record x, void *val);
 
 int is_A(void *value, void *user_data);
 int is_Q(void *value, void *user_data);

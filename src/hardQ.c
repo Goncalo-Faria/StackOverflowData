@@ -76,11 +76,11 @@ static float rank(TAD_community com, Post x) //x
 static void intr(void *key, void *value, void *user_data)
 {
     Record box = (Record)user_data;
-    Record ll = (Record)box->fst;
-    int *counter = (int *)ll->snd;
-    struct no **cur = (struct no **)ll->fst;
+    Record ll = (Record)getFst(box);
+    int *counter = (int *)getSnd(ll);
+    struct no **cur = (struct no **)getFst(ll);
     struct no *new;
-    Util lrg = (Util)box->snd;
+    Util lrg = (Util)getSnd(box);
     unsigned long pst = *(unsigned long *)key;
 
     if (toBacia_contains(lrg, pst))
@@ -97,8 +97,8 @@ static void intr(void *key, void *value, void *user_data)
 static void *travel(Post x, void *user_data)
 {
     Record cur = (Record)user_data;
-    TAD_community com = (TAD_community)cur->fst;
-    Box a = (Box)cur->snd;
+    TAD_community com = (TAD_community)getFst(cur);
+    Box a = (Box)getSnd(cur);
     float r;
 
     r = rank(com, x);
@@ -113,7 +113,7 @@ static void *travel(Post x, void *user_data)
     }
     else
     {
-        cur->snd = createBox(r, x);
+        cur = setSnd(cur, createBox(r, x));
     }
 
     return (void *)cur;
@@ -225,7 +225,7 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
             return NULL;
 
         destroy_A(b);
-        g_free(box->fst);
+        g_free(getFst(box));
         g_free(box);
 
         return ll;
@@ -248,7 +248,7 @@ long better_answer(TAD_community com, long id)
             a = createRecord((void *)com, NULL);
             a = postAnswer_transversal(p, travel, a);
 
-            bx = (Box)a->snd;
+            bx = (Box)getSnd(a);
 
             if (bx)
                 ll = (long)getP_id(bx->pid);
@@ -264,5 +264,5 @@ long better_answer(TAD_community com, long id)
         return ll;
     }
     else
-        return 0 ;
+        return 0;
 }

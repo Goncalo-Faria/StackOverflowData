@@ -5,12 +5,40 @@
 #include <date.h>
 #include <string.h>
 
+typedef struct record
+{
+    void *fst;
+    void *snd;
+} * Record;
+
 Record createRecord(void *fs, void *sn)
 {
     Record a = g_malloc(sizeof(struct record));
     a->fst = fs;
     a->snd = sn;
     return a;
+}
+
+void *getFst(Record x)
+{
+    return x->fst;
+}
+
+void *getSnd(Record x)
+{
+    return x->snd;
+}
+
+Record setFst(Record x, void *val)
+{
+    x->fst = val;
+    return x;
+}
+
+Record setSnd(Record x, void *val)
+{
+    x->snd = val;
+    return x;
 }
 
 int yes(void *a, void *b)
@@ -64,8 +92,8 @@ int rep_cmp(void *a, void *b, void *user_data)
 {
     int anum, bnum;
 
-    anum =(int)getU_rep((Util)a);
-    bnum =(int)getU_rep((Util)b);
+    anum = (int)getU_rep((Util)a);
+    bnum = (int)getU_rep((Util)b);
     return int_cmp(&anum, &bnum, user_data);
 }
 
@@ -86,7 +114,6 @@ int tag_count_cmp(void *a, void *b, void *user_data)
 
     return int_cmp(x->snd, y->snd, user_data);
 }
-
 
 int inv_post_compare(void *a, void *b, void *user_data)
 {

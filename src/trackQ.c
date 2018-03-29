@@ -37,9 +37,9 @@ static void collect_top10(void *key, void *value, void *user_data)
     unsigned long *used;
 
     Record carrier = (Record)user_data;
-    Record rd = (Record)carrier->fst;
+    Record rd = (Record)getFst(carrier);
 
-    TAD_community com = (TAD_community)carrier->snd;
+    TAD_community com = (TAD_community)getSnd(carrier);
 
     Post pub;
 
@@ -88,8 +88,8 @@ static void fil_hash(void *b, void *user_data)
     Post p = (Post)b;
     unsigned long f = getP_fund(p);
     Record x = (Record)user_data;
-    GHashTable *htable_usr = (GHashTable *)x->fst;
-    GHashTable *htable_tag = (GHashTable *)x->snd;
+    GHashTable *htable_usr = (GHashTable *)getFst(x);
+    GHashTable *htable_tag = (GHashTable *)getSnd(x);
 
     if (g_hash_table_contains(htable_usr, &f))
     {
@@ -100,8 +100,8 @@ static void fil_hash(void *b, void *user_data)
 static void tag_count_free(void *y)
 {
     Record x = (Record)y;
-    g_free(x->snd);
-    g_free(x->fst);
+    g_free(getSnd(x));
+    g_free(getFst(x));
     g_free(x);
 }
 
@@ -114,8 +114,8 @@ static void *standart_make_pq(void (*freeCap)(void *), void *value, void *user_d
 {
 
     Record carrier = (Record)user_data;
-    void *rd = (void *)carrier->fst;
-    char *flag = (char *)carrier->snd;
+    void *rd = (void *)getFst(carrier);
+    char *flag = (char *)getSnd(carrier);
     int sig = 0;
     bArray rd1;
     HEAP rd2;
@@ -140,7 +140,7 @@ static void *standart_make_pq(void (*freeCap)(void *), void *value, void *user_d
                 if (freeCap)
                     freeCap(value);
 
-            carrier->fst = rd2;
+            carrier = setFst(carrier, rd2);
         }
     }
     else
@@ -185,11 +185,11 @@ LONG_list top_most_active(TAD_community com, int N)
 
         if (flag)
         {
-            hp = (HEAP)rd->fst;
+            hp = (HEAP)getFst(rd);
         }
         else
         {
-            extreme = (bArray)rd->fst;
+            extreme = (bArray)getFst(rd);
             hp = Generalized_Priority_Queue(extreme, length_A(extreme), np_cmp, yes, NULL);
             destroy_A(extreme);
         }
@@ -235,37 +235,17 @@ USER get_user_info(TAD_community com, long id)
 
         if (!x)
         {
-            for (i = 0; i < 10; i++)
-                post_history[i] = 0;
+            rd = (Record)getFst(carrier);
 
-            rd = (Record)carrier->fst;
-            destroy_A(rd->fst);
-            g_free(carrier->fst);
-            g_free(carrier);
-            return NULL;
-        }
-        short_bio = (char *)getU_bio(x);
+            extreme = (bArray)getFst(rd);
+            hp = Generalized_Priority_Queue(extreme, length_A(extreme), inv_post_compare, yes, NULL);
 
-        if (!short_bio)
-        {
-            short_bio = g_malloc(sizeof(char));
-            *short_bio = '\0';
-        }
-
-        // x->bio;
-        carrier = toBacia_transversal(x, collect_top10, carrier); //
-
-        rd = (Record)carrier->fst;
-
-        if (flag)
-        {
-            hp = (HEAP)rd->fst;
+            destroy_A(extreme);
         }
         else
         {
-            extreme = (bArray)rd->fst;
-            hp = Generalized_Priority_Queue(extreme, length_A(extreme), inv_post_compare, yes, NULL);
-            destroy_A(extreme);
+            rd = (Record)getFst(carrier);
+            hp = (HEAP)getFst(rd);
         }
         //->>>>
         j = length_H(hp);
@@ -283,7 +263,7 @@ USER get_user_info(TAD_community com, long id)
 
         g_free(short_bio);
 
-        g_free(carrier->fst);
+        g_free(rd );
         g_free(carrier);
 
         destroy_H(hp);
@@ -304,7 +284,7 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
     LONG_list ll;
     char flag;
     int i, j;
-    int * code;
+    int *code;
 
     if (is_ON(com))
     {
@@ -317,11 +297,11 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
 
         if (flag)
         {
-            hp = (HEAP)rd->fst;
+            hp = (HEAP)getFst(rd);
         }
         else
         {
-            extreme = (bArray)rd->fst;
+            extreme = (bArray)getFst(rd);
             hp = Generalized_Priority_Queue(extreme, length_A(extreme), rep_cmp, yes, NULL);
             destroy_A(extreme);
         }
@@ -337,22 +317,22 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
 
         rd = arraySeg_transversal(com, begin, end, fil_hash, createRecord(htable_usr, htable_tag));
 
-        htable_usr = (GHashTable *)rd->fst;
-        htable_tag = (GHashTable *)rd->snd;
+        htable_usr = (GHashTable *)getFst(rd);
+        htable_tag = (GHashTable *)getSnd(rd);
 
         g_free(rd);
         g_hash_table_destroy(htable_usr);
 
         flag = 0;
         rd = createRecord(init_A(N, NULL), &flag);
-        g_hash_table_foreach( htable_tag, make_histogram, rd);
+        g_hash_table_foreach(htable_tag, make_histogram, rd);
         if (flag)
         { // tudo na heap.
-            hp = (HEAP)rd->fst;
+            hp = (HEAP)getFst(rd);
         }
         else
         {
-            extreme = (bArray)rd->fst;
+            extreme = (bArray)getFst(rd);
             hp = Generalized_Priority_Queue(extreme, length_A(extreme), tag_count_cmp, yes, NULL);
             destroy_A(extreme);
         }
@@ -363,11 +343,11 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
         ll = create_list(N);
 
         j = length_H(hp);
-        for (i = j-1; i >=0 ; i-- )
+        for (i = j - 1; i >= 0; i--)
         {
             rd = (Record)rem_Heap(hp);
-            code = (int*)rd->fst;
-            set_list(ll, i,(long) *code);
+            code = (int *)getFst(rd);
+            set_list(ll, i, (long)*code);
             tag_count_free(rd);
         }
 
