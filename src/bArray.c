@@ -58,8 +58,8 @@ static void *fmap(bArray ll, unsigned long start, unsigned long n, appFunc funct
 
 static long find(bArray x, void *from, cmpFunc comp, int flag)
 {
-    long inicio, fim, meio;
-    long res = 0;
+    long inicio, fim, meio=0;
+    unsigned long res = 0;
 
     if (!x->size || !x->ord || !from)
         return -1;
@@ -95,7 +95,7 @@ static long find(bArray x, void *from, cmpFunc comp, int flag)
     /* caso nao encontre e o elemento mais proximo seja o da posicao 0 return 0;
      * caso nao ecnontre e o elemento mais perto !=0 entao -> -1
      */
-    res = meio;
+    res = (unsigned long )meio;
 
     if (flag == -1)
     {
@@ -130,8 +130,8 @@ static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned l
 
     the_v = the_v + start;
 
-    if (num_elem >= r) // os que quero sao maior que os disponiveis.
-        num_elem = r;
+    if ( (long)num_elem >= r) // os que quero sao maior que os disponiveis.
+        num_elem =(unsigned long) r;
 
     x = create_fixed_H(the_v, Qsize, NULL, alt_cmp, NULL);
 
@@ -194,7 +194,7 @@ bArray add_to_A(bArray x, void *ele)
 
 void destroy_A(bArray x)
 {
-    int i;
+    unsigned long i;
     freeFunc ff = x->b;
 
     for (i = 0; i < x->use; i++)

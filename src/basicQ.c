@@ -131,7 +131,7 @@ LONG_pair total_posts(TAD_community com, Date begin, Date end)
 
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end)
 {
-    unsigned long i;
+    long i;
     LONG_list ll;
     Post newp;
     HEAP x; //
@@ -162,7 +162,7 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end)
 
 LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end)
 {
-    unsigned long i;
+    long i;
     LONG_list ll;
     Post newp;
     HEAP x; //
