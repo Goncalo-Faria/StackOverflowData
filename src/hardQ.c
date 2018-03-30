@@ -20,13 +20,17 @@ typedef struct bo
 } * Box;
 
 // Métodos Publicos
-LONG_list both_participated(TAD_community com, long id1, long id2, int N); //#9
-long better_answer(TAD_community com, long id);                            //#10
+LONG_list both_participated(TAD_community com, long id1, long id2, int N);        //#9
+long better_answer(TAD_community com, long id);                                   //#10
+LONG_list questions_with_tag(TAD_community com, char *tag, Date begin, Date end); //#4
 
 // Métodos Privados.
+static Box createBox(float key, Post pid);
 static float rank(TAD_community com, Post x);
 static void intr(void *key, void *value, void *user_data);
 static void *travel(Post x, void *user_data);
+static void collect_tag(void *value, void *user_data);
+static int tag_eq(unsigned long pid, void *user_data);
 
 //-------------------------------------------------------------------------------------
 
@@ -118,6 +122,39 @@ static void *travel(Post x, void *user_data)
     return (void *)cur;
 }
 
+static int tag_eq(unsigned long pid, void *user_data)
+{
+    unsigned int *tag_id = (unsigned int *)getSnd((Record)getFst((Record)user_data));
+    int *flag = (int *)getSnd((Record)user_data);
+
+    if (pid == *tag_id)
+        *flag = 0; //para o iterador.
+
+    return *flag;
+}
+
+static void collect_tag(void *value, void *user_data)
+{
+    int flag = 1;
+    Record box = createRecord(user_data, &flag);
+    box = postTag_transversal((Post)value, tag_eq, box);
+    // alterar este postTag_transversal para parar assim que a functor devolver 0.
+
+    Record list = (Record)getFst((Record)getFst(box));
+
+    struct no *new, **ll = (struct no **)getFst(list);
+    unsigned int *n = (unsigned int *)getSnd(list);
+
+    if (!flag)
+    {
+        new = g_malloc(sizeof(struct no));
+        new->px = *ll;
+        new->pid = (unsigned long)getP_id((Post)value);
+        *ll = new;
+        *n += 1;
+    }
+    g_free(box);
+}
 //-------------------------------------------------------------------------------------
 
 LONG_list both_participated(TAD_community com, long id1, long id2, int N)
@@ -266,40 +303,6 @@ long better_answer(TAD_community com, long id)
         return 0;
 }
 
-static int tag_eq( unsigned long pid, void *user_data)
-{
-    unsigned int *tag_id = (unsigned int *)getSnd((Record)getFst((Record)user_data));
-    int *flag = (int *)getSnd((Record)user_data);
-
-    if (pid == *tag_id)
-        *flag = 0; //para o iterador.
-
-    return *flag;
-}
-
-static void collect_tag(void *value, void *user_data)
-{
-    int flag = 1;
-    Record box = createRecord(user_data, &flag);
-    box = postTag_transversal((Post)value, tag_eq, box);
-    // alterar este postTag_transversal para parar assim que a functor devolver 0.
-
-    Record list = (Record)getFst((Record)getFst(box));
-
-    struct no *new, **ll = (struct no **)getFst(list);
-    unsigned int *n = (unsigned int *)getSnd(list);
-
-    if (!flag)
-    {
-        new = g_malloc(sizeof(struct no));
-        new->px = *ll;
-        new->pid = (unsigned long)getP_id((Post)value);
-        *ll = new;
-        *n += 1;
-    }
-    g_free(box);
-}
-
 LONG_list questions_with_tag(TAD_community com, char *tag, Date begin, Date end)
 {
     unsigned int n = 0, i, tag_code = code_tag(com, tag);
@@ -315,7 +318,7 @@ LONG_list questions_with_tag(TAD_community com, char *tag, Date begin, Date end)
     rd = create_list((int)n);
     for (i = 0; i < n; i++)
     {
-        set_list(rd, i,ll->pid);
+        set_list(rd, i, ll->pid);
         del = ll;
         ll = ll->px;
         g_free(del);
