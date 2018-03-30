@@ -3,10 +3,10 @@
 #include <string.h>
 #include <interface.h>
 #include "Community.h"
-#include <stdio.h>
 #include <comondec.h>
 #include <ctype.h>
 #include <bArray.h>
+#include <stdio.h>
 
 //-------------------------------------------------------------------------------------
 

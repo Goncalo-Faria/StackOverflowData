@@ -43,7 +43,7 @@ Post createPost();
 void destroyPost(void *x);
 
 void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a);
-void *postTag_transversal(Post x, void (*p)(unsigned long, void *), void *a);
+void *postTag_transversal(Post x, int (*p)(unsigned long, void *), void *a);
 
 unsigned long getP_id(Post x);
 unsigned long *getP_id_point(Post x);
@@ -163,14 +163,13 @@ void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a)
 	return a;
 }
 
-void *postTag_transversal(Post x, void (*p)(unsigned long, void *), void *a)
+void *postTag_transversal(Post x, int (*p)(unsigned long, void *), void *a)
 {
 	struct bo *cur;
+	int r = 1;
 
-	for (cur = x->tags; cur; cur = cur->px)
-	{
-		p(cur->pid, a);
-	}
+	for (cur = x->tags; cur && r; cur = cur->px)
+		r = p(cur->pid, a);
 
 	return a;
 }
@@ -317,7 +316,7 @@ Post setP_parentId(Post x, unsigned long o)
 
 	if (!x->special)
 	{ // é null
-		y = g_malloc(sizeof(unsigned long) );
+		y = g_malloc(sizeof(unsigned long));
 		*y = o;
 		x->special = y;
 	}
