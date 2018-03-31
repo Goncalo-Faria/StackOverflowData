@@ -14,6 +14,10 @@ LONG_list create_list(int size) {
     return l;
 }
 
+int get_size_list(LONG_list l){
+    return l->size;
+}
+
 long get_list(LONG_list l, int index) {
     return l->list[index]; 
 }

@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 {
     clock_t t1, t2;
     double time_spent = 0;
-    int i,n;
+    int i, n;
     TAD_community com;
 
     if (argc < 2)
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
         printf("--------------------------------------------------------\n");
         exit(-1);
     }
-    n=40;
+    n = 1;
     for (i = 0; i < n; i++)
     {
         t1 = clock();
@@ -36,12 +36,11 @@ int main(int argc, char *argv[])
         t2 = clock();
         time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
     }
-    printf("time: %f", (float)time_spent/n);
+    printf("time: %f", (float)time_spent / n);
 
     return (1);
 }
 */
-
 int main(int argc, char *argv[])
 {
     clock_t t1, t2;
@@ -52,9 +51,9 @@ int main(int argc, char *argv[])
     LONG_pair q3;
     char *tmp;
     long *l;
-    LONG_list q9, q2, q6, q7, q8,q11;
+    LONG_list q9, q2, q6, q7, q8, q11, q4;
     long q10;
-    Date begin = createDate(16, 1, 2011), end = createDate(3, 3, 2016);
+    Date begin = createDate(16, 1, 2013), end = createDate(3, 3, 2015);
     int n;
     //int *bg, *ed;
     Date pdate;
@@ -105,7 +104,7 @@ int main(int argc, char *argv[])
     {
         for (i = 0; i < n; i++)
         {
-            printf("| %d >> %d ",i+1, (int)get_list(q2, i));
+            printf("| %d >> %d ", i + 1, (int)get_list(q2, i));
             usq2 = userSet_id_lookup(com, get_list(q2, i));
             printf(" \t %d \n", getU_A(usq2) + getU_Q(usq2));
         }
@@ -123,6 +122,21 @@ int main(int argc, char *argv[])
     printf("Number of Questions ::\t %ld \n", get_fst_long(q3));
     printf("Number of Answers   ::\t %ld \n", get_snd_long(q3));
     free_long_pair(q3);
+
+    printf("______________________\n");
+    printf("|->Q4\n\n");
+
+    q4 = questions_with_tag(com, "google", begin, end);
+    printf(" %d \n", get_size_list(q4));
+
+    for (i = 0; i < get_size_list(q4); i++)
+    {
+        q6p = postSet_lookup(com, get_list(q4, i));
+        pdate = getP_date(q6p);
+
+        printf(" %d- %d- %d \n", get_day(pdate), get_month(pdate), get_year(pdate));
+
+    }
 
     printf("______________________\n");
     printf("|->Q5\n\n");
@@ -248,23 +262,25 @@ int main(int argc, char *argv[])
     q10 = better_answer(com, 35580);
     if (q10)
     {
-        
-            printf("----1>| %ld |<1----\n", q10 );
-            //g_free(q10);
-            q9p = postSet_lookup(com, (unsigned long)q10);
 
-            printf(" ----1>| votes _%d ! comment _%d ! score _%d ! \n",(int)getP_votes(q9p),(int)getP_nComment(q9p),(int)getP_score(q9p) );
+        printf("----1>| %ld |<1----\n", q10);
+        //g_free(q10);
+        q9p = postSet_lookup(com, (unsigned long)q10);
+
+        printf(" ----1>| votes _%d ! comment _%d ! score _%d ! \n", (int)getP_votes(q9p), (int)getP_nComment(q9p), (int)getP_score(q9p));
     }
 
     printf("______________________\n");
     printf("|->Q11\n\n");
 
-    n=10;
-    q11 = most_used_best_rep( com, n , begin, end);
-    if( q11 ){
-        for( i=0;i<n; i++ )
-            if (get_list(q11,i)){
-                printf(">> %d  || %ld \n", (int)i+1,get_list(q11,i) );
+    n = 10;
+    q11 = most_used_best_rep(com, n, begin, end);
+    if (q11)
+    {
+        for (i = 0; i < n; i++)
+            if (get_list(q11, i))
+            {
+                printf(">> %d  || %ld \n", (int)i + 1, get_list(q11, i));
             }
         g_free(q11);
     }

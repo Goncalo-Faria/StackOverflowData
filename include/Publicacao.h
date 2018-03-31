@@ -15,7 +15,7 @@ void destroyPost(void *x);
 //guarda as respostas de um post com type->1
 void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a);
 //
-void *postTag_transversal(Post x, int (*p)( unsigned long, void *), void *a);
+void *postTag_transversal(Post x, int (*p)( unsigned int, void *), void *a);
 
 //Post setters ---------------------------------------------------------------
 

@@ -43,7 +43,7 @@ Post createPost();
 void destroyPost(void *x);
 
 void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a);
-void *postTag_transversal(Post x, int (*p)(unsigned long, void *), void *a);
+void *postTag_transversal(Post x, int (*p)(unsigned int, void *), void *a);
 
 unsigned long getP_id(Post x);
 unsigned long *getP_id_point(Post x);
@@ -163,7 +163,7 @@ void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a)
 	return a;
 }
 
-void *postTag_transversal(Post x, int (*p)(unsigned long, void *), void *a)
+void *postTag_transversal(Post x, int (*p)(unsigned int, void *), void *a)
 {
 	struct bo *cur;
 	int r = 1;
