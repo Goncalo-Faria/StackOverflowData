@@ -30,7 +30,7 @@ static float rank(TAD_community com, Post x);
 static void intr(void *key, void *value, void *user_data);
 static void *travel(Post x, void *user_data);
 static void collect_tag(void *value, void *user_data);
-static int tag_eq(unsigned long pid, void *user_data);
+static int tag_eq(unsigned int pid, void *user_data);
 
 //-------------------------------------------------------------------------------------
 
@@ -122,7 +122,7 @@ static void *travel(Post x, void *user_data)
     return (void *)cur;
 }
 
-static int tag_eq(unsigned long pid, void *user_data)
+static int tag_eq(unsigned int pid, void *user_data)
 {
     unsigned int *tag_id = (unsigned int *)getSnd((Record)getFst((Record)user_data));
     int *flag = (int *)getSnd((Record)user_data);

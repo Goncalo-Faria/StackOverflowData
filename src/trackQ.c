@@ -19,7 +19,7 @@ static void gather_rep(void *key, void *value, void *user_data);
 static void make_histogram(void *key, void *value, void *user_data);
 static void tag_count_free(void *y);
 static void fil_hash(void *b, void *user_data);
-static int hist_tag(unsigned long tag, void *user_data);
+static int hist_tag(unsigned int tag, void *user_data);
 static void *standart_make_pq(void (*freeCap)(void *), void *value, void *user_data, int (*Hcmp)(void *, void *, void *));
 
 //-------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ static void collect_top10(void *key, void *value, void *user_data)
         rd = standart_make_pq(NULL, pub, rd, inv_post_compare);
 }
 
-static int hist_tag(unsigned long tag, void *user_data)
+static int hist_tag(unsigned int tag, void *user_data)
 {
 
     int *c;
