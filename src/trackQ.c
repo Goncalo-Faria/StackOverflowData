@@ -109,14 +109,14 @@ static void tag_count_free(void *y)
 
 static void make_histogram(void *key, void *value, void *user_data)
 {
-    user_data = standart_make_pq(tag_count_free, createRecord(key, value), user_data, tag_count_cmp);
+    user_data = standart_make_pq(tag_count_free, createRecord(key,value) , user_data, tag_count_cmp);
 }
 
 static void *standart_make_pq(void (*freeCap)(void *), void *value, void *user_data, int (*Hcmp)(void *, void *, void *))
 {
 
     Record carrier = (Record)user_data;
-    void *rd = (void *)getFst(carrier);
+    void *tmp, *rd = (void *)getFst(carrier);
     char *flag = (char *)getSnd(carrier);
     int sig = 0;
     bArray rd1;
@@ -136,11 +136,16 @@ static void *standart_make_pq(void (*freeCap)(void *), void *value, void *user_d
             destroy_A(rd1);
             *flag = 1;
 
+            tmp = get_root_point(rd2);
             rd2 = add_in_Place_H_signal(rd2, value, &sig);
 
-            if (!sig)
-                if (freeCap)
+            if (freeCap)
+            {
+                if (!sig)
                     freeCap(value);
+                else
+                    freeCap(tmp);
+            }
 
             carrier = setFst(carrier, rd2);
         }
@@ -149,11 +154,17 @@ static void *standart_make_pq(void (*freeCap)(void *), void *value, void *user_d
     { //heap
 
         rd2 = (HEAP)rd;
+
+        tmp = get_root_point(rd2);
         rd2 = add_in_Place_H_signal(rd2, value, &sig);
 
-        if (!sig)
-            if (freeCap)
+        if (freeCap)
+        {
+            if (!sig)
                 freeCap(value);
+            else
+                freeCap(tmp);
+        }
     }
     return user_data;
 }
@@ -364,7 +375,7 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
 
         for (i = j; i < N; i++)
             set_list(ll, i, 0);
-
+        destroy_H(hp);
         return ll;
     }
     else

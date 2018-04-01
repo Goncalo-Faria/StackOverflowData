@@ -32,6 +32,7 @@ HEAP add_in_Place_H_signal(HEAP x, void *n, int *flag);
 void *rem_Heap(HEAP x);
 int empty_H(HEAP x);
 unsigned long length_H(HEAP x);
+void *get_root_point(HEAP x);
 
 // Métodos privados
 static HEAP tabledouble(HEAP x);
@@ -229,6 +230,11 @@ HEAP add_in_Place_H_signal(HEAP x, void *n, int *flag)
     }
 
     return x;
+}
+
+void *get_root_point(HEAP x)
+{
+    return x->v[0];
 }
 
 int empty_H(HEAP x)

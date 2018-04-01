@@ -35,6 +35,8 @@ void *rem_Heap(HEAP x);
 //adiciona um elemento na heap e devolve a heap
 HEAP add_in_Place_H_signal(HEAP x, void *n, int *flag);
 
+void *get_root_point(HEAP x);
+
 //verifica se a heap esta vazia
 int empty_H(HEAP x);
 
