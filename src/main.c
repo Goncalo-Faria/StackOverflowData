@@ -5,7 +5,7 @@
 #include "Community.h"
 #include "stdlib.h"
 
-#include <malloc.h>
+
 //tmp
 #include "bArray.h"
 #include "heap.h"
@@ -77,9 +77,9 @@ int main(int argc, char *argv[])
 
     t2 = clock();
     time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time. :: %f \n", (float)(time_spent));
 
-    printf("\n.. Loading Terminaterd .. \nload -> time. :: %f \n", (float)(time_spent));
-
+    t1 = clock();
     printf("______________________\n");
     printf("|->Q1\n\n");
     q1 = info_from_post(com, 30334);
@@ -95,7 +95,14 @@ int main(int argc, char *argv[])
     }
     else
         printf(" Nao existe colega! \n");
+    
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time Q1 :: %f \n", (float)(time_spent));
 
+
+
+    t1 = clock();
     printf("______________________\n");
     printf("|->Q2\n\n");
     n = 30;
@@ -111,9 +118,14 @@ int main(int argc, char *argv[])
         free_list(q2);
     }
 
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time for Q2 :: %f \n", (float)(time_spent));
+
+
+    t1 = clock();
     printf("______________________\n");
     printf("|->Q3\n\n");
-
     q3 = total_posts(com, begin, end);
 
     printf("from :: 16 - 01 - 2011\n");
@@ -123,6 +135,13 @@ int main(int argc, char *argv[])
     printf("Number of Answers   ::\t %ld \n", get_snd_long(q3));
     free_long_pair(q3);
 
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time Q3 :: %f \n", (float)(time_spent));
+
+
+
+    t1 = clock();
     printf("______________________\n");
     printf("|->Q4\n\n");
 
@@ -138,6 +157,12 @@ int main(int argc, char *argv[])
 
     }
 
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time Q4 :: %f \n", (float)(time_spent));
+
+
+    t1 = clock();
     printf("______________________\n");
     printf("|->Q5\n\n");
     q5 = get_user_info(com, 16575);
@@ -169,6 +194,12 @@ int main(int argc, char *argv[])
     else
         printf(" Nao existe colega! \n");
 
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time Q5 :: %f \n", (float)(time_spent));
+
+
+    t1 = clock();
     printf("______________________\n");
     printf("|->Q6\n\n");
 
@@ -192,6 +223,14 @@ int main(int argc, char *argv[])
 
     g_free(q6);
 
+
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time Q6 :: %f \n", (float)(time_spent));
+
+
+
+    t1 = clock();
     printf("______________________\n");
     printf("|->Q7\n\n");
     n = 10;
@@ -214,6 +253,13 @@ int main(int argc, char *argv[])
     }
     g_free(q7);
 
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time Q7 :: %f \n", (float)(time_spent));
+
+
+
+    t1 = clock();
     printf("______________________\n");
     printf("|->Q8\n\n");
     n = 40;
@@ -232,6 +278,15 @@ int main(int argc, char *argv[])
         }
     }
     g_free(q8);
+
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time Q8 :: %f \n", (float)(time_spent));
+
+
+
+
+    t1 = clock();
     printf("______________________\n");
     printf("|->Q9\n\n");
     n = 10;
@@ -256,6 +311,12 @@ int main(int argc, char *argv[])
 
     g_free(q9);
 
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time Q9 :: %f \n", (float)(time_spent));
+
+
+    t1 = clock();
     printf("______________________\n");
     printf("|->Q10\n\n");
 
@@ -270,6 +331,13 @@ int main(int argc, char *argv[])
         printf(" ----1>| votes _%d ! comment _%d ! score _%d ! \n", (int)getP_votes(q9p), (int)getP_nComment(q9p), (int)getP_score(q9p));
     }
 
+
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time Q10 :: %f \n", (float)(time_spent));
+
+
+    t1 = clock;
     printf("______________________\n");
     printf("|->Q11\n\n");
 
@@ -284,6 +352,10 @@ int main(int argc, char *argv[])
             }
         g_free(q11);
     }
+
+    t2 = clock();
+    time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+    printf("\n.. Loading Terminated .. \nload -> time Q11 :: %f \n", (float)(time_spent));
 
     g_free(begin);
     g_free(end);
