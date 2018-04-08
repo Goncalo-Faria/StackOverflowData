@@ -66,16 +66,16 @@ int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data);
 *Devolve um int derivado da comparacao entre dois elementos
 */
 int int_cmp(void *a, void *b, void *user_data);
-<<<<<<< HEAD
-int long_cmp(void *a, void *b, void *user_data);
-== == == =
 
-			 /**
+int long_cmp(void *a, void *b, void *user_data);
+
+
+/**
 *Recebe como argumento dois Utilizadores
 *Devolve um int derivado da comparacao entre os (respostas+perguntas) Utilizadores
 */
->>>>>>> 254e5bd8e607cdfb343551e4f6b93bf61056379f
-	int np_cmp(void *a, void *b, void *user_data);
+
+int np_cmp(void *a, void *b, void *user_data);
 
 /**
 *Recebe como argumento dois Utilizadores
