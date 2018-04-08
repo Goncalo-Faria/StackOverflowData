@@ -105,8 +105,7 @@ static ENTRY *BubleUp(ENTRY *v, unsigned long i, Fcompare h, void *user_data)
 static ENTRY *BubleDown(ENTRY *v, unsigned long i, unsigned long N, Fcompare h, void *user_data)
 {
 
-    unsigned long f = filho(i,1);
-    unsigned long s,j;
+    unsigned long s,j,f = filho(i,1);
 
     if (f > N - 1 || N < 1)
         return v;
