@@ -4,90 +4,165 @@
 #include "date.h"
 #include "Publicacao.h"
 
+/**
+*Estrutura de um Utilizador nomeada por Util
+*/
 typedef struct utilizador *Util;
 
 #define Q_belongs_hash(user, id) belongs_toBacia(user, id, 1)
 #define A_belongs_hash(user, id) belongs_toBacia(user, id, 2)
 
-//cria e devolve um util
+/**
+*Cria um novo Utilizador
+*Devolve o Utilizador
+*/
 Util createUtil();
 
-//destoi um especifico post
+/**
+*Aceita como parametro um determinado Utilizador
+*Destroi o Utilizador e apago-o da memoria 
+*/
 void destroyUtil(void *x);
 
 //void setDate ( Post x ,int d,int m ,int a);
 
 // User getters ------------------------------------------------------------------
 
-//devolve o ID do user
+/**
+*Aceita como parametro um Utilizador
+*Devolve o Id associado a esse Utilizador
+*/
 unsigned long getU_id(Util x);
 
-//devolve um pointer do id do user
+/**
+*Devolve o pointer para o Id do Utilizador
+*/
 unsigned long *getU_id_point(Util x);
 
-//devolve o numero de perguntas do user
+/**
+*Devolve um int contendo o numero de perguntas de um Utilizador
+*/
 unsigned int getU_Q(Util x);
 
-//devolve o numero de respostas do user
+/**
+*Devolve um int contendo o numero de respostas de um Utilizador
+*/
 unsigned int getU_A(Util x);
 
-//devolve o nome do user
+/**
+*Devolve uma String contendo o nome de um Utilizador
+*/
 unsigned char *getU_name(Util x);
 // alloca memoria
 
-//devolve um pointer do nome do user
+/**
+*Devolve um pointer contendo o nome de um Utilizador
+*/
 unsigned char *getU_name_point(Util x);
 
-//devolve a bio de um user
+/**
+*Devolve uma String contendo a biografia de um Utilizador
+*/
 unsigned char *getU_bio(Util x);
 //alloc memoria
 
-//devolve a repetutacao de um user
+/**
+*Devolve um int contendo a reputacao de um Utilizador
+*/
 int getU_rep(Util x);
 
 //Util setters -----------------------------------------------------------------
 
-//incrementa uma unidade nas perguntas do user e devolve o util
+/**
+*Atualiza o numero de perguntas de um Utilizador incrementando uma unidade
+*Devolve o utilizador
+*/
 Util incU_Q(Util x);
 
-//incrementa uma inidade nas respostas do user e devolve o util
+/**
+*Atualiza o numero de respostas de um Utilizador incrementando uma unidade
+*Devolve o utilizador
+*/
 Util incU_A(Util x);
 
-//coloca no user um determinado Id e devolve o util
+/**
+*Atualiza o Id de um Utilizador
+*Devolve o Utilizador
+*/
 Util setU_id(Util x, unsigned long num);
 
-//coloca no user um nome e devolve o util
+/**
+*Atualiza o nome de um Utilizador 
+*Devolve o Utilizador
+*/
 Util setU_name(Util x, const unsigned char *un);
 
-//coloca uma bio no user e devolve o util
+/**
+*Atualiza a biografia de um Utilizador
+*Devolve o Utilizador
+*/
 Util setU_bio(Util x, const unsigned char *un);
 
-//adiciona na bacia de um user um id e dados e devolve o util
+/**
+*Recebe como argumentos um Utilizador , um Id e dados
+*Adiciona na bacia(g_hashtable) a informacao 
+*Devolve um Utilizador
+*/
 Util add_toBacia(Util x, unsigned long *id, void *dados);
 
-//adiciona no user uma reputacao e devolve o util
+/**
+*Atualiza a reputacao de um Utlizador
+*Devolve o Utilizador
+*/
 Util setU_rep(Util x, int n);
 
 //Functions --------------------------------------------------------------------
 
 //Util add_toBacia(Util x, unsigned int *id, void *dados);
 
-//devolve um inteiro 1 se for pergunta ou 2 se for resposta e pertencer ha bacia
+/**
+*Funcao que recebe como argumentos um User , um long e uma flag(resposta ou pregunta)
+*Devolve um int :
+ 1 se for pergunta e pertencer ha bacia do Utilizador
+ 2 se for resposta e pertencer ha bacia do Utilizador
+*/
 int belongs_toBacia(Util x, unsigned long Parent_id, char flag);
 
-//percorre a bacia aletrando-a com uma determinada funcao
+/**
+*Funcao que recebe como argumentos um Utilizador , uma funcao e um data
+*Percorre a bacia do respetivo Utilizador , aplica a funcao a cada elemento alterando o data(de acordo com a funcao)
+*Devolve o data
+*/
 void* toBacia_transversal(Util x, void (*f)(void *, void *, void *), void *y);
 
-//devolve a posicao de um elemento na bacia
+/**
+*Recebe como argumentos um Utilzador e um long(Parent_id)
+*Procura o respetivo Parent_id na bacia do Utilizador
+*Devolve o long do respetivo Parent_id se existir , caso contrario devolve NULL
+*/
 unsigned long *toBacia_lookup(Util x, unsigned long Parent_id);
 
-//devolve o tamanho da bacia
+/**
+*Devolve o tamanho da bacia
+*/
 unsigned int toBacia_size( Util x);
 
 //verifica se uma determinada key se econtra num user e devolve um boolean(int)
+/**
+*Recebe como argumentos um Utilizador e uma key(long)
+*Devolve um int que representao um bollean do glib :
+	1 se a key pertencer ha bacia do Utilizador
+	0 se a key nao pertencer
+*/
 int toBacia_contains(Util x, unsigned long key);
 
-//coloca no bacia do user um determinado post
+
+// VERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+/**
+*Recebe como argumentos uma Publicacao e um Utilizador
+*Se o Post for de resposta e o id do Post pertencer a bacia adicionamos ha bacia do Utilizador um pointer para o seu Id
+*Se o Post for de pergunta verificamos se o id(Parent_id) do Post pertence ha bacia , 
+*/
 Util bind_toBacia(Util x, Post y);
 
 #endif
