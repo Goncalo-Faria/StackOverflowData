@@ -88,6 +88,29 @@ int int_cmp(void *a, void *b, void *user_data)
     return (*y - *x);
 }
 
+int long_cmp(void *a, void *b, void *user_data)
+{
+    long x = (long) * (unsigned long *)a;
+    long y = (long) * (unsigned long *)b;
+    x = (y - x);
+
+    if (x <= 0)
+    {
+        return -1;
+    }
+    else
+    {
+        if (!x)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+}
+
 int rep_cmp(void *a, void *b, void *user_data)
 {
     int anum, bnum;

@@ -1,10 +1,6 @@
 #ifndef HEAP_H
 #define HEAP_H
 
-#define pai(i) (i - 1) / 2
-#define esq(i) 2 * i + 1
-#define dir(i) 2 * i + 2
-
 typedef void (*freeFunc)(void *);
 typedef void *ENTRY;
 typedef int (*Fcompare)(void *, void *, void *);

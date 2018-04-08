@@ -1,12 +1,12 @@
 #ifndef __COMMON_DEF__
 #define __COMMON_DEF__
 
-typedef struct record * Record;
+typedef struct record *Record;
 
 Record createRecord(void *fs, void *sn);
 
-void* getFst( Record x);
-void* getSnd( Record x);
+void *getFst(Record x);
+void *getSnd(Record x);
 Record setFst(Record x, void *val);
 Record setSnd(Record x, void *val);
 
@@ -17,6 +17,7 @@ int yes(void *a, void *b);
 int date_compare(const void *a /*x*/, const void *b /*y*/, void *user_data);
 
 int int_cmp(void *a, void *b, void *user_data);
+int long_cmp(void *a, void *b, void *user_data);
 int np_cmp(void *a, void *b, void *user_data);
 int rep_cmp(void *a, void *b, void *user_data);
 int tag_count_cmp(void *a, void *b, void *user_data);

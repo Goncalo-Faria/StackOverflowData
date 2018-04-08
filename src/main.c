@@ -5,20 +5,20 @@
 #include "Community.h"
 #include "stdlib.h"
 
-#include <malloc.h>
 //tmp
 #include "bArray.h"
 #include "heap.h"
 #include <time.h>
+#include "comondec.h"
 
-/*
 int main(int argc, char *argv[])
 {
     clock_t t1, t2;
     double time_spent = 0;
-    int i, n;
+    int i, n, j, *l;
     TAD_community com;
-
+    HEAP hp;
+    Date begin = createDate(16, 1, 2010), end = createDate(20, 9, 2017);
     if (argc < 2)
     {
         printf("--------------------------------------------------------\n");
@@ -27,20 +27,46 @@ int main(int argc, char *argv[])
         exit(-1);
     }
     n = 1;
-    for (i = 0; i < n; i++)
+    //time(NULL);
+
+    for (i = 0; i < 1; i++)
     {
-        t1 = clock();
+        
         com = init();
         com = load(com, argv[1]);
-        clean(com);
-        t2 = clock();
-        time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
-    }
-    printf("time: %f", (float)time_spent / n);
+        n=1000;
 
+        for (j = 0; j < n; j++)
+        {
+            t1 = clock();
+            most_used_best_rep(com, 100000 , begin, end);
+            /*
+            hp = create_H(free, int_cmp, NULL);
+
+            for (i = 0; i < 400000; i++)
+            {
+                l = malloc(sizeof(int));
+                *l = rand();
+                hp = add_Heap(hp, l);
+            }
+
+            for (i = 0; i < 400000; i++)
+            {
+                l = rem_Heap(hp);
+            }
+            destroy_H(hp);
+            */
+            t2 = clock();
+            time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
+        }
+
+        //clean(com);
+    }
+    printf("time: %f \n", (float)time_spent / n);
     return (1);
 }
-*/
+
+/*
 int main(int argc, char *argv[])
 {
     clock_t t1, t2;
@@ -290,4 +316,4 @@ int main(int argc, char *argv[])
     clean(com);
     return 1;
 }
-
+*/

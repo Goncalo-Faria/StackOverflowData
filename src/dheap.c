@@ -5,6 +5,11 @@
 #define full(x) ((x)->use == (x)->len)
 #define quarter(x) (((x)->use * 4) <= (x)->len)
 
+#define D 6
+
+#define pai(i) (i - 1) / D
+#define filho(i, n) D *i + n
+
 // negative value if a < b ; zero if a = b ; positive value if a > b
 
 // Estruturas
@@ -100,13 +105,18 @@ static ENTRY *BubleUp(ENTRY *v, unsigned long i, Fcompare h, void *user_data)
 static ENTRY *BubleDown(ENTRY *v, unsigned long i, unsigned long N, Fcompare h, void *user_data)
 {
 
-    unsigned long f = esq(i);
+    unsigned long f = filho(i,1);
+    unsigned long s,j;
 
     if (f > N - 1 || N < 1)
         return v;
 
-    if (f + 1 < N)
-        f = (h(v[f], v[f + 1], user_data) * (-1) < 0) ? f : f + 1; // v[f]->key < v[f+1]->key
+    for (j = 2; j <= D; j++)
+    {   // escolhe o menor/maior dos filhos.
+        s = filho(i,j);
+        if ( s < N)
+            f = (h(v[f], v[s], user_data) * (-1) < 0) ? f : s;
+    }
 
     if (h(v[f], v[i], user_data) * (-1) < 0)
     { //  v[f]->key < v[i]->key
