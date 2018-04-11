@@ -14,13 +14,12 @@
 int main(int argc, char *argv[])
 {
     clock_t t1, t2;
-    double time_spent = 0, times[9];
-    int i, n, j, *l,u;
+    double time_spent = 0;
+    int i;
 
     int psize[9] = {100, 1000, 5000, 10000, 20000, 25000, 50000, 75000, 100000};
     TAD_community com;
     //HEAP hp;
-    LONG_list q2;
     if (argc < 2)
     {
         printf("--------------------------------------------------------\n");
@@ -30,28 +29,16 @@ int main(int argc, char *argv[])
     }
     n = 1;
     //time(NULL);
-
-    com = init();
-    com = load(com, argv[1]);
-
-    for (u = 0; u < 9; u++)
-    {
-        n = psize[u];
-        time_spent = 0;
-        for (i = 0; i < 10000; i++)
-        {
-            t1 = clock();
-            q2 = top_most_active(com,n);
-            free_list(q2);
-            t2 = clock();
-            time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
-        }
-        times[u] = time_spent / 10000;
+    t1 = clock();
+    for(i = 0; i<10; i++){
+        t1 = clock();
+        com = init();
+        com = load(com, argv[1]);
+        clean(com);
+        t2 = clock();
+        time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
     }
-    clean(com);
-
-    for(u=0;u<9;u++)
-        printf(" %d :: %f \n",psize[u],(float)times[u]);
+    printf("%f \n",(float)time_spent);
     
     return 1;
 }
