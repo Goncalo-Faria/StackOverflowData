@@ -14,11 +14,13 @@
 int main(int argc, char *argv[])
 {
     clock_t t1, t2;
-    double time_spent = 0;
-    int i, n, j, *l;
+    double time_spent = 0, times[9];
+    int i, n, j, *l,u;
+
+    int psize[9] = {100, 1000, 5000, 10000, 20000, 25000, 50000, 75000, 100000};
     TAD_community com;
-    HEAP hp;
-    Date begin = createDate(16, 1, 2010), end = createDate(20, 9, 2017);
+    //HEAP hp;
+    LONG_list q2;
     if (argc < 2)
     {
         printf("--------------------------------------------------------\n");
@@ -29,41 +31,29 @@ int main(int argc, char *argv[])
     n = 1;
     //time(NULL);
 
-    for (i = 0; i < 1; i++)
-    {
-        
-        com = init();
-        com = load(com, argv[1]);
-        n=1000;
+    com = init();
+    com = load(com, argv[1]);
 
-        for (j = 0; j < n; j++)
+    for (u = 0; u < 9; u++)
+    {
+        n = psize[u];
+        time_spent = 0;
+        for (i = 0; i < 10000; i++)
         {
             t1 = clock();
-            most_used_best_rep(com, 100000 , begin, end);
-            /*
-            hp = create_H(free, int_cmp, NULL);
-
-            for (i = 0; i < 400000; i++)
-            {
-                l = malloc(sizeof(int));
-                *l = rand();
-                hp = add_Heap(hp, l);
-            }
-
-            for (i = 0; i < 400000; i++)
-            {
-                l = rem_Heap(hp);
-            }
-            destroy_H(hp);
-            */
+            q2 = top_most_active(com,n);
+            free_list(q2);
             t2 = clock();
             time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
         }
-
-        //clean(com);
+        times[u] = time_spent / 10000;
     }
-    printf("time: %f \n", (float)time_spent / n);
-    return (1);
+    clean(com);
+
+    for(u=0;u<9;u++)
+        printf(" %d :: %f \n",psize[u],(float)times[u]);
+    
+    return 1;
 }
 
 /*
