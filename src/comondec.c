@@ -90,8 +90,8 @@ int int_cmp(void *a, void *b, void *user_data)
 
 int long_cmp(void *a, void *b, void *user_data)
 {
-    long x = (long) * (unsigned long *)a;
-    long y = (long) * (unsigned long *)b;
+    long x = (long)*(unsigned long *)a;
+    long y = (long)*(unsigned long *)b;
     x = (y - x);
 
     if (x <= 0)

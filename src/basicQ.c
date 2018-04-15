@@ -15,7 +15,7 @@
 #define inc_snd_long(x) set_snd_long(x, 1 + get_snd_long(x))
 
 // Métodos publicos.
-STR_pair info_from_post(TAD_community com, long id);                                //#1
+STR_pair info_from_post(TAD_community com, long id);                               //#1
 LONG_pair total_posts(TAD_community com, Date begin, Date end);                    //#3
 LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end);      //#6
 LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end); //#7
@@ -30,13 +30,13 @@ static void count(void *value, void *user_data);
 static int match(void *value, void *user_data)
 {
     Record bx = (Record)user_data;
-    Record cur = (Record)getSnd( bx );
-    Record count = (Record)getFst( cur);
+    Record cur = (Record)getSnd(bx);
+    Record count = (Record)getFst(cur);
     char *title, *org, *x, *word = (char *)getFst(bx);
 
     int lenz;
     LONG_list k = (LONG_list)getSnd(cur);
-    int *index = (int *)getFst( count);
+    int *index = (int *)getFst(count);
     int size = *(int *)getSnd(count);
 
     org = (char *)getP_name_point((Post)value);
@@ -221,7 +221,7 @@ LONG_list contains_word(TAD_community com, char *word, int N)
         }
         y = getSnd(x);
 
-        g_free( getFst(y));
+        g_free(getFst(y));
         g_free(y);
         g_free(x);
         g_free(wordcpy);

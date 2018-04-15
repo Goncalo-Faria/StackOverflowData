@@ -109,7 +109,7 @@ static void tag_count_free(void *y)
 
 static void make_histogram(void *key, void *value, void *user_data)
 {
-    user_data = standart_make_pq(tag_count_free, createRecord(key,value) , user_data, tag_count_cmp);
+    user_data = standart_make_pq(tag_count_free, createRecord(key, value), user_data, tag_count_cmp);
 }
 
 static void *standart_make_pq(void (*freeCap)(void *), void *value, void *user_data, int (*Hcmp)(void *, void *, void *))

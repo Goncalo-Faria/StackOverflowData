@@ -105,15 +105,15 @@ static ENTRY *BubleUp(ENTRY *v, unsigned long i, Fcompare h, void *user_data)
 static ENTRY *BubleDown(ENTRY *v, unsigned long i, unsigned long N, Fcompare h, void *user_data)
 {
 
-    unsigned long s,j,f = filho(i,1);
+    unsigned long s, j, f = filho(i, 1);
 
     if (f > N - 1 || N < 1)
         return v;
 
     for (j = 2; j <= D; j++)
-    {   // escolhe o menor/maior dos filhos.
-        s = filho(i,j);
-        if ( s < N)
+    { // escolhe o menor/maior dos filhos.
+        s = filho(i, j);
+        if (s < N)
             f = (h(v[f], v[s], user_data) * (-1) < 0) ? f : s;
     }
 

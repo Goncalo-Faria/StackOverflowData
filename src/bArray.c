@@ -24,7 +24,7 @@ typedef struct brray
 bArray init_A(unsigned long n, freeFunc dados);
 bArray add_to_A(bArray x, void *ele);
 void destroy_A(bArray x);
-void* get_atA( bArray b, unsigned long i);
+void *get_atA(bArray b, unsigned long i);
 bArray sort_A(bArray x, int (*cmp)(const void *, const void *));
 void *for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
 void *for_each(bArray x, appFunc functor, void *user_data);
@@ -58,7 +58,7 @@ static void *fmap(bArray ll, unsigned long start, unsigned long n, appFunc funct
 
 static long find(bArray x, void *from, cmpFunc comp, int flag)
 {
-    long inicio, fim, meio=0;
+    long inicio, fim, meio = 0;
     unsigned long res = 0;
 
     if (!x->size || !x->ord || !from)
@@ -95,7 +95,7 @@ static long find(bArray x, void *from, cmpFunc comp, int flag)
     /* caso nao encontre e o elemento mais proximo seja o da posicao 0 return 0;
        caso nao ecnontre e o elemento mais perto !=0 entao -> -1
      */
-    res = (unsigned long )meio;
+    res = (unsigned long)meio;
 
     if (flag == -1)
     {
@@ -105,7 +105,7 @@ static long find(bArray x, void *from, cmpFunc comp, int flag)
     }
     else
     {
-        while (!(comp(x->v[res], from, NULL) < 0) && res < (x->use-1) )
+        while (!(comp(x->v[res], from, NULL) < 0) && res < (x->use - 1))
             res++;
         res = res ? (res - 1) : res;
     }
@@ -130,8 +130,8 @@ static HEAP GenP(bArray ll, unsigned long start, unsigned long Qsize, unsigned l
 
     the_v = the_v + start;
 
-    if ( (long)num_elem >= r) // os que quero sao maior que os disponiveis.
-        num_elem =(unsigned long) r;
+    if ((long)num_elem >= r) // os que quero sao maior que os disponiveis.
+        num_elem = (unsigned long)r;
 
     x = create_fixed_H(the_v, Qsize, NULL, alt_cmp, NULL);
 
@@ -154,12 +154,14 @@ unsigned long length_A(bArray x)
     return x->use;
 }
 
-void* get_atA( bArray b, unsigned long i){
+void *get_atA(bArray b, unsigned long i)
+{
 
-    if( i < b->use ){
+    if (i < b->use)
+    {
         return b->v[i];
     }
-    
+
     return NULL;
 }
 
@@ -245,10 +247,12 @@ void *for_each(bArray x, appFunc functor, void *user_data)
     return for_each_from_to(x, NULL, NULL, functor, NULL, user_data);
 }
 
-void* for_each_rev(bArray x, filterFunc functor, void*user_data){
+void *for_each_rev(bArray x, filterFunc functor, void *user_data)
+{
 
-    long i = x->use - 1 ;
-    while( (i >= 0) && functor( x->v[i] , user_data)  ) i--;
+    long i = x->use - 1;
+    while ((i >= 0) && functor(x->v[i], user_data))
+        i--;
     return user_data;
 }
 
