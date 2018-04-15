@@ -3,6 +3,7 @@
 #include "Community.h"
 #include "bArray.h"
 #include <comondec.h>
+
 //-------------------------------------------------------------------------------------
 
 // Estruturas privadas.
@@ -127,8 +128,9 @@ static int tag_eq(unsigned int pid, void *user_data)
     unsigned int *tag_id = (unsigned int *)getSnd((Record)getFst((Record)user_data));
     int *flag = (int *)getSnd((Record)user_data);
 
-    if (pid == *tag_id)
-        *flag = 0; //para o iterador.
+    if (pid == *tag_id){
+        *flag = 0;
+    }
 
     return *flag;
 }
@@ -145,7 +147,7 @@ static void collect_tag(void *value, void *user_data)
     struct no *new, **ll = (struct no **)getFst(list);
     unsigned int *n = (unsigned int *)getSnd(list);
 
-    if (!flag)
+    if (!flag)//contêm a tag.
     {
         new = g_malloc(sizeof(struct no));
         new->px = *ll;

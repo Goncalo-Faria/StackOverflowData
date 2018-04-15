@@ -93,7 +93,7 @@ static long find(bArray x, void *from, cmpFunc comp, int flag)
         }
     }
     /* caso nao encontre e o elemento mais proximo seja o da posicao 0 return 0;
-     * caso nao ecnontre e o elemento mais perto !=0 entao -> -1
+       caso nao ecnontre e o elemento mais perto !=0 entao -> -1
      */
     res = (unsigned long )meio;
 
@@ -105,7 +105,7 @@ static long find(bArray x, void *from, cmpFunc comp, int flag)
     }
     else
     {
-        while (!(comp(x->v[res], from, NULL) < 0) && res < x->use)
+        while (!(comp(x->v[res], from, NULL) < 0) && res < (x->use-1) )
             res++;
         res = res ? (res - 1) : res;
     }

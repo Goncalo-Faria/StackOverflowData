@@ -126,7 +126,7 @@ static TAD_community parser(TAD_community com, char *dump_path, char *file_name,
     xmlFreeDoc(doc);
 
     xmlCleanupParser();
-    xmlMemoryDump();
+    //xmlMemoryDump();
     return com;
 }
 
