@@ -10,13 +10,13 @@
 #include "heap.h"
 #include <time.h>
 #include "comondec.h"
+#include "limits.h"
 
 int main(int argc, char *argv[])
 {
-    clock_t t1, t2;
-    double time_spent = 0;
+    long double t1,t2, time_spent = 0;
     int i;
-
+    STR_pair q1;
     int psize[9] = {100, 1000, 5000, 10000, 20000, 25000, 50000, 75000, 100000};
     TAD_community com;
     //HEAP hp;
@@ -27,18 +27,23 @@ int main(int argc, char *argv[])
         printf("--------------------------------------------------------\n");
         exit(-1);
     }
-    n = 1;
-    //time(NULL);
-    t1 = clock();
-    for(i = 0; i<10; i++){
-        t1 = clock();
-        com = init();
+    	time(NULL);
+	com = init();
         com = load(com, argv[1]);
-        clean(com);
-        t2 = clock();
-        time_spent += (double)(t2 - t1) / CLOCKS_PER_SEC;
-    }
-    printf("%f \n",(float)time_spent);
+    
+	for(i = 0; i<1000; i++){
+
+          t1 =(long double)clock();
+	  
+	  q1 = info_from_post(com, (long)(100000*(rand()/RAND_MAX)) );
+	  
+	  if( get_snd_str(q1) ) free_str_pair(q1);
+       	  
+	  t2 = (long double)clock();
+       	  time_spent += (long double)(t2 - t1) / (long double)CLOCKS_PER_SEC;
+    	}
+	clean(com);
+    	printf("%LE \n",time_spent);
     
     return 1;
 }

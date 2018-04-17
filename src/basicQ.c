@@ -92,8 +92,8 @@ STR_pair info_from_post(TAD_community com, long id)
     {
         x = postSet_lookup(com, id);
         if (!x)
-            create_str_pair(NULL, NULL);
-
+            return create_str_pair(NULL, NULL);
+	
         if (getP_type(x) == 2)
         {
             x = postSet_lookup(com, getP_parentId(x));
@@ -114,7 +114,7 @@ STR_pair info_from_post(TAD_community com, long id)
 
         g_free(str1);
         g_free(str2);
-
+	
         return result;
     }
     else
