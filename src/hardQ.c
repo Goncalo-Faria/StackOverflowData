@@ -276,11 +276,13 @@ long better_answer(TAD_community com, long id)
 {
     Record a;
     Box bx;
-    Post p = postSet_lookup(com, (unsigned long)id);
+    Post p;
     long ll;
 
     if (is_ON(com))
     {
+        p = postSet_lookup(com, (unsigned long)id);
+        
         if (p && (getP_type(p) == 1))
         {
             a = createRecord((void *)com, NULL);

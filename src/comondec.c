@@ -157,6 +157,14 @@ int np_cmp(void *a, void *b, void *user_data)
     return int_cmp(&anum, &bnum, user_data);
 }
 
+void tag_count_free(void *y)
+{
+    Record x = (Record)y;
+    g_free(getSnd(x));
+    g_free(getFst(x));
+    g_free(x);
+}
+
 int votes_cmp(void *a, void *b, void *user_data)
 {
     Post x = (Post)a;

@@ -4,7 +4,7 @@ LDIR=lib
 OLDIR=$(ODIR)/lib
 
 CC=gcc
-CFLAGS = -Wall -std=c11 -g -O3 `pkg-config --cflags libxml-2.0` `pkg-config --cflags glib-2.0` -I$(IDIR)
+CFLAGS = -Wall -std=c11 -g -Ofast `pkg-config --cflags libxml-2.0` `pkg-config --cflags glib-2.0` -I$(IDIR)
 
 DEPS=$(IDIR)/$(wildcard *.h)
 SOURCES=$(wildcard *.c)

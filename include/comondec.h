@@ -25,6 +25,8 @@ void *getSnd(Record x);
 
 Record setFst(Record x, void *val);
 
+
+void tag_count_free(void *y);
 /**
 *Atualiza o segundo elemento do Record
 *Devolve o Record
