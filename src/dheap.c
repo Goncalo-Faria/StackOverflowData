@@ -1,6 +1,10 @@
 #include <glib.h>
 #include "heap.h"
 
+//-------------------------------------------------------------------------------------
+    // Da autoria de Gonçalo Faria && Guilherme Viveiros.
+//-------------------------------------------------------------------------------------
+
 //defines
 #define full(x) ((x)->use == (x)->len)
 #define quarter(x) (((x)->use * 4) <= (x)->len)

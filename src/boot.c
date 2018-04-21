@@ -7,6 +7,8 @@
 #include <glib.h>
 
 //-------------------------------------------------------------------------------------
+    // Da autoria de Gonçalo Faria && Guilherme Viveiros.
+//-------------------------------------------------------------------------------------
 
 //defines
 #define getAtr(hold, n, str) hold = xmlGetProp(n, (const xmlChar *)str)
@@ -35,14 +37,16 @@ static void adder(void *key, void *value, void *user_data);
 static void adder(void *key, void *value, void *user_data)
 {
     TAD_community com = (TAD_community)user_data;
-
+    /**
+     * Adiciona ao bArray.
+    */
     insert_array(com, (Post)value);
 }
 
 static TAD_community reduce(TAD_community com)
 {
-    com = (TAD_community)postSet_transversal(com, link, (void *)com);
-    return finalize_array(com);
+    com = (TAD_community)postSet_transversal(com, link, (void *)com); // aplica link a todos os elementos do conjunto das publicações.
+    return finalize_array(com); // ordena o bArray cronologicamente
 }
 
 static void link(void *key, void *value, void *user_data)
@@ -56,17 +60,24 @@ static void link(void *key, void *value, void *user_data)
     {
         usr = userSet_id_lookup(com, founder);
         if (usr)
-        {
+        {   
+            // Contagem no numero de perguntas des user.
             if (getP_type(pub) == 1)
                 usr = incU_Q(usr);
             else
-            {
+            {   
+                /**
+                 * Contagem do numero de respostas.
+                */
                 usr = incU_A(usr);
+                /**
+                 * Adiciona a resposta em questão ao conjunto das respostas à sua pergunta.
+                 * */
                 par = postSet_lookup(com, getP_parentId(pub));
                 if (par)
                     par = setP_addAns(par, pub);
             }
-
+            // adicionado ao conjunto de intervenção deste utilizador.
             usr = bind_toBacia(usr, pub); //
         }
     }
@@ -75,7 +86,10 @@ static void link(void *key, void *value, void *user_data)
 
 static TAD_community parser(TAD_community com, char *dump_path, char *file_name, parse_function f)
 {
-
+    /**
+     *  Esta função cria uma árvore de parse, de um ficheiro inserido , com o libxml
+     *  e itera nos elementos com o atributo 'row' e aplica 'parse_function' a todos o s elementos.
+     **/
     xmlDoc *doc = NULL;
     xmlNode *root_element = NULL;
     xmlNode *node = NULL;
@@ -132,13 +146,17 @@ static TAD_community parser(TAD_community com, char *dump_path, char *file_name,
 
 static TAD_community parsePost(TAD_community com, const xmlNode *node)
 {
-
+    /**
+     * Esta função é executada a todos os elementos com atributo row do ficheiro Post.xml.
+     * Esta incarrega-se de coletar os dados necessários deste ficheiro e colocalos em Community. 
+     * */
     xmlChar *hold;
     char buffer[100];
     int dia, mes, ano;
     Post x = NULL;
     x = (Post)createPost();
 
+    // GET POST ID
     getAtr(hold, node, "Id");
     x = setP_id(x, (unsigned long)atol((const char *)hold));
     xmlFree(hold);
@@ -160,6 +178,7 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
         return com;
     }
 
+    // RESPOSTA
     if (getP_type(x) == 2)
     { // ans
         getAtr(hold, node, "ParentId");
@@ -173,7 +192,8 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
         xmlFree(hold);
     }
     else
-    {
+    {   
+        // PERGUNTA.
         getAtr(hold, node, "AnswerCount");
         x = setP_ansCount(x, (unsigned int)atoi((const char *)hold));
         xmlFree(hold);
@@ -210,12 +230,16 @@ static TAD_community parsePost(TAD_community com, const xmlNode *node)
 
 static TAD_community parseUser(TAD_community com, const xmlNode *node)
 {
+    /**
+     * Esta função é executada a todos os elementos com atributo row do ficheiro User.xml.
+     * Esta incarrega-se de coletar os dados necessários deste ficheiro e colocalos em Community. 
+     **/
 
     xmlChar *hold = NULL;
     Util x = NULL;
     x = (Util)createUtil();
 
-    // get user id
+    // USER ID
     getAtr(hold, node, "Id");
     x = setU_id(x, (unsigned long)atol((const char *)hold));
     xmlFree(hold);
@@ -229,11 +253,12 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
         xmlFree(hold);
     }
 
+    // REPUTAÇAO
     getAtr(hold, node, "Reputation");
     x = setU_rep(x, (int)atoi((const char *)hold));
     xmlFree(hold);
 
-    // get Display name
+    // GET UTIL NAME
     getAtr(hold, node, "DisplayName");
     x = setU_name(x, (unsigned char *)hold);
     xmlFree(hold);
@@ -244,14 +269,20 @@ static TAD_community parseUser(TAD_community com, const xmlNode *node)
 
 static TAD_community parseTag(TAD_community com, const xmlNode *node)
 {
+    /**
+     * Esta função é executada a todos os elementos com atributo row do ficheiro Tags.xml.
+     * Esta incarrega-se de coletar os dados necessários deste ficheiro e colocalos em Community. 
+     **/
 
     xmlChar *hold = NULL;
     unsigned long id;
 
+    // GET TAG ID
     getAtr(hold, node, "Id");
     id = (unsigned long)atol((const char *)hold);
     xmlFree(hold);
 
+    // GET TAG NAME.
     getAtr(hold, node, "TagName");
     com = assign_tag(com, (char *)hold, id);
     xmlFree(hold);
@@ -260,12 +291,17 @@ static TAD_community parseTag(TAD_community com, const xmlNode *node)
 }
 
 static TAD_community parseVotes(TAD_community com, const xmlNode *node)
-{
+{   
+    /**
+     * Esta função é executada a todos os elementos com atributo row do ficheiro Votes.xml.
+     * Esta incarrega-se de coletar os dados necessários deste ficheiro e colocalos em Community. 
+     **/
 
     xmlChar *hold = NULL;
     int c;
     Post x;
 
+    // GET VOTE TYPE
     getAtr(hold, node, "VoteTypeId");
     c = (int)atoi((const char *)hold);
     xmlFree(hold);
@@ -275,7 +311,7 @@ static TAD_community parseVotes(TAD_community com, const xmlNode *node)
         getAtr(hold, node, "PostId");
         x = postSet_lookup(com, (unsigned long)atol((const char *)hold));
         xmlFree(hold);
-
+        // SET UPVOTE
         if (x)
             x = setP_upVote(x);
     }
@@ -284,7 +320,7 @@ static TAD_community parseVotes(TAD_community com, const xmlNode *node)
         getAtr(hold, node, "PostId");
         x = postSet_lookup(com, (unsigned long)atol((const char *)hold));
         xmlFree(hold);
-
+        // SET DOWNVOTE.
         if (x)
             x = setP_downVote(x);
     }
@@ -297,25 +333,28 @@ static TAD_community parseVotes(TAD_community com, const xmlNode *node)
 TAD_community load(TAD_community com, char *dump_path)
 {
     TAD_community tmp;
-
+    
+    // load das tags
     tmp = parser(com, dump_path, "Tags", parseTag);
     if (!tmp)
         return com;
     else
         com = tmp;
-
+    // load dos utilizadores
     tmp = parser(com, dump_path, "Users", parseUser);
     if (!tmp)
         return com;
     else
         com = tmp;
 
+    // load dos posts
     tmp = parser(com, dump_path, "Posts", parsePost);
     if (!tmp)
         return com;
     else
         com = tmp;
 
+    // load dos votos.
     tmp = parser(com, dump_path, "Votes", parseVotes);
     if (!tmp)
         return com;

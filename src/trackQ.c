@@ -6,6 +6,8 @@
 #include <comondec.h>
 
 //-------------------------------------------------------------------------------------
+    // Da autoria de Gonçalo Faria && Guilherme Viveiros.
+//-------------------------------------------------------------------------------------
 
 // Métodos publicos.
 LONG_list top_most_active(TAD_community com, int N);                          //#2

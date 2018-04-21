@@ -3,7 +3,8 @@
 #include <stdlib.h>
 
 //-------------------------------------------------------------------------------------
-
+    // Da autoria de Gonçalo Faria && Guilherme Viveiros.
+//-------------------------------------------------------------------------------------
 //defines
 #define full(x) (x->use == x->size)
 #define get_start(x, from, cmp) find(x, from, cmp, -1)

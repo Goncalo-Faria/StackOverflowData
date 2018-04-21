@@ -1,15 +1,23 @@
-#include <comondec.h>
-#include <Publicacao.h>
-#include <Utilizador.h>
+#include "comondec.h"
+#include "Publicacao.h"
+#include "Utilizador.h"
 #include <glib.h>
 #include <date.h>
 #include <string.h>
+
+//-------------------------------------------------------------------------------------
+    // Da autoria de Gonçalo Faria && Guilherme Viveiros.
+//-------------------------------------------------------------------------------------
+
 
 typedef struct record
 {
     void *fst;
     void *snd;
 } * Record;
+
+// --------------------------------------------------------------------------------------
+    //Este módulo define os comparadores.
 
 Record createRecord(void *fs, void *sn)
 {

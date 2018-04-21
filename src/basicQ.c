@@ -9,6 +9,8 @@
 #include <stdio.h>
 
 //-------------------------------------------------------------------------------------
+    // Da autoria de Gonçalo Faria && Guilherme Viveiros.
+//-------------------------------------------------------------------------------------
 
 // defines
 #define inc_fst_long(x) set_fst_long(x, 1 + get_fst_long(x))
@@ -28,7 +30,10 @@ static void count(void *value, void *user_data);
 //-------------------------------------------------------------------------------------
 
 static int match(void *value, void *user_data)
-{
+{   
+    /**
+     * Esta função tenta encontrar uma palavra no titulo de uma publicação.
+    */
     Record bx = (Record)user_data;
     Record cur = (Record)getSnd(bx);
     Record count = (Record)getFst(cur);
@@ -42,6 +47,11 @@ static int match(void *value, void *user_data)
     org = (char *)getP_name_point((Post)value);
     if (org)
     {
+        /**
+         * O titulo é processado por forma a  começar e acabar em espaço
+         * assim como ser composto por letras minusculas apenas.
+         * 
+        */
         lenz = (strlen(org) + 3);
         title = g_malloc(sizeof(char) * lenz);
 
@@ -55,9 +65,15 @@ static int match(void *value, void *user_data)
 
         if ((getP_type((Post)value) == 1))
         {
+            /**
+             * É uma Pergunta.
+            */
 
             if (strstr(title, word))
-            {
+            {   
+                /**
+                 * Encontrou a palavra no título.
+                 */
                 set_list(k, *index, getP_id(value));
                 *index += 1;
             }
@@ -73,10 +89,16 @@ static void count(void *value, void *user_data)
     LONG_pair k = (LONG_pair)user_data;
     Post p = (Post)value;
 
+    /**
+     * Esta função caso a publicação seja uma pergunta incrementa a
+     * variável que regista o numero de perguntas
+     * caso seja resposta incrementa a variável que regista o numero de ocorrências de respostas.  
+     * */
+
     if (getP_type(p) == 1)
         inc_fst_long(k); // é Questão.
     else
-        inc_snd_long(k); // não é Questão.
+        inc_snd_long(k); // não Resposta.
 }
 
 //-------------------------------------------------------------------------------------
@@ -89,14 +111,25 @@ STR_pair info_from_post(TAD_community com, long id)
     STR_pair result;
     unsigned long userid;
     if (is_ON(com))
-    {
+    {   /**
+        * Foi efetuado com sucesso a leitura dos ficheiro xml.
+        */
         x = postSet_lookup(com, id);
         if (!x)
             return create_str_pair(NULL, NULL);
-	
+        /**
+         * Acede ao conjunto das publicações.
+         */
+
         if (getP_type(x) == 2)
         {
+            /**
+             * É uma resposta.
+             */
             x = postSet_lookup(com, getP_parentId(x));
+            /**
+             * Acede à correspondente pergunta. 
+             */
             if (!x)
                 return create_str_pair(NULL, NULL);
         }
@@ -104,6 +137,10 @@ STR_pair info_from_post(TAD_community com, long id)
         userid = getP_fund(x);
 
         y = userSet_id_lookup(com, userid);
+        /**
+         * Acede ao utilizador que criou a pergunta em questão. 
+         */
+        
         if (!y)
         {
             g_free(str1);
@@ -122,10 +159,17 @@ STR_pair info_from_post(TAD_community com, long id)
 }
 
 LONG_pair total_posts(TAD_community com, Date begin, Date end)
-{
-    if (is_ON(com))
+{   
+    if (is_ON(com)){
+        /**
+        * Foi efetuado com sucesso a leitura dos ficheiro xml.
+        */
+       /**
+        * É percorrido o bArray de publicação de begin até end
+        * Aplciando count a todos os elementos nesse intervalo.
+        */
         return (LONG_pair)arraySeg_transversal(com, begin, end, count, (void *)create_long_pair(0, 0));
-    else
+    }else
         return NULL;
 }
 
@@ -137,10 +181,21 @@ LONG_list most_voted_answers(TAD_community com, int N, Date begin, Date end)
     HEAP x; //
     if (is_ON(com))
     {
+        /**
+        * Foi efetuado com sucesso a leitura dos ficheiro xml.
+        */
+
+        /**
+         * É criada uma fila de prioridade de prioridade numero de votos no processo de percorrer
+         * o bArray de comunity.
+         **/       
         x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, votes_cmp, is_A, NULL);
 
         ll = create_list(N);
 
+        /**
+         * Conversão dos nossos tipos internos pelos esperados pela interrogação.
+         */
         for (i = 0; i < N; i++)
         {
             if (!empty_H(x))
@@ -167,10 +222,21 @@ LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end
     Post newp;
     HEAP x; //
     if (is_ON(com))
-    {
+    {   
+        /**
+        * Foi efetuado com sucesso a leitura dos ficheiro xml.
+        */
         x = arraySeg_Priority_Queue(com, begin, end, (unsigned long)N, nAns_cmp, is_Q, NULL);
-
+        /**
+         * É percorrida o bArray da publicação criada 
+         * em begin até end. No processo é criada fila prioritária 
+         * com prioridade numero de Respostas.
+         **/
         ll = create_list(N);
+
+        /**
+         * Conversão do stipos interno para os tipos esperados na interrogação.
+         */
 
         for (i = 0; i < N; i++)
         {
@@ -194,23 +260,44 @@ LONG_list most_answered_questions(TAD_community com, int N, Date begin, Date end
 
 LONG_list contains_word(TAD_community com, char *word, int N)
 {
-    int index = 0; // ( list , ( ( &index , &size ) , word) )
+    int index = 0;
     int i;
     Record y, x;
     char *cur, *wordcpy;
     LONG_list ll;
     if (is_ON(com))
-    {
+    {   
+        /**
+        * Foi efetuado com sucesso a leitura dos ficheiro xml.
+        */
+
         wordcpy = g_malloc(sizeof(char *) * (strlen(word) + 3));
         ll = create_list(N);
         sprintf(wordcpy, " %s ", word);
 
+        /**
+         *  A palavra a encontrar é processda.
+         *  Todas as letras são convertidas para minusculas.
+         *  São adicionados espaço no inicio e no fim desta. 
+         */
+
         for (cur = wordcpy; *cur; cur++)
             *cur = tolower(*cur);
 
+        
         x = createRecord(wordcpy, createRecord(createRecord(&index, &N), ll));
 
+        /**
+         * É atravessado o array de forma cronologicamente inversa.
+         * Esta para quando match, a função que é aplicada aos elementos,
+         * devovler 1.
+         * Match reune N publicações que contenham a palavra no título. 
+         */
         x = arrayRev_transversal(com, match, x);
+        
+        /**
+         * Conversão para os tipso dos professores. 
+         */
         if (index >= 0)
         {
             for (i = index; i < N; i++)

@@ -6,6 +6,8 @@
 #include <string.h>
 
 //-------------------------------------------------------------------------------------
+    // Da autoria de Gonçalo Faria && Guilherme Viveiros.
+//-------------------------------------------------------------------------------------
 
 //Estruturas
 typedef struct TCD_community
