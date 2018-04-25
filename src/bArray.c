@@ -100,15 +100,19 @@ static long find(bArray x, void *from, cmpFunc comp, int flag)
 
     if (flag == -1)
     {
-        while (!(comp(x->v[res], from, NULL) > 0) && res > 0)
+        while ( !comp(x->v[res], from, NULL) && res > 0)
             res--;
-        res = res ? (res + 1) : res;
-    }
-    else
-    {
-        while (!(comp(x->v[res], from, NULL) < 0) && res < (x->use - 1))
+
+        if( comp(x->v[res], from, NULL) )
             res++;
-        res = res ? (res - 1) : res;
+    }
+    if( flag == 1)
+    {
+        while ( !comp(x->v[res], from, NULL) && res < (x->use-1) )
+            res++;
+
+        if( comp(x->v[res], from, NULL) )
+            res--;
     }
     return res;
 }
