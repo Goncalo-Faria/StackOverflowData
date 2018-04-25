@@ -45,9 +45,13 @@ static void collect_top10(void *key, void *value, void *user_data)
     unsigned long *parent = (unsigned long *)key;
     unsigned long *child = (unsigned long *)value;
     unsigned long *used;
+    int fund;
+    long* id;
+    Record rd,carrier,capsule = (Record)user_data;
 
-    Record carrier = (Record)user_data;
-    Record rd = (Record)getFst(carrier);
+    id = (long*)getFst(capsule);
+    carrier = (Record)getSnd(capsule);
+    rd = (Record)getFst(carrier);
 
     TAD_community com = (TAD_community)getSnd(carrier);
 
@@ -57,6 +61,21 @@ static void collect_top10(void *key, void *value, void *user_data)
     {
         // é uma resposta.
         used = child;
+
+        /**
+         *  - pequena execepção:
+         *      . Devido à possibilidade do utilziar respoder a sua própria pergunta.
+         * */
+        
+        pub = postSet_lookup(com,*parent);
+        if(pub)
+        {/*a pergunta existe em memória.*/
+            fund = getP_fund(pub);
+
+            if( fund == *id )
+                rd = standart_make_pq(NULL, pub, rd, inv_post_compare);
+        }
+
     }
     else
     {
@@ -300,7 +319,7 @@ USER get_user_info(TAD_community com, long id)
     Post the_post;
     USER send;
     Util x;
-    Record rd, carrier;
+    Record rd, carrier,capsule;
 
     flag = 0;
     if (is_ON(com))
@@ -325,14 +344,20 @@ USER get_user_info(TAD_community com, long id)
             return NULL;
         }
 
+        capsule = createRecord( &id , carrier);
+
         short_bio = (char *)getU_bio(x);
         /**
          * Aplicar collect_top10 a todas as publciações que o utilizador criou. 
          * 
          */
-        carrier = toBacia_transversal(x, collect_top10, carrier);
+        
+        capsule = toBacia_transversal(x, collect_top10, capsule);
 
-        if (!flag)
+        carrier = (Record)getSnd(capsule);
+        g_free(capsule);
+
+        if ( !flag )
         {   
             /**
              * O bArray não chegou a ser completamente preenchido.

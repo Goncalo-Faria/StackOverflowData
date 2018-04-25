@@ -37,7 +37,8 @@ static int match(void *value, void *user_data)
     Record bx = (Record)user_data;
     Record cur = (Record)getSnd(bx);
     Record count = (Record)getFst(cur);
-    char *title, *org, *x, *word = (char *)getFst(bx);
+    char *title, *org, *word = (char *)getFst(bx);
+    // char *x;
 
     int lenz;
     LONG_list k = (LONG_list)getSnd(cur);
@@ -60,8 +61,8 @@ static int match(void *value, void *user_data)
         title[lenz - 1] = '\0';
         title[lenz - 2] = ' ';
 
-        for (x = title; *x; x++)
-            *x = tolower(*x);
+        // for (x = title; *x; x++)
+           /* *x = tolower(*x); */
 
         if ((getP_type((Post)value) == 1))
         {
@@ -263,7 +264,8 @@ LONG_list contains_word(TAD_community com, char *word, int N)
     int index = 0;
     int i;
     Record y, x;
-    char *cur, *wordcpy;
+    char *wordcpy;
+    // char *cur;
     LONG_list ll;
     if (is_ON(com))
     {   
@@ -273,16 +275,16 @@ LONG_list contains_word(TAD_community com, char *word, int N)
 
         wordcpy = g_malloc(sizeof(char *) * (strlen(word) + 3));
         ll = create_list(N);
-        sprintf(wordcpy, " %s ", word);
-
+        //sprintf(wordcpy, " %s ", word);
+        sprintf(wordcpy, "%s", word);
         /**
          *  A palavra a encontrar é processda.
          *  Todas as letras são convertidas para minusculas.
          *  São adicionados espaço no inicio e no fim desta. 
          */
 
-        for (cur = wordcpy; *cur; cur++)
-            *cur = tolower(*cur);
+        //for (cur = wordcpy; *cur; cur++)
+          /*  *cur = tolower(*cur); */
 
         
         x = createRecord(wordcpy, createRecord(createRecord(&index, &N), ll));
@@ -293,8 +295,8 @@ LONG_list contains_word(TAD_community com, char *word, int N)
          * devovler 1.
          * Match reune N publicações que contenham a palavra no título. 
          */
-        x = arrayRev_transversal(com, match, x);
-        
+        //x = arrayRev_transversal(com, match, x);
+        x = arrayRev_transversal(com,match,x);
         /**
          * Conversão para os tipso dos professores. 
          */

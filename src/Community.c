@@ -167,6 +167,7 @@ void *arrayRev_transversal(TAD_community com, int (*functor)(void *, void *), vo
     return for_each_rev(com->PostArray, functor, user_data);
 }
 
+
 // USER HASHTABLE;
 TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x)
 {
