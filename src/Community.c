@@ -6,7 +6,7 @@
 #include <string.h>
 
 //-------------------------------------------------------------------------------------
-    // Da autoria de Gonçalo Faria && Guilherme Viveiros.
+// Da autoria de Gonçalo Faria && Guilherme Viveiros.
 //-------------------------------------------------------------------------------------
 
 //Estruturas
@@ -36,6 +36,7 @@ unsigned int userSet_size(TAD_community com);
 unsigned int postSet_size(TAD_community com);
 int is_ON(TAD_community com);
 unsigned int code_tag(TAD_community com, char *word);
+int contains_tag(TAD_community com, char *word);
 void *arraySeg_transversal(TAD_community com, Date begin, Date end, void (*functor)(void *, void *), void *user_data);
 void *arrayRev_transversal(TAD_community com, int (*functor)(void *, void *), void *user_data);
 void *postSet_transversal(TAD_community com, void (*f)(void *, void *, void *), void *x);
@@ -104,6 +105,11 @@ unsigned int tagSet_size(TAD_community com)
     return (unsigned int)g_hash_table_size(com->tagconv);
 }
 
+int contains_tag(TAD_community com, char *word)
+{
+    return g_hash_table_contains(com->tagconv, word);
+}
+
 unsigned int code_tag(TAD_community com, char *word)
 {
     unsigned int *x = (unsigned int *)g_hash_table_lookup(com->tagconv, word);
@@ -166,7 +172,6 @@ void *arrayRev_transversal(TAD_community com, int (*functor)(void *, void *), vo
 {
     return for_each_rev(com->PostArray, functor, user_data);
 }
-
 
 // USER HASHTABLE;
 TAD_community userSet_insert_id(TAD_community com, unsigned long *key, Util x)

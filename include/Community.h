@@ -53,6 +53,12 @@ TAD_community finalize_array(TAD_community com);
 */
 TAD_community assign_tag(TAD_community com, char *key, unsigned int code);
 
+
+/**
+*  Verifica se palavra recebida está no conjunto de tags. 
+*/
+
+int contains_tag(TAD_community com, char *word);
 /**
 *Adiciona um Utilizador na g_hash_table userbyId do TAD_community
 *Devolve o TAD_community

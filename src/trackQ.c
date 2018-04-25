@@ -6,7 +6,7 @@
 #include <comondec.h>
 
 //-------------------------------------------------------------------------------------
-    // Da autoria de Gonçalo Faria && Guilherme Viveiros.
+// Da autoria de Gonçalo Faria && Guilherme Viveiros.
 //-------------------------------------------------------------------------------------
 
 // Métodos publicos.
@@ -46,10 +46,10 @@ static void collect_top10(void *key, void *value, void *user_data)
     unsigned long *child = (unsigned long *)value;
     unsigned long *used;
     int fund;
-    long* id;
-    Record rd,carrier,capsule = (Record)user_data;
+    long *id;
+    Record rd, carrier, capsule = (Record)user_data;
 
-    id = (long*)getFst(capsule);
+    id = (long *)getFst(capsule);
     carrier = (Record)getSnd(capsule);
     rd = (Record)getFst(carrier);
 
@@ -66,16 +66,15 @@ static void collect_top10(void *key, void *value, void *user_data)
          *  - pequena execepção:
          *      . Devido à possibilidade do utilziar respoder a sua própria pergunta.
          * */
-        
-        pub = postSet_lookup(com,*parent);
-        if(pub)
-        {/*a pergunta existe em memória.*/
+
+        pub = postSet_lookup(com, *parent);
+        if (pub)
+        { /*a pergunta existe em memória.*/
             fund = getP_fund(pub);
 
-            if( fund == *id )
+            if (fund == *id)
                 rd = standart_make_pq(NULL, pub, rd, inv_post_compare);
         }
-
     }
     else
     {
@@ -86,7 +85,7 @@ static void collect_top10(void *key, void *value, void *user_data)
     pub = postSet_lookup(com, *used);
 
     if (pub) // se o post realmente existe no conjunto publicações.
-        rd = standart_make_pq(NULL, pub, rd, inv_post_compare); 
+        rd = standart_make_pq(NULL, pub, rd, inv_post_compare);
     /**
      * Chama standart_make_pq que é a função genérica 
     * dedicada a tratar a criação de uma flia prioritária de prioridade a data de criação de um post 
@@ -101,7 +100,7 @@ static int hist_tag(unsigned int tid, void *user_data)
      * O objetivo é criar um histograma do uso de cada uma das tags.
      * 
     */
-    int *c ,tag = (int)tid;
+    int *c, tag = (int)tid;
     int *key;
     GHashTable *htable_tag = (GHashTable *)user_data;
 
@@ -115,7 +114,7 @@ static int hist_tag(unsigned int tid, void *user_data)
         *c += 1;
     }
     else
-    {   
+    {
         /**
          * Se a tag não consta no histogram então é adicionada a este 
          * com a variável de ocorrências a registar 1.
@@ -124,7 +123,7 @@ static int hist_tag(unsigned int tid, void *user_data)
         key = g_malloc(sizeof(unsigned int));
 
         *c = 1;
-        *key =(int)tag;
+        *key = (int)tag;
 
         g_hash_table_insert(htable_tag, key, c);
     }
@@ -133,7 +132,7 @@ static int hist_tag(unsigned int tid, void *user_data)
 }
 
 static void fil_hash(void *b, void *user_data)
-{   /**
+{ /**
     * Esta função é executada a todas publicações que se encontram no bArray num determinado intervalo.
     * O objetivo é criar um histograma de uso tags.
     */
@@ -143,8 +142,8 @@ static void fil_hash(void *b, void *user_data)
     GHashTable *htable_usr = (GHashTable *)getFst(x);
     GHashTable *htable_tag = (GHashTable *)getSnd(x);
 
-    if ( g_hash_table_contains(htable_usr, &f) ) 
-    {   /** 
+    if (g_hash_table_contains(htable_usr, &f))
+    { /** 
         * Se o fundador desta publicação se encontra no top N dos utilizadores com maior reputação.
         * As tags desta são percorridas e contabilizadas no histograma.
         */
@@ -158,7 +157,7 @@ static void filter_hist(void *key, void *value, void *user_data)
     * Esta função chama a standart_make_pq que é uma função genérica 
     * dedicada a tratar a criação de uma flia prioritária 
     * de prioridade o numero de ocorrencias de cada tag enquanto se percorre uma estrutura. 
-    **/ 
+    **/
     user_data = standart_make_pq(tag_count_free, createRecord(key, value), user_data, tag_count_cmp);
 }
 
@@ -245,14 +244,14 @@ static void get_active(void *key, void *value, void *user_data)
     * Esta função chama a standart_make_pq que é uma função genérica 
     * dedicada a tratar a criação de uma flia prioritária 
     * de prioridade numero de perguntas enquanto se percorre uma estrutura. 
-    **/ 
+    **/
     user_data = standart_make_pq(NULL, value, user_data, np_cmp);
 }
 
 //-------------------------------------------------------------------------------------
 
 LONG_list top_most_active(TAD_community com, int N)
-{   
+{
     int i, j;
     char flag;
     Record rd;
@@ -261,7 +260,7 @@ LONG_list top_most_active(TAD_community com, int N)
     HEAP hp;
     bArray extreme;
     if (is_ON(com))
-    {   /**
+    { /**
         * Foi efetuado com sucesso a leitura dos ficheiro xml.
         */
         flag = 0;
@@ -292,7 +291,7 @@ LONG_list top_most_active(TAD_community com, int N)
          * É feita a conversão para os tipos do professor.
          */
         for (i = j - 1; i >= 0; i--)
-        {   
+        {
             c = rem_Heap(hp);
             set_list(ll, i, (long)getU_id(c));
         }
@@ -319,11 +318,11 @@ USER get_user_info(TAD_community com, long id)
     Post the_post;
     USER send;
     Util x;
-    Record rd, carrier,capsule;
+    Record rd, carrier, capsule;
 
     flag = 0;
     if (is_ON(com))
-    {   
+    {
         /**
         * Foi efetuado com sucesso a leitura dos ficheiro xml.
         */
@@ -344,21 +343,21 @@ USER get_user_info(TAD_community com, long id)
             return NULL;
         }
 
-        capsule = createRecord( &id , carrier);
+        capsule = createRecord(&id, carrier);
 
         short_bio = (char *)getU_bio(x);
         /**
          * Aplicar collect_top10 a todas as publciações que o utilizador criou. 
          * 
          */
-        
+
         capsule = toBacia_transversal(x, collect_top10, capsule);
 
         carrier = (Record)getSnd(capsule);
         g_free(capsule);
 
-        if ( !flag )
-        {   
+        if (!flag)
+        {
             /**
              * O bArray não chegou a ser completamente preenchido.
              * */
@@ -416,7 +415,7 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
     int *code;
 
     if (is_ON(com))
-    {   /**
+    { /**
         * Foi efetuado com sucesso a leitura dos ficheiro xml.
         */
         flag = 0;
@@ -439,7 +438,7 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
             hp = (HEAP)getFst(rd);
         }
         else
-        {   
+        {
             /**
              *  Caso o bArray não tenha sido totalmente preenchido.
             */
@@ -450,7 +449,7 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
         g_free(rd);
 
         while (!empty_H(hp))
-        {   /**
+        { /**
             * Remover os N utilizadores com maior reputação e colocá-los na previamente referida
             * hashtable.
             * */
@@ -471,6 +470,12 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
         g_free(rd);
         g_hash_table_destroy(htable_usr);
 
+        if (!g_hash_table_size(htable_tag))
+        {
+            g_hash_table_destroy(htable_tag);
+            return NULL;
+        }
+
         flag = 0;
         rd = createRecord(init_A(N, NULL), &flag);
         /**
@@ -480,11 +485,10 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
         g_hash_table_foreach(htable_tag, filter_hist, rd);
         if (flag)
         { // tudo na heap.
-            hp = (HEAP)getFst(rd); 
-
+            hp = (HEAP)getFst(rd);
         }
         else
-        {   
+        {
             /**
              *  Caso o bArray não tenha sido totalmente preenchido.
             */
@@ -493,7 +497,7 @@ LONG_list most_used_best_rep(TAD_community com, int N, Date begin, Date end)
             hp = Generalized_Priority_Queue(extreme, length_A(extreme), tag_count_cmp, yes, NULL);
             destroy_A(extreme);
         }
-        
+
         g_hash_table_destroy(htable_tag);
         g_free(rd);
 

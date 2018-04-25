@@ -392,7 +392,7 @@ LONG_list questions_with_tag(TAD_community com, char *tag, Date begin, Date end)
     Record carrier;
     LONG_list rd;
 
-    if (is_ON(com))
+    if (is_ON(com) && contains_tag(com,tag) )
     {   
         tag_code = code_tag(com, tag);
         list = createRecord(&ll, &n);
