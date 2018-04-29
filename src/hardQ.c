@@ -371,18 +371,18 @@ long better_answer(TAD_community com, long id)
             if (bx)
                 ll = (long)getP_id(bx->pid);
             else
-                ll = 0;
+                ll = -1;
 
             g_free(bx);
             g_free(a);
         }
         else
-            ll = 0;
+            ll = -1;
 
         return ll;
     }
     else
-        return 0;
+        return -1;
 }
 
 LONG_list questions_with_tag(TAD_community com, char *tag, Date begin, Date end)
