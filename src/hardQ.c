@@ -301,8 +301,8 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
                     set_list(ll, N - 1 - p++, (long)getP_id(u));
                 }
 
-                for (p = p; p < req; p++)
-                    set_list(ll, p, 0);
+                while ( p < req )
+                    set_list(ll, p++, 0);
 
                 destroy_H(hp);
             }
@@ -319,8 +319,9 @@ LONG_list both_participated(TAD_community com, long id1, long id2, int N)
                     u = get_atA(b, p);
                     set_list(ll, N - 1 - p, (long)getP_id(u));
                 }
-                for (p = p; p < req; p++)
-                    set_list(ll, p, 0);
+                while( p < req)
+                    set_list(ll, p++, 0);
+
             }
         }
         else
@@ -370,18 +371,18 @@ long better_answer(TAD_community com, long id)
             if (bx)
                 ll = (long)getP_id(bx->pid);
             else
-                ll = 0;
+                ll = -1;
 
             g_free(bx);
             g_free(a);
         }
         else
-            ll = 0;
+            ll = -1;
 
         return ll;
     }
     else
-        return 0;
+        return -1;
 }
 
 LONG_list questions_with_tag(TAD_community com, char *tag, Date begin, Date end)
