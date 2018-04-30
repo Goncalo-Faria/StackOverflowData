@@ -41,7 +41,7 @@
 [0.3cm]
 
 \huge Guilherme Viveiros e Gonçalo Faria\\
-[10cm]
+[12cm]
 
 \end{center}
 
@@ -71,7 +71,7 @@ A análise foi realizada por forma a responder às 11 interrogações propostas pelo
 
 \section{Carregamento dos dados:}
 
-A informação do Stack Overflow encontra-se dividida em comunidades, cada uma delas com um tema específico. A informação relativa a cada comunidade encontra-se no formato xml e subdividida por 8 ficheiros (i.e., Votes, Tags, Users, PostLinks, Posts, PostHistory, Comments e Badges). No entanto, consideramos que apenas os ficheiros Votes,Tags, Users e Posts são necessários para responder corretamente a todas as interrogações.
+ A informação do Stack Overflow encontra-se dividida em comunidades, cada uma delas com um tema específico. A informação relativa a cada comunidade encontra-se no formato xml e subdividida por 8 ficheiros (i.e., Votes, Tags, Users, PostLinks, Posts, PostHistory, Comments e Badges). No entanto, consideramos que apenas os ficheiros Votes,Tags, Users e Posts são necessários para responder corretamente a todas as interrogações.
 
 
 Na leitura dos ficheiros xml optamos pela biblioteca recomendada pelos professores, Libxml \textsuperscript{1},\textbf {versão 2.9.7}.  O tipo de dados abstrato, Community, que encapsula os dados carregados, é composto por 3 Hash Tables, uma dedicada a guardar a informação dos utilizadores, outra das publicações e uma outra a fazer correspondência entre as tags \footnote{Tags - Termo geralmente usado como sinónimo de etiqueta  ou palavra-chave.} e o identificador destas. Adicionalmente para facilitar as travessias que envolvem um intervalo de datas foi também incluída uma Lista de publicações que as guardará apenas por referência evitando assim ocupar espaço adicional. 
@@ -129,7 +129,7 @@ Uma Heap binária é uma estrutura implícita que mantêm a propriedade invariante d
 \centering
 Criar & \(\displaystyle \Theta (N)\)   \\
 Adicionar & \(\displaystyle O (log \textsubscript{k}  N)\)   \\
-Remover & \(\displaystyle O( k . log \textsubscript{k} N ))\)   \\
+Remover & \(\displaystyle O( k   *    log \textsubscript{k} N ))\)   \\
 Mínimo\textsuperscript{(1)} & \(\displaystyle \Theta (N)\)   \\
 \end{tabular}}
 
@@ -168,7 +168,9 @@ xlabel={Tamanho da fila prioritária},
 \addplot[
     color=blue ]
     coordinates {
-    (0,0.006) (10000,0.0139) (20000,0.0235) (50000,0.03769) (75000,0.0454) (100000,0.049)
+    (100,0.006193) (1000,0.006638) (5000,0.008526) (10000,0.010539)
+     (20000,0.0142) (25000,0.015411) (50000,0.023875) (75000,0.030297) 
+     (100000,0.035758)
     };
 
 \addplot[
@@ -200,22 +202,17 @@ xlabel={Tamanho da fila prioritária},
   (100,0.006176)(1000,0.007063)(5000,0.010335)(10000,0.013973)(20000,0.020219)
   (25000,0.023575)(50000,0.037693)(75000,0.045476)(100000,0.049375)
     };
-    
-\legend{}
+\legend{$2$, $3$,$4$,$6$,$8$,$16$}
 \end{axis}
 \end{tikzpicture}
-\caption{Azul -1 , Vermelho - 3 , Laranja - 4, Verde - 6 , Roxo - 8 , Rosa -16}\label{fig:combined}
+\caption{
+(1)Os testes foram realizado na interrogação $\#$2 os valores em cada entrada são o tempo médio nas 1000 vezes que a interrogação $\#$2 foi repetida nos dados android, o eixo das abscissas corresponde à variação do argumento N.
+(2)Todos os testes foram realizado num portátil com  : 8,00 GB (RAM) ,Intel(R) Core ,i7-4720HQ e CPU 2.60 GHZ.
+(3)Todos os testes usaram o parâmetro -Ofast no gcc.
+}\label{fig:combined}
 \end{figure}
 
 
-      
-(1)Os testes foram realizado na interrogação $\#$2 os valores em cada entrada são o tempo médio nas 1000 vezes que a interrogação $\#$2 foi repetida nos dados android, o eixo das abscissas corresponde à variação do argumento N.
-
-
-(2)Todos os testes foram realizado num portátil com  : 8,00 GB (RAM) ,Intel(R) Core(?) ,i7-4720HQ e CPU 2.60 GHZ.
-
-
-(3)Todos os testes usaram o parâmetro -Ofast no gcc.
 
 Acabamos por decidir usar uma d-Heap com fator de ramificação de 6. O tipo de dados de cada elemento do array onde a d-Heap foi implementada é void* para que esta seja genérica e assim fácil de reutilizar nas diferentes interrugações.  
 
@@ -353,7 +350,7 @@ A legibilidade e a flexibilidade do nosso projeto permitiu testar todas os difer
 
 \newpage
 \section{Referências:}
--
+
 
 [1] - J.W. J. Williams, Algorithm 232: Heapsort, Communications of the ACM 7 (1964), 347?348.
 
