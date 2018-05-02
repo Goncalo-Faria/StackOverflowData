@@ -74,7 +74,7 @@ A análise foi realizada por forma a responder às 11 interrogações propostas pelo
  A informação do Stack Overflow encontra-se dividida em comunidades, cada uma delas com um tema específico. A informação relativa a cada comunidade encontra-se no formato xml e subdividida por 8 ficheiros (i.e., Votes, Tags, Users, PostLinks, Posts, PostHistory, Comments e Badges). No entanto, consideramos que apenas os ficheiros Votes,Tags, Users e Posts são necessários para responder corretamente a todas as interrogações.
 
 
-Na leitura dos ficheiros xml optamos pela biblioteca recomendada pelos professores, Libxml \textsuperscript{1},\textbf {versão 2.9.7}.  O tipo de dados abstrato, Community, que encapsula os dados carregados, é composto por 3 Hash Tables, uma dedicada a guardar a informação dos utilizadores, outra das publicações e uma outra a fazer correspondência entre as tags \footnote{Tags - Termo geralmente usado como sinónimo de etiqueta  ou palavra-chave.} e o identificador destas. Adicionalmente para facilitar as travessias que envolvem um intervalo de datas foi também incluída uma Lista de publicações que as guardará apenas por referência evitando assim ocupar espaço adicional. 
+Na leitura dos ficheiros xml optamos pela biblioteca recomendada pelos professores, Libxml2\footnote{http://www.xmlsoft.org/} ,\textbf {versão 2.9.7}.  O tipo de dados abstrato, Community, que encapsula os dados carregados, é composto por 3 Hash Tables, uma dedicada a guardar a informação dos utilizadores, outra das publicações e uma outra a fazer correspondência entre as tags \footnote{Tags - Termo geralmente usado como sinónimo de etiqueta  ou palavra-chave.} e o identificador destas. Adicionalmente para facilitar as travessias que envolvem um intervalo de datas foi também incluída uma Lista de publicações que as guardará apenas por referência evitando assim ocupar espaço adicional. 
 
 
 A selecção das estruturas teve em conta minimizar os tempos de acesso e travessia por forma a reduzir o tempo de resposta às interrogações. Evidentemente, para isso foi necessário sacrificar tempo no pré-processamento destas mesmas. \\
@@ -84,7 +84,8 @@ A selecção das estruturas teve em conta minimizar os tempos de acesso e travessi
 \newpage
 \section{Estruturas principais}
 
-A Hash Table é uma ferramenta ideal para efetuar a correspondência entre chaves e valores sempre que a ordem dos elementos não é relevante. A Hash Table contém um tempo amortizado de consulta e remoção constante, quando complementada com uma função hash\footnote{falta meter as cenas apropriadas} apropriada à distribuição das chaves.
+A Hash Table é uma ferramenta ideal para efetuar a correspondência entre chaves e valores sempre que a ordem dos elementos não é relevante. A Hash Table contém um tempo amortizado de consulta e remoção constante, quando complementada com uma função hash\footnote{Função hash é um algoritmo que mapeia dados de comprimento variável para dados de comprimento fixo.
+} apropriada à distribuição das chaves.
 
 
 Uma função hash deve assegurar que o conjunto imagem tem uma distribuição o mais próximo do uniforme possível, para que todos os dados sejam perfeitamente distribuídos pelo array associativo que a suporta, tanto que, idealmente, esta função seria injectiva, no entanto na maioria das aplicações isto não é possível. 
@@ -98,10 +99,11 @@ Como para fazer a correspondência das tags e armazenar o conjunto de utilizadore
 A decisão de usar uma Hash Table para o conjunto de publicações exigiu um grau superior de deliberação. Dado que uma porção significativa das interrogações requerem operar num  subconjunto das publicações cuja data de criação se encontra num  indicado intervalo, a noção de ordem cronológica é crucial para rapidamente operar desta forma neste conjunto. 
 
 
-Como abdicar dos acessos constantes às publicações seria terrivelmente dispendioso tivemos que investir mais memória nesta tarefa. Mantivemos as publicações armazenadas na Hashtable e complementamos o tipo abstrato de dados com uma nova estrutura, uma Lista\footnote{oque dizemos para a lista?}, cuja única função seria facilitar estas travessias intervalares.
+Como abdicar dos acessos constantes às publicações seria terrivelmente dispendioso tivemos que investir mais memória nesta tarefa. Mantivemos as publicações armazenadas na Hashtable e complementamos o tipo abstrato de dados com uma nova estrutura, uma Lista\footnote{Lista é uma coleção de elementos sequencial que pode conter elementos repetidos.}, cuja única função seria facilitar estas travessias intervalares.
 
 
-Após a fase inicial do carregamento dos dados não há novas adições na Community, logo não é necessário uma estrutura dedicada a assegurar adições ordenadas em tempo reduzido. Esta informação sobre a natureza do problema levou-nos a decidir implementar esta Lista na forma de um Array \footnote{Array - São estruturas de dados que consistem em armazenar dados do mesmo tipo}, assim sendo no final do carregamento de toda a informação para as Hash tables esta será criada e ordenada. 
+Após a fase inicial do carregamento dos dados não há novas adições na Community, logo não é necessário uma estrutura dedicada a assegurar adições ordenadas em tempo reduzido. Esta informação sobre a natureza do problema levou-nos a decidir implementar esta Lista na forma de um Array \footnote{Array é um lista de elementos do mesmo tipo guardados conjuntamente em memória.
+}, assim sendo no final do carregamento de toda a informação para as Hash tables esta será criada e ordenada. 
 
 
 Tendo introduzida a ordem na Lista é então possível usar todo um conjunto de algoritmos eficientes para encontrar o segmento deste array que corresponde ao intervalo indicado. 
@@ -145,6 +147,7 @@ No entanto, durante o cálculo dos tempos teóricos, apercebemos-nos que se escolh
 
 Tendo em conta esta descoberta decidimos implementar uma variação de Heap binária, denominada d-Heap, introduzida em [3], onde a propriedade invariante é a mesma que a da Heap, no entanto suporta um número arbitrário de ramos em cada nodo. Na tentativa de escolher este fator de ramificação realizamos os testes em baixo.\\
 
+\newpage
 \begin{figure}[h]
     \centering
 	\begin{tikzpicture}
@@ -205,11 +208,12 @@ xlabel={Tamanho da fila prioritária},
 \legend{$2$, $3$,$4$,$6$,$8$,$16$}
 \end{axis}
 \end{tikzpicture}
-\caption{
-(1)Os testes foram realizado na interrogação $\#$2 os valores em cada entrada são o tempo médio nas 1000 vezes que a interrogação $\#$2 foi repetida nos dados android, o eixo das abscissas corresponde à variação do argumento N.
-(2)Todos os testes foram realizado num portátil com  : 8,00 GB (RAM) ,Intel(R) Core ,i7-4720HQ e CPU 2.60 GHZ.
-(3)Todos os testes usaram o parâmetro -Ofast no gcc.
-}\label{fig:combined}
+
+\tiny(1)Os testes foram realizado na interrogação $\#$2 os valores em cada entrada são o tempo médio nas 1000 vezes que a interrogação $\#$2 foi repetida nos dados android, o eixo das abscissas corresponde à variação do argumento N.
+\tiny(2)Todos os testes foram realizado num portátil com  : 8,00 GB (RAM) ,Intel(R) Core ,i7-4720HQ e CPU 2.60 GHZ.
+\tiny(3)Todos os testes usaram o parâmetro -Ofast no gcc.
+\label{fig:combined}
+
 \end{figure}
 
 
@@ -226,7 +230,7 @@ A nossa solução foi a de inverter a ordem da Heap,tal que se quisermos saber os 
 Isto possibilitará verificar se o elemento a adicionar é maior ou menor que o que se encontra no topo, no caso afirmativo substituímo-lo e verificamos a propriedade invariante. 
 
 
-Para esclarecer melhor esta ideia, tomemos a Interrogação $\#$2 como exemplo. Nesta Interrogação temos de devolver os N utilizadores mais ativos e para isso usamos a fila prioritária limitada. Ao iniciar, é criada uma min-Heap com N elementos do conjunto de utilizadores. Dado que  o número de elementos do conjunto será muito maior que N, os restantes elementos serão iterativamente testados para adesão na Heap. Sendo que é uma min-Heap o utilizador menos ativo, chamemo-lo de x, pode ser consultado em tempo constante logo se o utilizador em que estamos a iterar for maior que x , trocamos x por este novo e verificamos nele a propriedade invariante. No final teremos a Heap repleta com os N utilizadores mais ativos onde os menores encontrar-se-ão no topo.\\
+Para esclarecer melhor esta ideia, tomemos a Interrogação $\#$2 como exemplo. Nesta Interrogação temos de devolver os N utilizadores mais ativos e para isso usamos a fila prioritária limitada. Ao iniciar, é criada uma min-Heap com N elementos do conjunto de utilizadores. Dado que  o número de elementos do conjunto será muito maior que N, os restantes elementos serão iterativamente testados para adesão na Heap. Sendo que é uma min-Heap o utilizador menos ativo, chamemo-lo de x, pode ser consultado em tempo constante logo se o utilizador em que estamos a iterar for maior que x , trocamos x por este novo e verificamos nele a propriedade invariante. No final teremos a Heap repleta com os N utilizadores mais ativos onde os menores destes encontrar-se-ão no topo.\\
 
 
 %Fim da section sobre Estruturas auxiliares
@@ -238,8 +242,8 @@ A estrutura que criamos para representar as publicações é essencialmente compost
 
 \section{Utilizador}
 
-O módulo que criamos para representar cada uma das utilizações foi composta por identificador , nome , número de perguntas efetuadas , número de respostas efetuados , uma pequena biografia, uma reputação e uma Hash Table que regista as intervenções do utilizador nas diferentes publicações. 
- Este último campo, foi especialmente construído para suportar interseções de forma eficiente.
+O módulo que criamos para representar cada uma das utilizações foi composta por identificador , nome , número de perguntas efetuadas , número de respostas efetuados , uma pequena biografia, reputação e uma Hash Table que regista as intervenções do utilizador nas diferentes publicações. 
+ Este último campo, foi especialmente construído para suportar intersecções de forma eficiente.
 
 
 \section{Gestão de memória:}
@@ -288,20 +292,24 @@ Como para aceder as 10 últimas publicações temos de percorrer o conjunto que con
 
 
 \subsection{Interrogação 6:}
-A  função que realiza esta interrogação é extremamente semelhante à interrogação 2, dado que temos que listar o Top N de respostas com mais votos num determinado intervalo de tempo. Aliás em quase todas as interrogações em que é usada uma fila prioritária existe uma função comum a todas elas, dedicada a fazer a travessia e criação da respectiva fila, tendo apenas que ser proporcionada a função de comparação dos elementos. 
+A  função que realiza esta interrogação é extremamente semelhante à interrogação 2, dado que temos que listar o Top N de respostas com mais votos num determinado intervalo de tempo.
+
+
+Em quase todas as interrogações em que é usada uma fila prioritária existe uma função comum a todas elas, dedicada a fazer a travessia e criação da respectiva fila, tendo apenas que ser proporcionada a função de comparação dos elementos. 
 
 
 Tal como na interrogação 3 é  encontrado o segmento da Lista de Community e de seguida usado o método de criação da fila prioritária, onde a prioridade é o número de votos.
 
 
 \subsection{Interrogação 7:}
-Esta interrogação, mais uma vez, o procedimento é o mesmo, no entanto os elementos adicionados são unicamente as perguntas e a prioridade na fila prioritária é o número de respostas.
+Nesta interrogação, mais uma vez, o procedimento é o mesmo, no entanto os elementos adicionados são unicamente as perguntas e a prioridade na fila prioritária é o número de respostas.
  
 
 \subsection{Interrogação 8:}
 Como a diferença entre maiúsculas e minúsculas  não pode alterar os resultados, há a necessidade de pré-processar tanto a palavra dada como o título da publicação. O pré-processamento, para além de converter as letras maiúsculas para minúsculas coloca um espaço antes e após as cadeias de caracteres , tanto no título como na palavra dada. Esta última operação é para prevenir que um título que contenha a palavra com um afixo de ser considerado como uma possível solução.
+
 Após o pré-processamento, dá-se a travessia das publicações cuja data se encontra no intervalo indicado usando a Lista de Community e o mecanismo de seleção do segmento introduzido na interrogação 3. 
-No percorrer de cada publicação é usada a função strstr\footnote{strstr - Retorna um ponteiro que indica a primeira ocorrência da string 'substring' na string 'str' ou NULL caso este não exista.
+No percorrer de cada publicação é usada a função strstr\footnote{strstr - Retorna um ponteiro que indica a primeira ocorrência de uma dada string numa outra  ou NULL caso este não exista.
 } para identificar a ocorrência da palavra no título.
 . 
 
@@ -313,7 +321,7 @@ Esta Interrogação foi especialmente desafiante, tanto que requereu vários campos
 Nesta interrogação foi necessário devolver as últimas N perguntas em que dois utilizadores intervêm conjuntamente.
 
 
-Para isso mantivemos no módulo que o representa uma hashTable cujas chaves são os identificadores das perguntas em que o utilizador interviu. Caso esse utilizador tenha sido o criador da pergunta, então o valor correspondente a essa chave será NULL, caso contrário é o identificador resposta.
+Para isso mantivemos no módulo que o representa uma hashTable cujas chaves são os identificadores das perguntas em que o utilizador interviu. Caso esse utilizador tenha sido apenas o criador da pergunta, então o valor correspondente a essa chave será NULL, caso contrário é o identificador resposta.
 Usando esta estrutura que cada um dos utilizadores contém, primeiro calculamos a interseção das chaves, obtida iterando pelos elementos da menor e verificado se o elemento que está  a ser iterado está contido na maior.
 
 
@@ -327,38 +335,44 @@ Como todas publicações que são perguntas contêm uma lista com o identificador de
 
 \subsection{Interrogação 11:}
 
-Primeiro, na função que implementa esta interrogação são obtidos, usando uma fila prioritária de tamanho N, o top N de utilizadores com maior reputação. Isto é alcançado percorrendo o conjunto de utilizadores e usando os mecanismos de criação de fila prioritária  referidos anteriormente.
+Primeiro, na função que implementa esta interrogação, são obtidos, usando uma fila prioritária de tamanho N, o top N de utilizadores com maior reputação. Isto é alcançado percorrendo o conjunto de utilizadores e usando os mecanismos de criação de fila prioritária  referidos anteriormente.
 Após encontrados, estes utilizadores são todos eles adicionados a uma nova hash table e de seguida é criado um histograma com todas as tags que estes usam.   
 
 
 O histograma, também implementado numa HashTable, é preenchido  percorrendo o intervalo recebido como argumento da interrogação na Lista em Community. Assim que este esteja preenchido é também ele percorrido procedendo ao processo de criação de uma fila prioritária onde a prioridade é valor de cada tag no histograma.
 
 
-No final teremos estas tags ordenadas decrescentemente pelo número de ocorrências e teremos unicamente de a devolver como resposta à interrogação.
+No final ,teremos estas tags ordenadas decrescentemente pelo número de ocorrências e teremos unicamente de a devolver como resposta à interrogação.
 
 
-%Fim das explicação das Interrogacoes
+%Fim das explicação das Interrogacões
 
-\section{Modularização::}
+\section{Modularização:}
 
 Todas as componentes do nosso trabalho, foram criadas em ficheiros fonte separados e com atributos privados, para que fosse impossível aceder a estes sem usar os métodos diretamente associados a cada uma das estruturas de dados criadas.
 
 
 A legibilidade e a flexibilidade do nosso projeto permitiu testar todas os diferentes componentes dos módulos criados sem que fosse necessário alterar as centenas de linhas externas que usufruem destes.
 
+\newpage
+\section{Convenções para entradas inválidas:}
+Dado que não existem identificadores com o valor 0, caso o número de elementos que são resposta seja inferior ao número enviado nos argumentos da interrogação, ao enviar os resultados, serão primeiro enviadas as soluções encontradas na ordem que é pedida e os restantes conterão o valor 0.
+
+\section{Esquema do tempo de todas as queries:}
+em processo 
 
 
 \newpage
 \section{Referências:}
 
 
-[1] - J.W. J. Williams, Algorithm 232: Heapsort, Communications of the ACM 7 (1964), 347?348.
+[1] - J.W. J. Williams, Algorithm 232: Heapsort, Communications of the ACM 7 (1964), 347-348.
 
 [2] - R.W. Floyd, Algorithm 245: Treesort 3, Communications of the ACM 7 (1964), 701
 
-[3] - D. B. Johnson, Priority queues with update and finding minimum spanning trees, Information Processing Letters 4 (1975), 53?57.
+[3] - D. B. Johnson, Priority queues with update and finding minimum spanning trees, Information Processing Letters 4 (1975), 53-57.
 
-[4] - Willams, Jr., Louis F. , A modification to the half-interval search (binary search) method , Proceedings of the 14th ACM Southeast Conference (1975) , 95?101.\\
+[4] - Willams, Jr., Louis F. , A modification to the half-interval search (binary search) method , Proceedings of the 14th ACM Southeast Conference (1975) , 95-101.\\
 
 
 
