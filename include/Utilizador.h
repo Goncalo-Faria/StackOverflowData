@@ -136,7 +136,6 @@ int belongs_toBacia(Util x, unsigned long Parent_id, char flag);
 void* toBacia_transversal(Util x, void (*f)(void *, void *, void *), void *y);
 
 /**
-*Recebe como argumentos um Utilzador e um long(Parent_id)
 *Procura o respetivo Parent_id na bacia do Utilizador
 *Devolve o long do respetivo Parent_id se existir , caso contrario devolve NULL
 */
@@ -147,21 +146,16 @@ unsigned long *toBacia_lookup(Util x, unsigned long Parent_id);
 */
 unsigned int toBacia_size( Util x);
 
-//verifica se uma determinada key se econtra num user e devolve um boolean(int)
 /**
-*Recebe como argumentos um Utilizador e uma key(long)
-*Devolve um int que representao um bollean do glib :
+*Devolve um int que representao um bollean
 	1 se a key pertencer ha bacia do Utilizador
 	0 se a key nao pertencer
 */
 int toBacia_contains(Util x, unsigned long key);
 
-
-// VERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
 /**
-*Recebe como argumentos uma Publicacao e um Utilizador
-*Se o Post for de resposta e o id do Post pertencer a bacia adicionamos ha bacia do Utilizador um pointer para o seu Id
-*Se o Post for de pergunta verificamos se o id(Parent_id) do Post pertence ha bacia , 
+*Caso seja pergunta verificamos se o id do Post pertence ha bacia , caso nao pertenca adicionamos , key é null.
+*Caso for uma resposta e o parent id do Post pertencer a bacia removemos e adicionamos ha respetiva bacia o atual em que a key é o id da resposta
 */
 Util bind_toBacia(Util x, Post y);
 

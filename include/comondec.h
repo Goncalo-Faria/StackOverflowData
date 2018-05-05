@@ -13,6 +13,7 @@ Record createRecord(void *fs, void *sn);
 *Devolve o primeiro elemento do Record
 */
 void *getFst(Record x);
+
 /**
 *Devolve o segundo elemento do Record
 */
@@ -22,11 +23,13 @@ void *getSnd(Record x);
 *Atualiza o primeiro elemento do Record
 *Devolve o Record
 */
-
 Record setFst(Record x, void *val);
 
-
+/**
+ * Destroi o Record
+ */
 void tag_count_free(void *y);
+
 /**
 *Atualiza o segundo elemento do Record
 *Devolve o Record
@@ -76,7 +79,6 @@ int long_cmp(void *a, void *b, void *user_data);
 *Recebe como argumento dois Utilizadores
 *Devolve um int derivado da comparacao entre os (respostas+perguntas) Utilizadores
 */
-
 int np_cmp(void *a, void *b, void *user_data);
 
 /**
@@ -116,7 +118,7 @@ int nAns_cmp(void *a, void *b, void *user_data);
 
 /**
 *Recebe como argumento duas Publicacoes
-*Devolve um int derivado da comparacao entre as (pointers das datas) Publicacoes
+*Devolve um int derivado da comparacao entre os pointers das datas referente às Publicacoes
 */
 int post_ord(const void *a, const void *b);
 

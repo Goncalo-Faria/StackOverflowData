@@ -76,7 +76,7 @@ unsigned long length_A(bArray x);
 void *for_each_from_to(bArray x, void *begin, void *end, appFunc functor, cmpFunc alt_cmp, void *user_data);
 
 /**
-*Faz o meu que o for_each_from_to mas para o bArray todo
+*Faz o mesmo que o for_each_from_to mas para o bArray todo
 */
 void *for_each(bArray x, appFunc functor, void *user_data);
 
@@ -89,10 +89,15 @@ void *for_each_rev(bArray x, filterFunc functor, void *user_data);
 
 
 
-//VERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+/**
+ * 
+ *Cria uma Heap a partir de uma Lista  e respetivas funcoes
+ * */
 HEAP Generalized_Priority_Queue(bArray ll, unsigned long Qsize, cmpFunc q_cmp, filterFunc functor, void *user_data);
 
-
+/**
+ * Faz o mesmo que o Generalized_Priority_Queue mas entre duas Datas
+ * */
 HEAP from_to_Priority_Queue(bArray x, void *begin, void *end, unsigned long Qsize, cmpFunc q_cmp, cmpFunc ord, filterFunc functor, void *user_data);
 
 /*

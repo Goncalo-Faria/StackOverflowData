@@ -24,14 +24,12 @@ Post createPost();
 void destroyPost(void *x);
 
 /**
-*Recebe como argumentos uma Publicacao , uma determinada funcao e um data
 *Percorre a estrutura de respostas do Post através da funcao e guarda o resultado em data
 *Devolve o data
 */
 void *postAnswer_transversal(Post x, void *(*p)(Post, void *), void *a);
 
 /**
-*Recebe como argumentos uma Publicacao , uma determinada funcao e um data
 *Percorre a estrutura de tags do Post através da funcao e guarda o resultado em data
 *Devolve o data
 */
