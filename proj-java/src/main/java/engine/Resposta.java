@@ -9,8 +9,8 @@ public class Resposta extends Publicacao{
         this.fundador = Long.valueOf(-1);;
     }
 
-    public Resposta(Long id, String nome, int score, int comment_count, int votes, char type, LocalDate data, Long fundador) {
-        super(id, nome, score, comment_count, votes, type, data);
+    public Resposta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Long fundador) {
+        super(id, nome, score, comment_count, votes, data);
         this.fundador = fundador;
     }
 

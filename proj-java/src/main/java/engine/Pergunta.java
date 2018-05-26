@@ -13,8 +13,8 @@ public class Pergunta extends Publicacao{
         this.ans = new HashSet<Long>();
     }
 
-    public Pergunta(Long id, String nome, int score, int comment_count, int votes, char type, LocalDate data, Set<Long> ans) {
-        super(id, nome, score, comment_count, votes, type, data);
+    public Pergunta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Set<Long> ans) {
+        super(id, nome, score, comment_count, votes, data);
         this.ans = new TreeSet<Long>(ans);
     }
 

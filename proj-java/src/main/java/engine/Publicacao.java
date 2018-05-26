@@ -22,7 +22,7 @@ public class Publicacao{
         this.data = LocalDate.now();
     }
 
-    public Publicacao(Long id , String nome , int score , int comment_count ,int votes , char type, LocalDate data){
+    public Publicacao(Long id , String nome , int score , int comment_count ,int votes , LocalDate data){
         this.id = id;
         this.nome = nome;
         this.score = score;
