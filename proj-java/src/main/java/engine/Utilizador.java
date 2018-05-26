@@ -143,11 +143,30 @@ public class Utilizador{
         if(!(x instanceof Utilizador)) return false;
         Utilizador y = (Utilizador) x;
         
-        return (y.getA() == (this.A) && y.getBacia().equals(this.bacia) &&
+        return (y.getA() == (this.A) && y.getBacia().keySet().containsAll(this.bacia.keySet()) &&
             y.getBio().equals(this.bio) && y.getId().equals(this.id) && y.getNome().equals(this.nome)
                 && (y.getQ()==this.Q) && (y.getRep() == this.rep));
     }
-    
+
+//-------------------------------------------------------------------------------------------------------------------------
+
+    public Set<Long> mutualIntervention(Utilizador x){
+        /* Calcula interseção*/
+        Set<Long> tmp = x.getBacia().keySet();
+        final Set<Long> small,big;
+
+        if( tmp.size() >= this.bacia.size() ){
+            small = this.bacia.keySet();
+            big = tmp;
+        }else{
+            small = tmp;
+            big   = this.bacia.keySet();
+        }
+
+        return small.stream().filter(l -> big.contains(l) ).collect(Collectors.toSet());
+
+    }
+
 
 }
 
