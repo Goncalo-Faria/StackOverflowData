@@ -1,9 +1,12 @@
+import java.util.Objects;
+
 public class Tag{
     Long id;
-    String nome;
+    String nome;  
+    /**ADD HASH CODE */
 
     public Tag(){
-        this.id = new Long(-1);
+        this.id = Long.valueOf(-1);
         this.nome = "nenhum";
     }
 
@@ -43,9 +46,15 @@ public class Tag{
 
     public boolean equals(Object x){
         if (this == x) return true;
-        if (x.getClass() != getClass() ||  x == null) return false;
+        if ( !(x instanceof Pergunta) ) return false;
         Tag y = (Tag) x;
         return (y.getNome().equals(this.getNome()) && y.getId().equals((this.getId())));
     }
 
+
+    @Override
+    public int hashCode() {
+
+        return getId().hashCode() + getNome().hashCode();
+    }
 }
