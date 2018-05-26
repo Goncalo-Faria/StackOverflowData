@@ -15,9 +15,19 @@ public class Publicacao{
     public Publicacao(){
         this.id = Long.valueOf(-1);
         this.nome = "none";
-        this.score = -1;
-        this.comment_count = -1;
-        this.votes = -1;
+        this.score = 0;
+        this.comment_count = 0;
+        this.votes = 0;
+        this.tags = new HashSet<Tag>();
+        this.data = LocalDate.now();
+    }
+
+    public Publicacao(String nome, Long id){
+        this.id = id;
+        this.nome = nome;
+        this.score = 0;
+        this.comment_count = 0;
+        this.votes = 0;
         this.tags = new HashSet<Tag>();
         this.data = LocalDate.now();
     }

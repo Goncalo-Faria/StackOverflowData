@@ -11,26 +11,47 @@ public class Utilizador{
     int Q;
     int A;
     String bio;
-    Set<Long> bacia;
+    Map<Long,Set<Long>> bacia;
     int rep;
 
     public Utilizador(){
-        this.id = new Long(-1);
+        this.id = Long.valueOf(-1);
         this.nome = "nenhum";
-        this.Q = -1;
-        this.A = -1;
+        this.Q = 0;
+        this.A = 0;
         this.bio = "nenhum";
-        this.bacia = new HashSet<Long>();
-        this.rep = -1;
+        this.bacia = new HashMap<Long,Set<Long>>();
+        this.rep = 0;
     }
 
-    public Utilizador(Long id , String nome, int Q , int A, String bio, Set<Long> x, int rep){
+
+    public Utilizador(Long id, String nome){
+        this.id = id;
+        this.nome = nome;
+        this.Q = 0;
+        this.A = 0;
+        this.bio = "nenhum";
+        this.bacia = new HashMap<Long,Set<Long>>();
+        this.rep = 0;
+    }
+
+    public Utilizador(Long id , String nome, int Q , int A, String bio, HashMap<Long,Set<Long>> x, int rep){
         this.id = id;
         this.nome = nome;
         this.Q = Q;
         this.A = A;
         this.bio = bio;
-        setBacia(x);
+        this.setBacia(x);
+        this.rep = rep;
+    }
+
+    public Utilizador(Long id , String nome, int Q , int A, String bio, int rep){
+        this.id = id;
+        this.nome = nome;
+        this.Q = Q;
+        this.A = A;
+        this.bio = bio;
+        this.bacia = new HashMap<Long,Set<Long>>();
         this.rep = rep;
     }
 

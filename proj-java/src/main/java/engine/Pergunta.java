@@ -18,6 +18,11 @@ public class Pergunta extends Publicacao{
         this.ans = new TreeSet<Long>(ans);
     }
 
+    public Pergunta(Long id, String nome, int score, int comment_count, int votes, LocalDate data) {
+        super(id, nome, score, comment_count, votes, data);
+        this.ans = new HashSet<Long>();
+    }
+
     public Pergunta(Pergunta x) {
 
         this.ans = x.getAns();
