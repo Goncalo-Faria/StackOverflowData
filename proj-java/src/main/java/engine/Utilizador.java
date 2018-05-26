@@ -76,7 +76,7 @@ public class Utilizador{
 
     public String getBio(){return this.bio;}
 
-    public Set<Long> getBacia(){return this.bacia.stream().collect(Collectors.toSet());}
+    public Map<Long,Set<Long>> getBacia(){return this.bacia.entrySet().stream().collect(Collectors.toMap( l -> l.getKey(), l-> new HashSet<Long>(l.getValue())));}
 
     public int getRep(){return this.rep;}
 
@@ -87,11 +87,49 @@ public class Utilizador{
 
     public void setQ(int x){this.Q = x;}
 
+    public void incQ(){this.Q++;}
+
     public void setA(int x){this.A = x;}
+
+    public void incA(){this.A++;}
 
     public void setBio(String x){this.bio = x;}
 
-    public void setBacia(Set<Long> x){this.bacia = x.stream().collect(Collectors.toSet());}
+    public void setBacia(Map<Long,Set<Long>> x){this.bacia = x.entrySet().stream().collect(Collectors.toMap( l -> l.getKey(), l-> new HashSet<Long>(l.getValue())));}
+
+    public void addBacia(Publicacao x){
+        if(x instanceof Resposta){
+            Resposta y = (Resposta) x;
+            Long fund = y.getFundador();
+
+            if( this.bacia.containsKey(fund)){
+                /* já está introduzida pergunta*/
+                Set<Long> ans = this.bacia.get(fund);
+                if( !ans.contains(y.getId()) ){
+                    ans.add(y.getId());
+                }
+
+            }else{
+                Set<Long> ans = new HashSet<Long>();
+                ans.add(getId());
+                this.bacia.put(y.getFundador(),ans);
+            }
+
+        }
+
+        if(x instanceof Pergunta){
+            if(this.bacia.containsKey(x.getId())){
+                Set<Long> ans = this.bacia.get(x.getId());
+                if(!ans.contains(x.getId()))
+                    ans.add(x.getId());
+
+            }else{
+                Set<Long> ans = new HashSet<Long>();
+                ans.add(getId());
+                this.bacia.put(x.getId(),ans);
+            }
+        }
+    }
 
     public void setRep(int x){this.rep = x;}
 
@@ -102,16 +140,12 @@ public class Utilizador{
 
     public boolean equals(Object x){
         if(x == this) return true;
-        if(x.getClass() != getClass() || x == null) return false;
+        if(!(x instanceof Utilizador)) return false;
         Utilizador y = (Utilizador) x;
         
-        return (y.getA() == (this.getA()) && y.getBacia().equals(this.getBacia()) &&
-        y.getBio().equals(this.getBio()) && y.getId() == this.getId() && y.getNome() == this.getNome()
-        && y.getQ()==(this.getQ()) && y.getRep()== (this.getRep()));
-    }
-
-    public void addBacia(Long x){
-        this.bacia.add(x);
+        return (y.getA() == (this.A) && y.getBacia().equals(this.bacia) &&
+            y.getBio().equals(this.bio) && y.getId().equals(this.id) && y.getNome().equals(this.nome)
+                && (y.getQ()==this.Q) && (y.getRep() == this.rep));
     }
     
 

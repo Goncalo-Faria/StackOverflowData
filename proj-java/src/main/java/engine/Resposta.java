@@ -6,7 +6,7 @@ public class Resposta extends Publicacao{
     Long fundador;
 
     public Resposta() {
-        this.fundador = Long.valueOf(-1);;
+        this.fundador = Long.valueOf(-1);
     }
 
     public Resposta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Long fundador) {
