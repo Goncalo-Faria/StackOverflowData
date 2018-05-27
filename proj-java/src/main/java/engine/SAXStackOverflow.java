@@ -19,7 +19,6 @@ public abstract class SAXStackOverflow extends DefaultHandler {
 
     @Override
     public void startDocument () throws SAXException {
-        System.out.println ("Start parse XML ...");
     }
 
     @Override
@@ -39,6 +38,6 @@ public abstract class SAXStackOverflow extends DefaultHandler {
 
     @Override
     public void endDocument () {
-        System.out.println ("Stop parse XML ...");
+
     }
 }

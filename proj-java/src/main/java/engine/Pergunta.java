@@ -35,6 +35,8 @@ public class Pergunta extends engine.Publicacao {
 
     public Set<Long> getAns(){return (new HashSet<Long>(this.ans));}
 
+    public int getAnsCount(){return this.ans.size();}
+
     public void addAns(Long x){
         this.ans.add(x);
     }

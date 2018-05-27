@@ -12,6 +12,7 @@ import javax.xml.parsers.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 import java.util.*;
 
@@ -112,6 +113,11 @@ public class Comunidade implements TADCommunity {
         }
 
         this.tagconv=saxp.getResults();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String contpar = "2010-09-17T20:23:31.807";
+        LocalDate date = LocalDate.parse(contpar.substring(0,10), formatter);
+        System.out.println(date.toString());
     }
 
     // Query 1
