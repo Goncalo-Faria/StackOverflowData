@@ -134,6 +134,14 @@ public class Comunidade implements TADCommunity {
             exp.printStackTrace();
         }
 
+        this.post = saxp.getResults();
+        /*Construir bacia*/
+        for(Map.Entry<Long,Set<engine.Publicacao> >pr :saxp.getComplementar().entrySet() ){
+            if(  this.users.containsKey(pr.getKey()) ){
+                final engine.Utilizador util = this.users.get( pr.getKey());
+                pr.getValue().forEach(l -> util.addBacia(l) );
+            }
+        }
     }
 
     // Query 1
