@@ -1,10 +1,30 @@
 package engine;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Tag{
     Long id;
     String nome;  
     /**ADD HASH CODE */
+
+    static Set<String> obtainTagNames(String str){
+        HashSet<String> conj = new HashSet<String>();
+        int count = 0;
+        int st,end;
+        if(str != null) {
+            while (count < str.length()) {
+                st = str.indexOf('<', count) + 1;
+                end = str.indexOf('>', st);
+
+                String sub = str.substring(st , end);
+                conj.add(sub);
+                count += 2 + sub.length();
+            }
+        }
+
+        return conj;
+    }
 
     public Tag(){
         this.id = Long.valueOf(-1);

@@ -102,16 +102,16 @@ public class Comunidade implements TADCommunity {
         File inputFile = new File(dumpPath);
 
         SAXParserFactory factory = SAXParserFactory.newInstance ();
-        engine.TagConversionSAX saxp = new engine.TagConversionSAX();
+        engine.TagConversionSAX saxt = new engine.TagConversionSAX();
         try {
             SAXParser parser = factory.newSAXParser();
-            parser.parse(new File(dumpPath + "/Tags.xml"), saxp);
+            parser.parse(new File(dumpPath + "/Tags.xml"), saxt);
         }catch (Exception exp ){
             System.out.println(exp.toString());
             exp.printStackTrace();
         }
 
-        this.tagconv=saxp.getResults();
+        this.tagconv=saxt.getResults();
 
         engine.UsersSAX saxu = new engine.UsersSAX();
         try{
@@ -123,6 +123,16 @@ public class Comunidade implements TADCommunity {
         }
 
         this.users = saxu.getResults();
+
+        engine.PostSAX saxp = new engine.PostSAX(this.tagconv);
+
+        try{
+            SAXParser parser = factory.newSAXParser();
+            parser.parse(new File(dumpPath + "/Posts.xml"), saxp);
+        }catch (Exception exp){
+            System.out.println(exp.toString());
+            exp.printStackTrace();
+        }
 
     }
 

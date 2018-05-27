@@ -51,10 +51,10 @@ public class PostSAX extends engine.SAXStackOverflow {
         int score = Long.valueOf(atts.getValue("Score")).intValue();
         String dat = atts.getValue("CreationDate");
 
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(dat.substring(0,10), formatter);
         engine.Publicacao newlyCreatedPublication;
+
 
 
         if( postType == 1){
@@ -70,6 +70,14 @@ public class PostSAX extends engine.SAXStackOverflow {
             }
             newlyCreatedPublication = new engine.Resposta(id, nome, score, commentCount,0, date, parentid);
         }else{return;}
+        String tagfield = atts.getValue("Tags");
+        if(tagfield != null) {
+            for (String tagsnip : engine.Tag.obtainTagNames(tagfield)) {
+                if (tags.containsKey(tagsnip)) {
+                    newlyCreatedPublication.addTag(tags.get(tagsnip).clone());
+                }
+            }
+        }
 
         if( this.users.containsKey(fundador) ){
             this.users.get(fundador).add(newlyCreatedPublication);
