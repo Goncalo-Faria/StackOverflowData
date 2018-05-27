@@ -1,3 +1,4 @@
+package engine;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -6,6 +7,7 @@ public class Resposta extends Publicacao{
     Long fundador;
 
     public Resposta() {
+        super();
         this.fundador = Long.valueOf(-1);
     }
 

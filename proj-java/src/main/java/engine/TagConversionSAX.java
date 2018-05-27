@@ -1,5 +1,6 @@
-import org.xml.sax.Attributes;
+package engine;
 
+import org.xml.sax.Attributes;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public class TagConversionSAX extends SAXStackOverflow {
     public void rowInspector( Attributes atts){
         Long id = Long.valueOf(atts.getValue("Id"));
         String tagname = atts.getValue("TagName");
+        System.out.println( tagname + " " + id.toString());
         this.tags.put(tagname,new Tag(id,tagname));
     }
 }

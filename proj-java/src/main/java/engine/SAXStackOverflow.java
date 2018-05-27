@@ -1,3 +1,5 @@
+package engine;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -22,9 +24,9 @@ public abstract class SAXStackOverflow extends DefaultHandler {
 
     @Override
     public void startElement (String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
-        System.out.println(qName);
+        //System.out.println(qName);
 
-        if(localName.equalsIgnoreCase("row")){
+        if(qName.equals("row")){
             rowInspector(atts);
         }
         super.startElement(namespaceURI, localName, qName, atts);
