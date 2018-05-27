@@ -111,9 +111,7 @@ public class Comunidade implements TADCommunity {
             exp.printStackTrace();
         }
 
-        for( engine.Tag x :saxp.getResults().values()){
-            System.out.println( x.getId() + " " + x.getNome() );
-        }
+        this.tagconv=saxp.getResults();
     }
 
     // Query 1

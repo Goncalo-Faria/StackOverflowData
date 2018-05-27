@@ -4,24 +4,24 @@ import java.util.Objects;
 
 public class Resposta extends engine.Publicacao {
 
-    Long fundador;
+    Long parentID;
 
     public Resposta() {
         super();
-        this.fundador = Long.valueOf(-1);
+        this.parentID = Long.valueOf(-1);
     }
 
-    public Resposta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Long fundador) {
+    public Resposta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Long parentID) {
         super(id, nome, score, comment_count, votes, data);
-        this.fundador = fundador;
+        this.parentID = parentID;
     }
 
 
-    public void setFundador(Long fundador) {
-        this.fundador = fundador;
+    public void setParentID(Long parentID) {
+        this.parentID = parentID;
     }
 
-    public Long getFundador(){return this.fundador;}
+    public Long getparentID(){return this.parentID;}
 
     @Override
     public boolean equals(Object o) {
@@ -29,7 +29,7 @@ public class Resposta extends engine.Publicacao {
         if (!(o instanceof Resposta)) return false;
         if (!super.equals(o)) return false;
         Resposta resposta = (Resposta) o;
-        return (this.fundador.equals(resposta.getFundador()));
+        return (this.parentID.equals(resposta.getparentID()));
     }
 
 }

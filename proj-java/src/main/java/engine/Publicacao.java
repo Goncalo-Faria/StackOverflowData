@@ -12,19 +12,23 @@ public class Publicacao{
     int votes;
     Set<engine.Tag> tags;
     LocalDate data;
+    Long fundador;
 
     public Publicacao(){
         this.id = Long.valueOf(-1);
+        this.fundador = Long.valueOf(-1);
         this.nome = "none";
         this.score = 0;
         this.comment_count = 0;
         this.votes = 0;
         this.tags = new HashSet<engine.Tag>();
         this.data = LocalDate.now();
+        
     }
 
     public Publicacao(String nome, Long id){
         this.id = id;
+        this.fundador = Long.valueOf(-1);
         this.nome = nome;
         this.score = 0;
         this.comment_count = 0;
@@ -35,6 +39,7 @@ public class Publicacao{
 
     public Publicacao(Long id , String nome , int score , int comment_count ,int votes , LocalDate data){
         this.id = id;
+        this.fundador = Long.valueOf(-1);
         this.nome = nome;
         this.score = score;
         this.comment_count = comment_count;
@@ -45,6 +50,7 @@ public class Publicacao{
 
     public Publicacao(Publicacao x){
         this.id = x.getId();
+        this.fundador = x.getFundador();
         this.nome = x.getNome();
         this.score = x.getScore();
         this.comment_count = x.getComment_count();
@@ -68,6 +74,9 @@ public class Publicacao{
 
     public LocalDate getData(){return this.data;}
 
+    public Long getFundador(){return this.fundador;}
+
+
 //Setterss!-----------------------------------------------------------------------------------------------------------------
     void  setId(Long x){this.id = x;}
 
@@ -82,6 +91,10 @@ public class Publicacao{
     void incUpVotes(){this.votes++;}
 
     void decDownVotes(){this.votes--;}
+
+    public void setFundador(Long pa) {
+        this.fundador = pa;
+    }
 
 
     public void addTag(engine.Tag x){
