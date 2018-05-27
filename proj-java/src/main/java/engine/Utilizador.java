@@ -98,9 +98,9 @@ public class Utilizador{
 
     public void setBacia(Map<Long,Set<Long>> x){this.bacia = x.entrySet().stream().collect(Collectors.toMap( l -> l.getKey(), l-> new HashSet<Long>(l.getValue())));}
 
-    public void addBacia(Publicacao x){
-        if(x instanceof Resposta){
-            Resposta y = (Resposta) x;
+    public void addBacia(engine.Publicacao x){
+        if(x instanceof engine.Resposta){
+            engine.Resposta y = (engine.Resposta) x;
             Long fund = y.getFundador();
 
             if( this.bacia.containsKey(fund)){
@@ -118,7 +118,7 @@ public class Utilizador{
 
         }
 
-        if(x instanceof Pergunta){
+        if(x instanceof engine.Pergunta){
             if(this.bacia.containsKey(x.getId())){
                 Set<Long> ans = this.bacia.get(x.getId());
                 if(!ans.contains(x.getId()))

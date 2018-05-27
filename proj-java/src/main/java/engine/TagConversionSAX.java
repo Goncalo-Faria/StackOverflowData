@@ -4,15 +4,15 @@ import org.xml.sax.Attributes;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TagConversionSAX extends SAXStackOverflow {
-    private Map<String,Tag> tags;
+public class TagConversionSAX extends engine.SAXStackOverflow {
+    private Map<String, engine.Tag> tags;
 
     public TagConversionSAX(){
         super();
-        this.tags = new HashMap<String,Tag>();
+        this.tags = new HashMap<String, engine.Tag>();
     }
 
-    public Map<String,Tag> getResults () {
+    public Map<String, engine.Tag> getResults () {
         return this.tags;
     }
 
@@ -20,6 +20,6 @@ public class TagConversionSAX extends SAXStackOverflow {
         Long id = Long.valueOf(atts.getValue("Id"));
         String tagname = atts.getValue("TagName");
         System.out.println( tagname + " " + id.toString());
-        this.tags.put(tagname,new Tag(id,tagname));
+        this.tags.put(tagname,new engine.Tag(id,tagname));
     }
 }

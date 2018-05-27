@@ -2,7 +2,7 @@ package engine;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Resposta extends Publicacao{
+public class Resposta extends engine.Publicacao {
 
     Long fundador;
 

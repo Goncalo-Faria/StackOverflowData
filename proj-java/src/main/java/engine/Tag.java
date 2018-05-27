@@ -47,7 +47,7 @@ public class Tag{
 
     public boolean equals(Object x){
         if (this == x) return true;
-        if ( !(x instanceof Pergunta) ) return false;
+        if ( !(x instanceof engine.Tag) ) return false;
         Tag y = (Tag) x;
         return (y.getNome().equals(this.getNome()) && y.getId().equals((this.getId())));
     }

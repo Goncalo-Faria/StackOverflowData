@@ -18,19 +18,19 @@ import java.util.*;
 
 public class Comunidade implements TADCommunity {
     
-    Map<Long,Utilizador> users;
-    Map<Long,Publicacao> post;
-    TreeSet<Publicacao> postArray;
-    Map<String,Tag> tagconv;
+    Map<Long, engine.Utilizador> users;
+    Map<Long, engine.Publicacao> post;
+    TreeSet<engine.Publicacao> postArray;
+    Map<String, engine.Tag> tagconv;
 
     public Comunidade (){
-        this.users = new HashMap<Long,Utilizador>();
-        this.postArray = new TreeSet<Publicacao>();
-        this.post = new HashMap<Long,Publicacao>();
-        this.tagconv = new HashMap<String,Tag>();
+        this.users = new HashMap<Long, engine.Utilizador>();
+        this.postArray = new TreeSet<engine.Publicacao>();
+        this.post = new HashMap<Long, engine.Publicacao>();
+        this.tagconv = new HashMap<String, engine.Tag>();
     }
 
-    public Comunidade (Map<Long,Utilizador> x, Map<Long,Publicacao> p , Map<String,Tag> l){
+    public Comunidade (Map<Long, engine.Utilizador> x, Map<Long, engine.Publicacao> p , Map<String, engine.Tag> l){
         this.setUsers(x);
         this.setPost(p);
         this.setTagconv(l);
@@ -45,32 +45,32 @@ public class Comunidade implements TADCommunity {
     }
 
 //Getters!------------------------------------------------------------------------------------------------------------------------------------
-    public Map<Long,Utilizador> getusers(){
+    public Map<Long, engine.Utilizador> getusers(){
         return this.users.values().stream().collect(Collectors.toMap(l ->l.getId(), l -> l.clone()));
     }
 
-    public Set<Publicacao> getpostArray(){
-        return this.postArray.stream().map(Publicacao::clone).collect(Collectors.toSet());
+    public Set<engine.Publicacao> getpostArray(){
+        return this.postArray.stream().map(engine.Publicacao::clone).collect(Collectors.toSet());
     }
 
-    public Map<Long,Publicacao> getPost(){
+    public Map<Long, engine.Publicacao> getPost(){
          return this.post.values().stream().collect(Collectors.toMap(l ->l.getId(), l -> l.clone()));
     }
     
-    public Map<String,Tag> getTagconv(){
+    public Map<String, engine.Tag> getTagconv(){
          return this.tagconv.entrySet().stream().collect(Collectors.toMap(l -> l.getKey() , l -> l.getValue().clone()));
     }
 
 //Setters!------------------------------------------------------------------------------------------------------------------------------------
-    void setUsers(Map<Long,Utilizador> x){
+    void setUsers(Map<Long, engine.Utilizador> x){
         this.users = x.values().stream().collect(Collectors.toMap(l->l.getId(), l->l.clone()));
     }
     
-    void setPost(Map<Long,Publicacao> x){
+    void setPost(Map<Long, engine.Publicacao> x){
         this.post = x.values().stream().collect(Collectors.toMap(l->l.getId(), l->l.clone()));
     }
     
-    void setTagconv(Map<String,Tag> x){
+    void setTagconv(Map<String, engine.Tag> x){
         this.tagconv = x.entrySet().stream().collect(Collectors.toMap(l->l.getKey(),l->l.getValue().clone()));
     }
 
@@ -90,7 +90,7 @@ public class Comunidade implements TADCommunity {
     }
     
     public void makepostArray(){
-        this.postArray = new TreeSet<Publicacao>(this.post.values());
+        this.postArray = new TreeSet<engine.Publicacao>(this.post.values());
     }
 
 
@@ -101,17 +101,17 @@ public class Comunidade implements TADCommunity {
         File inputFile = new File(dumpPath);
 
         SAXParserFactory factory = SAXParserFactory.newInstance ();
-        TagConversionSAX saxp = new TagConversionSAX();
+        engine.TagConversionSAX saxp = new engine.TagConversionSAX();
         try {
             SAXParser parser = factory.newSAXParser();
-            saxp = new TagConversionSAX();
+            saxp = new engine.TagConversionSAX();
             parser.parse(new File(dumpPath + "/Tags.xml"), saxp);
         }catch (Exception exp ){
             System.out.println(exp.toString());
             exp.printStackTrace();
         }
 
-        for( Tag x :saxp.getResults().values()){
+        for( engine.Tag x :saxp.getResults().values()){
             System.out.println( x.getId() + " " + x.getNome() );
         }
     }

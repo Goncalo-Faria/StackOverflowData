@@ -10,7 +10,7 @@ public class Publicacao{
     int score;
     int comment_count;
     int votes;
-    Set<Tag> tags;
+    Set<engine.Tag> tags;
     LocalDate data;
 
     public Publicacao(){
@@ -19,7 +19,7 @@ public class Publicacao{
         this.score = 0;
         this.comment_count = 0;
         this.votes = 0;
-        this.tags = new HashSet<Tag>();
+        this.tags = new HashSet<engine.Tag>();
         this.data = LocalDate.now();
     }
 
@@ -29,7 +29,7 @@ public class Publicacao{
         this.score = 0;
         this.comment_count = 0;
         this.votes = 0;
-        this.tags = new HashSet<Tag>();
+        this.tags = new HashSet<engine.Tag>();
         this.data = LocalDate.now();
     }
 
@@ -40,7 +40,7 @@ public class Publicacao{
         this.comment_count = comment_count;
         this.votes = votes;
         this.data = data;
-        this.tags = new HashSet<Tag>();
+        this.tags = new HashSet<engine.Tag>();
     }
 
     public Publicacao(Publicacao x){
@@ -64,7 +64,7 @@ public class Publicacao{
 
     public int getVotes(){return this.votes;}
 
-    public Set<Tag> getTags(){return this.tags.stream().map(Tag::clone).collect(Collectors.toSet());}
+    public Set<engine.Tag> getTags(){return this.tags.stream().map(engine.Tag::clone).collect(Collectors.toSet());}
 
     public LocalDate getData(){return this.data;}
 
@@ -84,7 +84,7 @@ public class Publicacao{
     void decDownVotes(){this.votes--;}
 
 
-    public void addTag(Tag x){
+    public void addTag(engine.Tag x){
         if(!this.tags.contains(x))
             this.tags.add(x.clone());
     }
@@ -92,11 +92,11 @@ public class Publicacao{
     void setData(LocalDate x){this.data = x;}
     
     boolean isQuestion(){
-        return (this instanceof Pergunta);
+        return (this instanceof engine.Pergunta);
     }
 
     boolean isAnswer(){
-        return (this instanceof Resposta);
+        return (this instanceof engine.Resposta);
     }
 
     //--------------------------------------------------------------------------------------------------------------------------
