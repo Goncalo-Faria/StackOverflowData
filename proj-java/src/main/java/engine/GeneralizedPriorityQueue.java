@@ -27,11 +27,14 @@ public class GeneralizedPriorityQueue<E> {
         }
     }
 
-    public List<E> list(){
-        return new ArrayList<E>(this.q);
+    public List<E> terminateToList(){
+        ArrayList<E> x = new ArrayList<E>(this.fixedsize);
+
+        while( this.q.size()>0){
+            E y = this.q.poll();
+            x.add(this.q.size()-1, y);
+        }
+        return x;
     }
 
-    public Set<E> set(){
-        return new TreeSet<E>(this.q);
-    }
 }
