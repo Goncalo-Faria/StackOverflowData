@@ -11,7 +11,7 @@ public class TagConversionSAX extends SAXStackOverflow {
         this.tags = new HashMap<String,Tag>();
     }
 
-    public Map<String,Tag> getTag () {
+    public Map<String,Tag> getResults () {
         return this.tags;
     }
 
