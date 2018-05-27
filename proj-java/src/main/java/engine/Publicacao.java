@@ -134,8 +134,8 @@ public class Publicacao implements Comparable{
         if( !( x instanceof Publicacao)) return 0;
 
         Publicacao y = (Publicacao)x;
-        if(this.data.isAfter(y.getData())) return 1;
-        if(this.data.isBefore(y.getData())) return -1;
+        if(this.data.isAfter(y.getData())) return -1;
+        if(this.data.isBefore(y.getData())) return 1;
         return 0;
     }
 }

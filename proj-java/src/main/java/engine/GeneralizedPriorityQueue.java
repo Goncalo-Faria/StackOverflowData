@@ -19,7 +19,7 @@ public class GeneralizedPriorityQueue<E> {
             if( this.q.size() < this.fixedsize){
                 this.q.add(element);
             }else{
-                if( this.priority.compare(this.q.peek(),element)< 0 ){
+                if( this.priority.compare(this.q.peek(),element) > 0 ){
                     this.q.poll();
                     this.q.add(element);
                 }
@@ -30,10 +30,11 @@ public class GeneralizedPriorityQueue<E> {
     public List<E> terminateToList(){
         ArrayList<E> x = new ArrayList<E>(this.fixedsize);
 
-        while( this.q.size()>0){
-            E y = this.q.poll();
-            x.add(this.q.size()-1, y);
+        while( this.q.size() != 0){
+            x.add(this.q.poll());
         }
+
+        Collections.reverse(x);
         return x;
     }
 
