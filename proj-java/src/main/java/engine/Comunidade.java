@@ -99,60 +99,28 @@ public class Comunidade implements TADCommunity {
 
 
     public void load(String dumpPath) {
-        File inputFile = new File(dumpPath);
 
-        SAXParserFactory factory = SAXParserFactory.newInstance ();
-        engine.TagConversionSAX saxt = new engine.TagConversionSAX();
-        try {
-            SAXParser parser = factory.newSAXParser();
-            parser.parse(new File(dumpPath + "/Tags.xml"), saxt);
-        }catch (Exception exp ){
-            System.out.println(exp.toString());
-            exp.printStackTrace();
-        }
 
-        this.tagconv=saxt.getResults();
+        engine.StackOverFlowParse parse = new engine.StackOverFlowParse(dumpPath);
 
-        engine.UsersSAX saxu = new engine.UsersSAX();
-        try{
-            SAXParser parser = factory.newSAXParser();
-            parser.parse(new File(dumpPath + "/Users.xml"), saxu);
-        }catch (Exception exp){
-            System.out.println(exp.toString());
-            exp.printStackTrace();
-        }
+        this.tagconv = ((engine.TagConversionSAX)parse.analyze("Tags.xml", new engine.TagConversionSAX())).getResults();
 
-        this.users = saxu.getResults();
+        this.users = ((engine.UsersSAX)parse.analyze("Users.xml", new engine.UsersSAX())).getResults();
 
-        engine.PostSAX saxp = new engine.PostSAX(this.tagconv);
+        engine.PostSAX pst = new engine.PostSAX(this.tagconv);
 
-        try{
-            SAXParser parser = factory.newSAXParser();
-            parser.parse(new File(dumpPath + "/Posts.xml"), saxp);
-        }catch (Exception exp){
-            System.out.println(exp.toString());
-            exp.printStackTrace();
-        }
+        this.post = ((engine.PostSAX)parse.analyze("Posts.xml", pst )).getResults();
 
-        this.post = saxp.getResults();
         /*Construir bacia*/
-        for(Map.Entry<Long,Set<engine.Publicacao> >pr :saxp.getComplementar().entrySet() ){
+        for(Map.Entry<Long,Set<engine.Publicacao> >pr :pst.getComplementar().entrySet() ){
             if(  this.users.containsKey(pr.getKey()) ){
                 final engine.Utilizador util = this.users.get(pr.getKey());
                 pr.getValue().forEach(l -> util.addBacia(l) );
             }
         }
 
-        engine.VotesSAX saxv = new engine.VotesSAX(this.post);
+        this.post = ((engine.VotesSAX)parse.analyze("Votes.xml", new engine.VotesSAX(this.post))).getResults();
 
-        try{
-            SAXParser parser = factory.newSAXParser();
-            parser.parse(new File(dumpPath + "/Votes.xml"), saxv);
-        }catch (Exception exp){
-            System.out.println(exp.toString());
-            exp.printStackTrace();
-        }
-        this.post = saxv.getResult();
         this.makepostArray();
     }
 

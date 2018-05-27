@@ -29,7 +29,7 @@ public class VotesSAX extends engine.SAXStackOverflow {
 
     }
 
-    public Map<Long,engine.Publicacao> getResult(){
+    public Map<Long,engine.Publicacao> getResults(){
         return this.posts;
     }
 
