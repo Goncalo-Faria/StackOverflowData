@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class Publicacao{
+public class Publicacao implements Comparable{
     Long id;
     String nome;
     int score;
@@ -129,9 +129,13 @@ public class Publicacao{
                 (y.getVotes() == this.votes) );
     }
 
-    public int compareTo(Publicacao x){
-        if(this.data.isAfter(x.getData())) return 1;
-        if(this.data.isBefore(x.getData())) return -1;
+    public int compareTo(Object x){
+
+        if( !( x instanceof Publicacao)) return 0;
+
+        Publicacao y = (Publicacao)x;
+        if(this.data.isAfter(y.getData())) return 1;
+        if(this.data.isBefore(y.getData())) return -1;
         return 0;
     }
 }

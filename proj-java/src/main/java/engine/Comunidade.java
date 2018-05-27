@@ -138,10 +138,22 @@ public class Comunidade implements TADCommunity {
         /*Construir bacia*/
         for(Map.Entry<Long,Set<engine.Publicacao> >pr :saxp.getComplementar().entrySet() ){
             if(  this.users.containsKey(pr.getKey()) ){
-                final engine.Utilizador util = this.users.get( pr.getKey());
+                final engine.Utilizador util = this.users.get(pr.getKey());
                 pr.getValue().forEach(l -> util.addBacia(l) );
             }
         }
+
+        engine.VotesSAX saxv = new engine.VotesSAX(this.post);
+
+        try{
+            SAXParser parser = factory.newSAXParser();
+            parser.parse(new File(dumpPath + "/Votes.xml"), saxv);
+        }catch (Exception exp){
+            System.out.println(exp.toString());
+            exp.printStackTrace();
+        }
+        this.post = saxv.getResult();
+        this.makepostArray();
     }
 
     // Query 1
