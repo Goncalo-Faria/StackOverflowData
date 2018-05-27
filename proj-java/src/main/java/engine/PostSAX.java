@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class PostSAX extends engine.SAXStackOverflow {
-    private HashMap<Long,Set<engine.Publicacao>> users;
-    private HashMap<Long, Set<Long>> answers;
-    private HashMap <Long,engine.Publicacao> posts;
+    private HashMap<Long,Set<engine.Publicacao>> users; /*serve para preencher a bacia*/
+    private HashMap<Long, Set<Long>> answers; /* correspondencia pergunta -> respostas */
+    private HashMap <Long,engine.Publicacao> posts; /*-> fundador -> publicacoes*/
     private Map<String, engine.Tag> tags;
 
     public PostSAX(Map<String, engine.Tag> tags){

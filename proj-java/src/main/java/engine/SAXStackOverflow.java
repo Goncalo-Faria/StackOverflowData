@@ -23,7 +23,6 @@ public abstract class SAXStackOverflow extends DefaultHandler {
 
     @Override
     public void startElement (String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
-        //System.out.println(qName);
 
         if(qName.equals("row")){
             rowInspector(atts);

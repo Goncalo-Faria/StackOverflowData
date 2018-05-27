@@ -105,7 +105,6 @@ public class Comunidade implements TADCommunity {
         engine.TagConversionSAX saxp = new engine.TagConversionSAX();
         try {
             SAXParser parser = factory.newSAXParser();
-            saxp = new engine.TagConversionSAX();
             parser.parse(new File(dumpPath + "/Tags.xml"), saxp);
         }catch (Exception exp ){
             System.out.println(exp.toString());
@@ -114,10 +113,17 @@ public class Comunidade implements TADCommunity {
 
         this.tagconv=saxp.getResults();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String contpar = "2010-09-17T20:23:31.807";
-        LocalDate date = LocalDate.parse(contpar.substring(0,10), formatter);
-        System.out.println(date.toString());
+        engine.UsersSAX saxu = new engine.UsersSAX();
+        try{
+            SAXParser parser = factory.newSAXParser();
+            parser.parse(new File(dumpPath + "/Users.xml"), saxu);
+        }catch (Exception exp){
+            System.out.println(exp.toString());
+            exp.printStackTrace();
+        }
+
+        this.users = saxu.getResults();
+
     }
 
     // Query 1
