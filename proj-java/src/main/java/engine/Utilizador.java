@@ -14,6 +14,22 @@ public class Utilizador{
     String bio;
     Map<Long,Set<Long>> bacia;
     int rep;
+    static HashMap<String,Comparator<Utilizador>> comparadores;
+
+    static {
+        Utilizador.comparadores = new HashMap<String,Comparator<Utilizador>>();
+        Comparator<Utilizador> utilAti = new Comparator<Utilizador>() {
+            public int compare(Utilizador x, Utilizador y) {
+                Long val = Long.valueOf(x.getQ()+ x.getA());
+                return val.compareTo(Long.valueOf(y.getQ() + y.getA()));
+            } };
+
+        Utilizador.comparadores.put("UtilizadoresAtivos",utilAti );
+    }
+
+    static Comparator getComparator(String name){
+        return Utilizador.comparadores.get(name);
+    }
 
     public Utilizador(){
         this.id = Long.valueOf(-1);
