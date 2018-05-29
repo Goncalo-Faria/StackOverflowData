@@ -213,7 +213,7 @@ public class Comunidade implements TADCommunity {
                         filter(l -> (id == l.getFundador().longValue()) ).collect( Collectors.toList());
 
             engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>
-                (10, ((Object l , Object s) -> ((engine.Publicacao)l).compareTo(s)));
+                (10, engine.Publicacao.getComparator("MaisRecente"));
             
             pq.populate(candidatos);
             p = pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
@@ -225,68 +225,72 @@ public class Comunidade implements TADCommunity {
 
     // Query 6
     public List<Long> mostVotedAnswers(int N, LocalDate begin, LocalDate end) {
-        Set<engine.Publicacao> p = new TreeSet<engine.Publicacao>();
-        List<Long> result = new ArrayList<Long>();
-        
-        engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
-            N , ( (Object l , Object s) -> ((engine.Publicacao)l).compareScore(s)*-1)); //Inverter a ordem , "ordem decrescente"
-        
-            for(engine.Publicacao x : this.postArray){
-                if(x instanceof engine.Publicacao){
-                    p.add(x);//todas as perguntas colocadas num set
-                    
-                }
-            }
-            pq.populate(p);
 
-            for(engine.Publicacao y :pq.terminateToList()){
-                result.add(y.getId());//todos os longs referentes ás perguntas em Lista
-            }
+        List<engine.Publicacao> st = this.postArray.
+                subSet(new engine.Publicacao(begin), new engine.Publicacao(end)).
+                    stream().filter( h -> h.isAnswer() ).collect(Collectors.toList());
+
+        engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
+            N , engine.Publicacao.getComparator("MaiorScore"));
+
+        pq.populate(st);
+
+        int count=0;
+        List<Long> result = new ArrayList<Long>();
+        for(engine.Publicacao y :pq.terminateToList()){
+            count++;
+            result.add(y.getId());
+            if( count > N )
+                break;
+        }
 
         return result;
     }
 
     // Query 7
     public List<Long> mostAnsweredQuestions(int N, LocalDate begin, LocalDate end) {
-        Set<engine.Publicacao> p = new TreeSet<engine.Publicacao>();
-        List<Long> result = new ArrayList<Long>();
+
+        Set<engine.Publicacao> st = this.postArray.
+                subSet(new engine.Publicacao(begin), new engine.Publicacao(end)).
+                stream().filter( h -> h.isQuestion() ).collect(Collectors.toSet());
 
         engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
-            N , ( (Object l , Object s) -> ((engine.Publicacao)l).compareAnswers(s)*-1)); //Inverter a ordem , "ordem decrescente"
-        
-        for(engine.Publicacao x : this.postArray){ //todas as perguntas entra a x data
-            if(x instanceof engine.Pergunta && x.getData().isAfter(begin) && x.getData().isBefore(end)){
-                p.add(x);
-            }
-        }
+            N , engine.Publicacao.getComparator("MaisRespostas")); //Inverter a ordem , "ordem decrescente"
 
-        pq.populate(p);
-        for(engine.Publicacao x : pq.terminateToList()){ //todas as perguntas entra a x data
-            result.add(x.getId());    
-        }
 
+
+        pq.populate(st);
+
+        int count=0;
+        List<Long> result = new ArrayList<Long>();
+        for(engine.Publicacao y :pq.terminateToList()){
+            count++;
+            result.add(y.getId());
+            if( count > N )
+                break;
+        }
         return result;
     }
 
     // Query 8
     public List<Long> containsWord(int N, String word) {
-        //estou a usar como se fosse a strstr -> professores disseram que nao fazia diferença
-        Set<engine.Publicacao> p = new TreeSet<engine.Publicacao>();
+
+        Iterator<engine.Publicacao> litr =this.postArray.descendingIterator();
+
+        engine.Publicacao value;
         List<Long> result = new ArrayList<Long>();
 
-        engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
-            N , ( (Object l , Object s) -> ((engine.Publicacao)l).compareAnswers(s)*-1)); //Inverter a ordem , "ordem decrescente"
-        
-        for(engine.Publicacao x : this.postArray){ //todas as perguntas entra a x data
-            if(x instanceof engine.Pergunta && x.getNome().contains(word)){
-                p.add(x);
+        int count =0;
+        while(litr.hasNext()){
+            value = litr.next();
+            if(value.getNome().contains(word)) {
+                count++;
+                result.add(value.getId());
             }
-        }
 
-        pq.populate(p);
+            if(count>N)
+                break;
 
-        for(engine.Publicacao y : pq.terminateToList() ){
-            result.add(y.getId());
         }
 
         return result;

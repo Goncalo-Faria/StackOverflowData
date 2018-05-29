@@ -13,15 +13,35 @@ public class Publicacao implements Comparable{
     private Set<engine.Tag> tags;
     private LocalDate data;
     private Long fundador;
-    static private HashMap<String,Comparable<Publicacao>> comparadores;
+    static private HashMap<String,Comparator<Publicacao>> comparadores;
 
     static {
-        Publicacao.comparadores = new HashMap<String,Comparable<Publicacao>>();
-        Publicacao.comparadores.put( ,new Comparator<Publicacao>() {
+        Publicacao.comparadores = new HashMap<String,Comparator<Publicacao>>();
+        Publicacao.comparadores.put( "MaisRecente" ,new Comparator<Publicacao>() {
                     public int compare(Publicacao x, Publicacao y) {
-                        return (-1) * x.comparePreco(y);
+                        return ((engine.Publicacao)x).compareTo(y);
                     } });
-        );
+        Publicacao.comparadores.put( "MaisAntigo" ,Publicacao.comparadores.get("MaisRecente").reversed());
+        Publicacao.comparadores.put( "MenorScore", new Comparator<Publicacao>() {
+            public int compare(Publicacao x, Publicacao y) {
+                Long val = Long.valueOf(x.getScore());
+                return val.compareTo(Long.valueOf(y.getScore()));
+            } });
+        Publicacao.comparadores.put( "MaiorScore" ,Publicacao.comparadores.get("MenorScore").reversed());
+
+        Publicacao.comparadores.put( "MenosRespostas", new Comparator<Publicacao>() {
+            public int compare(Publicacao x, Publicacao y) {
+                engine.Pergunta l=(engine.Pergunta)x ,s=(engine.Pergunta)y;
+                Long val = Long.valueOf(l.getAnsCount());
+                return val.compareTo(Long.valueOf(s.getAnsCount()));
+            } });
+        Publicacao.comparadores.put("MaisRespostas",Publicacao.comparadores.get("MenosRespostas").reversed());
+
+
+    }
+
+    static public Comparator<Publicacao> getComparator(String name){
+        return Publicacao.comparadores.get(name);
     }
 
     public Publicacao(){
