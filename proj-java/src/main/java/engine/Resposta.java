@@ -13,12 +13,11 @@ public class Resposta extends engine.Publicacao {
 
     }
 
-    public Resposta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Long parentID) {
-        super(id, nome, score, comment_count, votes, data);
+    public Resposta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Long parentID,Long fundador) {
+        super(id, nome, score, comment_count, votes, data,fundador);
         this.parentID = parentID;
 
     }
-
 
     public void setParentID(Long parentID) {
         this.parentID = parentID;

@@ -58,7 +58,7 @@ public class PostSAX extends engine.SAXStackOverflow {
 
 
         if( postType == 1){
-            newlyCreatedPublication = new engine.Pergunta(id,nome,score,commentCount,0,date);
+            newlyCreatedPublication = new engine.Pergunta(id,nome,score,commentCount,0,date,fundador);
         }else if( postType == 2 ){
             Long parentid = Long.valueOf(atts.getValue("ParentId"));
             if(this.answers.containsKey(parentid)){
@@ -68,7 +68,7 @@ public class PostSAX extends engine.SAXStackOverflow {
                 val.add(id);
                 this.answers.put(parentid,val);
             }
-            newlyCreatedPublication = new engine.Resposta(id, nome, score, commentCount,0, date, parentid);
+            newlyCreatedPublication = new engine.Resposta(id, nome, score, commentCount,0, date, parentid,fundador);
         }else{return;}
         String tagfield = atts.getValue("Tags");
         if(tagfield != null) {

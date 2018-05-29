@@ -14,13 +14,13 @@ public class Pergunta extends engine.Publicacao {
         this.ans = new HashSet<Long>();
     }
 
-    public Pergunta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Set<Long> ans) {
-        super(id, nome, score, comment_count, votes, data);
+    public Pergunta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Set<Long> ans,Long fundador) {
+        super(id, nome, score, comment_count, votes, data,fundador);
         this.ans = new TreeSet<Long>(ans);
     }
 
-    public Pergunta(Long id, String nome, int score, int comment_count, int votes, LocalDate data) {
-        super(id, nome, score, comment_count, votes, data);
+    public Pergunta(Long id, String nome, int score, int comment_count, int votes, LocalDate data,Long fundador) {
+        super(id, nome, score, comment_count, votes, data,fundador);
         this.ans = new HashSet<Long>();
     }
 

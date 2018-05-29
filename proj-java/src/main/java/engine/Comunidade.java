@@ -113,14 +113,23 @@ public class Comunidade implements TADCommunity {
         /*Construir bacia*/
         for(Map.Entry<Long,Set<engine.Publicacao> >pr : pst.getComplementar().entrySet() ){
             if(  this.users.containsKey(pr.getKey()) ){
+
+
+
+                if( pr.getKey().intValue() == 15811){
+                    System.out.println("yup");
+                    for(engine.Publicacao pub4 :pr.getValue()){
+                        System.out.println(pub4.getId().toString() + " ");
+                    }
+                }
                 final engine.Utilizador util = this.users.get(pr.getKey());
                 pr.getValue().forEach(l -> util.addBacia(l) );
             }
         }
 
         this.post = ((engine.VotesSAX)parse.analyze("Votes.xml", new engine.VotesSAX(this.post))).getResults();
-
         this.makepostArray();
+
     }
 
     // Query 1
@@ -131,8 +140,8 @@ public class Comunidade implements TADCommunity {
         engine.Publicacao p;
         if(this.post.containsKey(id)){
             p=this.post.get(id);
+            if(p.isAnswer()){
 
-            if(p.isAnswer()){//quando for resposta
                 engine.Resposta rp = (engine.Resposta)p;
                 if(this.post.containsKey(rp.getParentId())){
                     p = this.post.get(rp.getParentId());
@@ -149,7 +158,6 @@ public class Comunidade implements TADCommunity {
 
 
         }
-        System.out.println( x1 + " " + x2);
         return new Pair<>(x1, x2);
     }
 
@@ -162,6 +170,7 @@ public class Comunidade implements TADCommunity {
 
             List<Long> l = pq.terminateToList().stream().
                     map(engine.Utilizador::getId).collect(Collectors.toList());
+
         return l;
     }
 
@@ -177,6 +186,7 @@ public class Comunidade implements TADCommunity {
             if(p.isQuestion()) question++;
             else answer++;
         }
+
         return new Pair<>(Long.valueOf(question),Long.valueOf(answer));
     }
 
@@ -205,12 +215,14 @@ public class Comunidade implements TADCommunity {
         List<Long> p = new ArrayList<Long>();
         engine.Utilizador ut;
         if(this.users.containsKey(id)){
+
             ut = this.users.get(id);
+            System.out.println( " Está vivo " + shortBio + " " + ut.getQ() + " " +ut.getA());
             shortBio = ut.getBio();
 
-            List<engine.Publicacao> candidatos = ut.getBacia().values().stream().flatMap(Set::stream).
-                distinct().map(l -> this.post.get(l)).
-                        filter(l -> (id == l.getFundador().longValue()) ).collect( Collectors.toList());
+            Set<engine.Publicacao> candidatos = ut.getBacia().values().stream().flatMap(Set::stream).
+                map(l -> this.post.get(l)).
+                        filter(l -> (id == l.getFundador().longValue()) ).collect( Collectors.toSet());
 
             engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>
                 (10, engine.Publicacao.getComparator("MaisRecente"));
@@ -218,6 +230,9 @@ public class Comunidade implements TADCommunity {
             pq.populate(candidatos);
             p = pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
 
+            for(Long we : p){
+                System.out.println( this.post.get(we).getData().toString() );
+            }
         }
 
         return new Pair<>(shortBio,p);

@@ -20,8 +20,8 @@ public class Utilizador{
         Utilizador.comparadores = new HashMap<String,Comparator<Utilizador>>();
         Comparator<Utilizador> utilAti = new Comparator<Utilizador>() {
             public int compare(Utilizador x, Utilizador y) {
-                Long val = Long.valueOf(x.getQ()+ x.getA());
-                return val.compareTo(Long.valueOf(y.getQ() + y.getA()));
+                Long val = Long.valueOf(y.getQ()+ y.getA());
+                return val.compareTo(Long.valueOf(x.getQ() + x.getA()));
             } };
 
         Utilizador.comparadores.put("UtilizadoresAtivos",utilAti );
@@ -114,37 +114,46 @@ public class Utilizador{
 
     public void setBacia(Map<Long,Set<Long>> x){this.bacia = x.entrySet().stream().collect(Collectors.toMap( l -> l.getKey(), l-> new HashSet<Long>(l.getValue())));}
 
-    public void addBacia(engine.Publicacao x){
-        if(x instanceof engine.Resposta){
-            engine.Resposta y = (engine.Resposta) x;
-            Long fund = y.getFundador();
+    public void addBacia(engine.Publicacao x) {
 
-            if( this.bacia.containsKey(fund)){
-                /* já está introduzida pergunta*/
-                Set<Long> ans = this.bacia.get(fund);
-                if( !ans.contains(y.getId()) ){
-                    ans.add(y.getId());
+        if (x.getFundador().longValue() == this.id.longValue()) {
+
+            if (x.isAnswer()) {
+                engine.Resposta y = (engine.Resposta) x;
+                Long fund = y.getParentId();
+
+                if (this.bacia.containsKey(fund)) {
+                    /* já está introduzida pergunta*/
+                    Set<Long> ans = this.bacia.get(fund);
+                    if (!ans.contains(y.getId())) {
+                        ans.add(y.getId());
+                        this.incA();
+                    }
+
+                } else {
+                    Set<Long> ans = new HashSet<Long>();
+                    ans.add(getId());
+                    this.bacia.put(y.getFundador(), ans);
+                    this.incA();
                 }
 
-            }else{
-                Set<Long> ans = new HashSet<Long>();
-                ans.add(getId());
-                this.bacia.put(y.getFundador(),ans);
             }
 
-        }
-
-        if(x instanceof engine.Pergunta){
-            if(this.bacia.containsKey(x.getId())){
-                Set<Long> ans = this.bacia.get(x.getId());
-                if(!ans.contains(x.getId()))
-                    ans.add(x.getId());
-
-            }else{
-                Set<Long> ans = new HashSet<Long>();
-                ans.add(getId());
-                this.bacia.put(x.getId(),ans);
+            if (x.isQuestion()) {
+                if (this.bacia.containsKey(x.getId())) {
+                    Set<Long> ans = this.bacia.get(x.getId());
+                    if (!ans.contains(x.getId())) {
+                        ans.add(x.getId());
+                        this.incQ();
+                    }
+                } else {
+                    Set<Long> ans = new HashSet<Long>();
+                    ans.add(getId());
+                    this.bacia.put(x.getId(), ans);
+                    this.incQ();
+                }
             }
+
         }
     }
 

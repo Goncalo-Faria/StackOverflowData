@@ -17,11 +17,11 @@ public class Publicacao implements Comparable{
 
     static {
         Publicacao.comparadores = new HashMap<String,Comparator<Publicacao>>();
-        Publicacao.comparadores.put( "MaisRecente" ,new Comparator<Publicacao>() {
+        Publicacao.comparadores.put( "MaisAntigo" ,new Comparator<Publicacao>() {
                     public int compare(Publicacao x, Publicacao y) {
                         return ((engine.Publicacao)x).compareTo(y);
                     } });
-        Publicacao.comparadores.put( "MaisAntigo" ,Publicacao.comparadores.get("MaisRecente").reversed());
+        Publicacao.comparadores.put( "MaisRecente" ,Publicacao.comparadores.get("MaisAntigo").reversed());
         Publicacao.comparadores.put( "MenorScore", new Comparator<Publicacao>() {
             public int compare(Publicacao x, Publicacao y) {
                 Long val = Long.valueOf(x.getScore());
@@ -78,9 +78,9 @@ public class Publicacao implements Comparable{
         this.data = LocalDate.now();
     }
 
-    public Publicacao(Long id , String nome , int score , int comment_count ,int votes , LocalDate data){
+    public Publicacao(Long id , String nome , int score , int comment_count ,int votes , LocalDate data,Long fundador){
         this.id = id;
-        this.fundador = Long.valueOf(-1);
+        this.fundador = fundador;
         this.nome = nome;
         this.score = score;
         this.comment_count = comment_count;
@@ -175,8 +175,8 @@ public class Publicacao implements Comparable{
         if( !( x instanceof Publicacao)) return 0;
 
         Publicacao y = (Publicacao)x;
-        if(this.data.isAfter(y.getData())) return -1;
-        if(this.data.isBefore(y.getData())) return 1;
+        if(this.data.isAfter(y.getData())) return 1;
+        if(this.data.isBefore(y.getData())) return -1;
         return 0;
     }
 }
