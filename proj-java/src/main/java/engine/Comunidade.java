@@ -18,10 +18,10 @@ import java.util.*;
 
 public class Comunidade implements TADCommunity {
     
-    Map<Long, engine.Utilizador> users;
-    Map<Long, engine.Publicacao> post;
-    TreeSet<engine.Publicacao> postArray;
-    Map<String, engine.Tag> tagconv;
+    private Map<Long, engine.Utilizador> users;
+    private Map<Long, engine.Publicacao> post;
+    private TreeSet<engine.Publicacao> postArray;
+    private Map<String, engine.Tag> tagconv;
 
     public Comunidade (){
         this.users = new HashMap<Long, engine.Utilizador>();
@@ -132,107 +132,95 @@ public class Comunidade implements TADCommunity {
         if(this.post.containsKey(id)){
             p=this.post.get(id);
 
-            if(p instanceof engine.Pergunta){ //quando é pergunta
-                x1 = p.getNome();
-                if(this.users.containsKey(p.getFundador())){
-                 x2 =  this.users.get(p.getFundador()).getNome();
-                }
-            }
-            if(p instanceof engine.Resposta){//quando for resposta
+            if(p.isAnswer()){//quando for resposta
+                engine.Resposta rp = (engine.Resposta)p;
+                if(this.post.containsKey(rp.getParentId())){
+                    p = this.post.get(rp.getParentId());
 
-                if(this.post.containsKey(((engine.Resposta)p).getParentID())){
-                    p = this.post.get(((engine.Resposta)p).getParentID());
-                    x1 = p.getNome();
-                    if(this.users.containsKey(p.getFundador())){
-                        x2 = this.users.get(p.getFundador()).getNome();
-                    }
+                }else{
+                    return new Pair<>(x1, x2);
                 }
             }
+
+            x1 = p.getNome();
+            if(this.users.containsKey(p.getFundador())){
+                x2 = this.users.get(p.getFundador()).getNome();
+            }
+
+
         }
+        System.out.println( x1 + " " + x2);
         return new Pair<>(x1, x2);
     }
 
     // Query 2
     public List<Long> topMostActive(int N) {
-        engine.GeneralizedPriorityQueue<engine.Utilizador> ut = new GeneralizedPriorityQueue<engine.Utilizador>(
-            N, (Object l , Object s) -> ((engine.Utilizador)l).comparePost(s) );
+        engine.GeneralizedPriorityQueue<engine.Utilizador> pq = new engine.GeneralizedPriorityQueue<engine.Utilizador>(
+            N, engine.Utilizador.getComparator("UtilizadoresAtivos"));
 
-            Set<engine.Utilizador> x = this.users.values().stream().collect(Collectors.toSet());
+            pq.populate(this.users.values());
 
-            ut.populate(x);
-
-            List<engine.Utilizador> l = ut.terminateToList();
-            List<Long> result = new ArrayList<Long>();
-
-            for(engine.Utilizador u : l ){
-                if(!result.contains(u.getId())){
-                    result.add(u.getId());
-                }
-            }
-
-        return result;
+            List<Long> l = pq.terminateToList().stream().
+                    map(engine.Utilizador::getId).collect(Collectors.toList());
+        return l;
     }
 
     // Query 3
     public Pair<Long,Long> totalPosts(LocalDate begin, LocalDate end) {
-        Long question = Long.valueOf(0);
-        Long answer = Long.valueOf(0);
-        for(Publicacao p : this.postArray){
-            if(p instanceof Pergunta) question++;
+        long question = 0;
+        long answer = 0;
+
+        SortedSet<engine.Publicacao> st = this.postArray.
+                subSet(new engine.Publicacao(begin), new engine.Publicacao(end));
+
+        for(engine.Publicacao p : st){
+            if(p.isQuestion()) question++;
             else answer++;
         }
-        return new Pair<>(question,answer);
+        return new Pair<>(Long.valueOf(question),Long.valueOf(answer));
     }
 
     // Query 4
     public List<Long> questionsWithTag(String tag, LocalDate begin, LocalDate end) {
-        List<Long> l = new ArrayList<Long>();
-        List<Long> result = new ArrayList<Long>();
-        for(engine.Publicacao p : this.postArray){
-            if(p instanceof Pergunta){
-                if(p.getData().isAfter(begin) && p.getData().isBefore(end)){ //se tiver entre as datas fornecidas
-                    for(Tag x : p.getTags()){
-                        if(x.getNome().equals(tag)){ //quando contiver a tag
-                            l.add(p.getId());
-                            break;
-                        }
-                    }
-                }
-            }
-        }    
-        //meter por ordem iversa agora
-        int x = l.size();
-        for(Long f : l){
-            result.add(x, f);
-            x--; 
-        }    
+        List<Long> st = new ArrayList<Long>();
+
+        if( this.tagconv.containsKey(tag) ) {
+            final engine.Tag tg = this.tagconv.get(tag);
+
+            st = this.postArray.
+                    subSet(new engine.Publicacao(begin), new engine.Publicacao(end)).
+                        stream().filter( h -> h.isQuestion() && h.getTags().contains(tg)).
+                            map(engine.Publicacao::getId).collect(Collectors.toList());
+
+            //Collections.reverse(st) caso seja preciso reverter;
+        }
         
-        return result;
+        return st;
     }
 
     // Query 5
     public Pair<String, List<Long>> getUserInfo(long id) {
 
         String shortBio = null ;
-        List<engine.Publicacao> p = new ArrayList<engine.Publicacao>(); 
-        List<Long> posts = new ArrayList<Long>();
+        List<Long> p = new ArrayList<Long>();
         engine.Utilizador ut;
         if(this.users.containsKey(id)){
             ut = this.users.get(id);
             shortBio = ut.getBio();
 
-            engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new GeneralizedPriorityQueue<engine.Publicacao>
-            (10, ((Object l , Object s) -> ((engine.Publicacao)l).compareTo(s)*-1) ); 
+            List<engine.Publicacao> candidatos = ut.getBacia().values().stream().flatMap(Set::stream).
+                distinct().map(l -> this.post.get(l)).
+                        filter(l -> (id == l.getFundador().longValue()) ).collect( Collectors.toList());
+
+            engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>
+                (10, ((Object l , Object s) -> ((engine.Publicacao)l).compareTo(s)));
             
-            pq.populate(this.postArray);
-            p = pq.terminateToList();
-            
-            for(engine.Publicacao x : p){
-                posts.add(x.getId());
-            }
+            pq.populate(candidatos);
+            p = pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
+
         }
 
-        return new Pair<>(shortBio,posts);
+        return new Pair<>(shortBio,p);
     }
 
     // Query 6

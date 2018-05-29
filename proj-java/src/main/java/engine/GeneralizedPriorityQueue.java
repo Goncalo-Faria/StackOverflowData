@@ -13,7 +13,7 @@ public class GeneralizedPriorityQueue<E> {
         this.priority = priority;
     }
 
-    public void populate(Set<E> x ){
+    public void populate(Collection<E> x ){
 
         for(E element: x){
             if( this.q.size() < this.fixedsize){

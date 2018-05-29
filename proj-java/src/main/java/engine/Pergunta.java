@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 public class Pergunta extends engine.Publicacao {
 
-    Set<Long> ans;
+    private Set<Long> ans;
 
     public Pergunta() {
         super();

@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Resposta extends engine.Publicacao {
 
-    Long parentID;
+    private Long parentID;
 
     public Resposta() {
         super();
@@ -21,7 +21,7 @@ public class Resposta extends engine.Publicacao {
         this.parentID = parentID;
     }
 
-    public Long getparentID(){return this.parentID;}
+    public Long getParentId(){return this.parentID;}
 
     @Override
     public boolean equals(Object o) {
@@ -29,7 +29,7 @@ public class Resposta extends engine.Publicacao {
         if (!(o instanceof Resposta)) return false;
         if (!super.equals(o)) return false;
         Resposta resposta = (Resposta) o;
-        return (this.parentID.equals(resposta.getparentID()));
+        return (this.parentID.equals(resposta.getParentId()));
     }
 
 }

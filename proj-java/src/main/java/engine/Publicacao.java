@@ -5,14 +5,24 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Publicacao implements Comparable{
-    Long id;
-    String nome;
-    int score;
-    int comment_count;
-    int votes;
-    Set<engine.Tag> tags;
-    LocalDate data;
-    Long fundador;
+    private Long id;
+    private String nome;
+    private int score;
+    private int comment_count;
+    private int votes;
+    private Set<engine.Tag> tags;
+    private LocalDate data;
+    private Long fundador;
+    static private HashMap<String,Comparable<Publicacao>> comparadores;
+
+    static {
+        Publicacao.comparadores = new HashMap<String,Comparable<Publicacao>>();
+        Publicacao.comparadores.put( ,new Comparator<Publicacao>() {
+                    public int compare(Publicacao x, Publicacao y) {
+                        return (-1) * x.comparePreco(y);
+                    } });
+        );
+    }
 
     public Publicacao(){
         this.id = Long.valueOf(-1);
@@ -23,7 +33,19 @@ public class Publicacao implements Comparable{
         this.votes = 0;
         this.tags = new HashSet<engine.Tag>();
         this.data = LocalDate.now();
-        
+
+    }
+
+    public Publicacao(LocalDate data){
+        this.id = Long.valueOf(-1);
+        this.fundador = Long.valueOf(-1);
+        this.nome = "none";
+        this.score = 0;
+        this.comment_count = 0;
+        this.votes = 0;
+        this.tags = new HashSet<engine.Tag>();
+        this.data = data;
+
     }
 
     public Publicacao(String nome, Long id){

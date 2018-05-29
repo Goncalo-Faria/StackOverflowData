@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 
 public class Utilizador{
 
-    Long id;
-    String nome;
-    int Q;
-    int A;
-    String bio;
-    Map<Long,Set<Long>> bacia;
-    int rep;
-    static HashMap<String,Comparator<Utilizador>> comparadores;
+    private Long id;
+    private String nome;
+    private int Q;
+    private int A;
+    private String bio;
+    private Map<Long,Set<Long>> bacia;
+    private int rep;
+    static private HashMap<String,Comparator<Utilizador>> comparadores;
 
     static {
         Utilizador.comparadores = new HashMap<String,Comparator<Utilizador>>();
@@ -27,7 +27,7 @@ public class Utilizador{
         Utilizador.comparadores.put("UtilizadoresAtivos",utilAti );
     }
 
-    static Comparator getComparator(String name){
+    static public Comparator<Utilizador> getComparator(String name){
         return Utilizador.comparadores.get(name);
     }
 

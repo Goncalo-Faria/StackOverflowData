@@ -4,8 +4,8 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Tag{
-    Long id;
-    String nome;  
+    private Long id;
+    private String nome;
     /**ADD HASH CODE */
 
     static Set<String> obtainTagNames(String str){
