@@ -1,4 +1,3 @@
-
 package engine;
 
 import common.MyLog;
@@ -86,8 +85,8 @@ public class Comunidade implements TADCommunity {
 
         Comunidade y = (Comunidade) x;
 
-        return (this.postArray.equals(y.getpostArray()) && this.post.equals(y.getPost()) 
-                && this.users.equals(y.getusers()) && this.tagconv.equals(y.getTagconv()));
+        return (this.postArray.containsAll(y.getpostArray()) && this.post.values().containsAll(y.getPost().values()) 
+                && this.users.values().containsAll(y.getusers().values()) && this.tagconv.values().containsAll(y.getTagconv().values()));
     }
     
     public void makepostArray(){
@@ -112,7 +111,7 @@ public class Comunidade implements TADCommunity {
         this.post = ((engine.PostSAX)parse.analyze("Posts.xml", pst )).getResults();
 
         /*Construir bacia*/
-        for(Map.Entry<Long,Set<engine.Publicacao> >pr :pst.getComplementar().entrySet() ){
+        for(Map.Entry<Long,Set<engine.Publicacao> >pr : pst.getComplementar().entrySet() ){
             if(  this.users.containsKey(pr.getKey()) ){
                 final engine.Utilizador util = this.users.get(pr.getKey());
                 pr.getValue().forEach(l -> util.addBacia(l) );
@@ -126,52 +125,183 @@ public class Comunidade implements TADCommunity {
 
     // Query 1
     public Pair<String,String> infoFromPost(long id) {
-        return new Pair<>("What are the actual risks of giving www-data sudo nopasswd access?", "WebNinja");
+        String x1 = null;
+        String x2 = null;
+        engine.Utilizador u;
+        engine.Publicacao p;
+        if(this.post.containsKey(id)){
+            p=this.post.get(id);
+
+            if(p instanceof engine.Pergunta){ //quando é pergunta
+                x1 = p.getNome();
+                if(this.users.containsKey(p.getFundador())){
+                 x2 =  this.users.get(p.getFundador()).getNome();
+                }
+            }
+            if(p instanceof engine.Resposta){//quando for resposta
+
+                if(this.post.containsKey(((engine.Resposta)p).getParentID())){
+                    p = this.post.get(((engine.Resposta)p).getParentID());
+                    x1 = p.getNome();
+                    if(this.users.containsKey(p.getFundador())){
+                        x2 = this.users.get(p.getFundador()).getNome();
+                    }
+                }
+            }
+        }
+        return new Pair<>(x1, x2);
     }
 
     // Query 2
     public List<Long> topMostActive(int N) {
-        return Arrays.asList(15811L,449L,158442L,167850L,367165L,295286L,59676L,93977L,35795L,3940L);
+        engine.GeneralizedPriorityQueue<engine.Utilizador> ut = new GeneralizedPriorityQueue<engine.Utilizador>(
+            N, (Object l , Object s) -> ((engine.Utilizador)l).comparePost(s) );
+
+            Set<engine.Utilizador> x = this.users.values().stream().collect(Collectors.toSet());
+
+            ut.populate(x);
+
+            List<engine.Utilizador> l = ut.terminateToList();
+            List<Long> result = new ArrayList<Long>();
+
+            for(engine.Utilizador u : l ){
+                if(!result.contains(u.getId())){
+                    result.add(u.getId());
+                }
+            }
+
+        return result;
     }
 
     // Query 3
     public Pair<Long,Long> totalPosts(LocalDate begin, LocalDate end) {
-        return new Pair<>(3667L,4102L);
+        Long question = Long.valueOf(0);
+        Long answer = Long.valueOf(0);
+        for(Publicacao p : this.postArray){
+            if(p instanceof Pergunta) question++;
+            else answer++;
+        }
+        return new Pair<>(question,answer);
     }
 
     // Query 4
     public List<Long> questionsWithTag(String tag, LocalDate begin, LocalDate end) {
-        return Arrays.asList(276174L,276029L,274462L,274324L,274316L,274141L,274100L,272937L,
-                272813L,272754L,272666L,272565L,272450L,272313L,271816L,271683L,271647L,270853L,270608L,270528L,270488L,
-                270188L,270014L,269876L,269781L,269095L,268501L,268155L,267746L,267656L,267625L,266742L,266335L,266016L,
-                265531L,265483L,265443L,265347L,265104L,265067L,265028L,264764L,264762L,264616L,264525L,264292L,263816L,
-                263740L,263460L,263405L,263378L,263253L,262733L,262574L);
+        List<Long> l = new ArrayList<Long>();
+        List<Long> result = new ArrayList<Long>();
+        for(engine.Publicacao p : this.postArray){
+            if(p instanceof Pergunta){
+                if(p.getData().isAfter(begin) && p.getData().isBefore(end)){ //se tiver entre as datas fornecidas
+                    for(Tag x : p.getTags()){
+                        if(x.getNome().equals(tag)){ //quando contiver a tag
+                            l.add(p.getId());
+                            break;
+                        }
+                    }
+                }
+            }
+        }    
+        //meter por ordem iversa agora
+        int x = l.size();
+        for(Long f : l){
+            result.add(x, f);
+            x--; 
+        }    
+        
+        return result;
     }
 
     // Query 5
     public Pair<String, List<Long>> getUserInfo(long id) {
-        String shortBio = "<p>Coder. JS, Perl, Python, Basic<br>Books/movies: SF+F.<br>Dead:" +
-                "dell 9300<br>Dead: dell 1720 as of may 10th 2011.</p>\n" +
-                "<p>Current system: Acer Aspire 7750G.<br>\n" +
-                "Works OOTB as of Ubuntu 12.04.<br></p>";
-        List<Long> ids = Arrays.asList(982507L,982455L,980877L,980197L,980189L,976713L,974412L,
-                974359L,973895L,973838L);
-        return new Pair<>(shortBio,ids);
+
+        String shortBio = null ;
+        List<engine.Publicacao> p = new ArrayList<engine.Publicacao>(); 
+        List<Long> posts = new ArrayList<Long>();
+        engine.Utilizador ut;
+        if(this.users.containsKey(id)){
+            ut = this.users.get(id);
+            shortBio = ut.getBio();
+
+            engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new GeneralizedPriorityQueue<engine.Publicacao>
+            (10, ((Object l , Object s) -> ((engine.Publicacao)l).compareTo(s)*-1) ); 
+            
+            pq.populate(this.postArray);
+            p = pq.terminateToList();
+            
+            for(engine.Publicacao x : p){
+                posts.add(x.getId());
+            }
+        }
+
+        return new Pair<>(shortBio,posts);
     }
 
     // Query 6
     public List<Long> mostVotedAnswers(int N, LocalDate begin, LocalDate end) {
-        return Arrays.asList(701775L,697197L,694560L,696641L,704208L);
+        Set<engine.Publicacao> p = new TreeSet<engine.Publicacao>();
+        List<Long> result = new ArrayList<Long>();
+        
+        engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
+            N , ( (Object l , Object s) -> ((engine.Publicacao)l).compareScore(s)*-1)); //Inverter a ordem , "ordem decrescente"
+        
+            for(engine.Publicacao x : this.postArray){
+                if(x instanceof engine.Publicacao){
+                    p.add(x);//todas as perguntas colocadas num set
+                    
+                }
+            }
+            pq.populate(p);
+
+            for(engine.Publicacao y :pq.terminateToList()){
+                result.add(y.getId());//todos os longs referentes ás perguntas em Lista
+            }
+
+        return result;
     }
 
     // Query 7
     public List<Long> mostAnsweredQuestions(int N, LocalDate begin, LocalDate end) {
-        return Arrays.asList(505506L,508221L,506510L,508029L,506824L,505581L,505368L,509498L,509283L,508635L);
+        Set<engine.Publicacao> p = new TreeSet<engine.Publicacao>();
+        List<Long> result = new ArrayList<Long>();
+
+        engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
+            N , ( (Object l , Object s) -> ((engine.Publicacao)l).compareAnswers(s)*-1)); //Inverter a ordem , "ordem decrescente"
+        
+        for(engine.Publicacao x : this.postArray){ //todas as perguntas entra a x data
+            if(x instanceof engine.Pergunta && x.getData().isAfter(begin) && x.getData().isBefore(end)){
+                p.add(x);
+            }
+        }
+
+        pq.populate(p);
+        for(engine.Publicacao x : pq.terminateToList()){ //todas as perguntas entra a x data
+            result.add(x.getId());    
+        }
+
+        return result;
     }
 
     // Query 8
     public List<Long> containsWord(int N, String word) {
-        return Arrays.asList(980835L,979082L,974117L,974105L,973832L,971812L,971056L,968451L,964999L,962770L);
+        //estou a usar como se fosse a strstr -> professores disseram que nao fazia diferença
+        Set<engine.Publicacao> p = new TreeSet<engine.Publicacao>();
+        List<Long> result = new ArrayList<Long>();
+
+        engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
+            N , ( (Object l , Object s) -> ((engine.Publicacao)l).compareAnswers(s)*-1)); //Inverter a ordem , "ordem decrescente"
+        
+        for(engine.Publicacao x : this.postArray){ //todas as perguntas entra a x data
+            if(x instanceof engine.Pergunta && x.getNome().contains(word)){
+                p.add(x);
+            }
+        }
+
+        pq.populate(p);
+
+        for(engine.Publicacao y : pq.terminateToList() ){
+            result.add(y.getId());
+        }
+
+        return result;
     }
 
     // Query 9
@@ -181,7 +311,25 @@ public class Comunidade implements TADCommunity {
 
     // Query 10
     public long betterAnswer(long id) {
-        return 175891;
+        Long cont = Long.valueOf(-1);
+        double tmp =0;
+        if(this.post.containsKey(id)){
+            if(this.post.get(id) instanceof engine.Pergunta){
+                Pergunta p = (Pergunta) this.post.get(id);
+
+                for(Long l : p.getAns()){//percorrer todas as respostas
+
+                    engine.Resposta aux = (engine.Resposta) this.post.get(l);//resposta
+                    engine.Utilizador util = (engine.Utilizador) this.users.get(aux.getFundador());//fundador
+                    
+                    if(aux.getScore() * 0.45 + util.getRep() * 0.25 + aux.getVotes()*0.2 + aux.getComment_count() *0.1 > tmp){ //calculo para verificar qual a melhor resposta
+                        tmp = aux.getScore() * 0.45 + util.getRep() * 0.25 + aux.getVotes()*0.2 + aux.getComment_count() *0.1;
+                        cont = aux.getId();//passa a conter o id da melhor resposta
+                    }
+                  }   
+            }
+        }
+        return cont;
     }
 
     // Query 11
