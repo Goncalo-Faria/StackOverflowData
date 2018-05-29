@@ -305,20 +305,22 @@ public class Comunidade implements TADCommunity {
     public long betterAnswer(long id) {
         Long cont = Long.valueOf(-1);
         double tmp =0;
-        if(this.post.containsKey(id)){
-            if(this.post.get(id) instanceof engine.Pergunta){
-                Pergunta p = (Pergunta) this.post.get(id);
+        if(this.post.containsKey(id)) {
+            engine.Publicacao pub = this.post.get(id);
+            if( pub.isQuestion()){
+                engine.Pergunta ans = (engine.Pergunta)pub;
+                Set<engine.Resposta> respostas = ans.getAns().stream().map( l -> this.post.get(l)).filter(engine.Publicacao::isAnswer).map(l->(engine.Resposta)l).collect(Collectors.toSet());
 
-                for(Long l : p.getAns()){//percorrer todas as respostas
-
-                    engine.Resposta aux = (engine.Resposta) this.post.get(l);//resposta
-                    engine.Utilizador util = (engine.Utilizador) this.users.get(aux.getFundador());//fundador
-                    
-                    if(aux.getScore() * 0.45 + util.getRep() * 0.25 + aux.getVotes()*0.2 + aux.getComment_count() *0.1 > tmp){ //calculo para verificar qual a melhor resposta
-                        tmp = aux.getScore() * 0.45 + util.getRep() * 0.25 + aux.getVotes()*0.2 + aux.getComment_count() *0.1;
-                        cont = aux.getId();//passa a conter o id da melhor resposta
+                double mvalue = Double.MIN_VALUE;
+                for( engine.Resposta x : respostas){
+                    if(this.users.containsKey(x.getFundador())){
+                        double temp = x.calculateCotacao(this.users.get(x.getFundador()));
+                        if( temp >  mvalue){
+                            mvalue = temp;
+                            cont = x.getId();
+                        }
                     }
-                  }   
+                }
             }
         }
         return cont;

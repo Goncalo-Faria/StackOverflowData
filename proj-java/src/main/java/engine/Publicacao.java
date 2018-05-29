@@ -37,7 +37,6 @@ public class Publicacao implements Comparable{
             } });
         Publicacao.comparadores.put("MaisRespostas",Publicacao.comparadores.get("MenosRespostas").reversed());
 
-
     }
 
     static public Comparator<Publicacao> getComparator(String name){
