@@ -74,7 +74,11 @@ public class Utilizador{
 
     public Utilizador(Utilizador x){
         this.id = x.getId();
-        this.nome = x.getNome();
+        try{
+            this.nome = x.getNome();
+        }catch( NullPointerException ex){
+            this.nome = null;
+        }
         this.Q = x.getQ();
         this.A = x.getA();
         this.bio = x.getBio();
@@ -85,7 +89,7 @@ public class Utilizador{
 //Getters!----------------------------------------------------------------------------------------------------------------
     public Long getId(){return this.id;}
 
-    public String getNome(){return this.nome;}
+    public String getNome() throws NullPointerException {if(this.nome==null) new NullPointerException( this.id + " Não contêm título");return this.nome;}
 
     public int getQ(){return this.Q;}
 
@@ -120,11 +124,11 @@ public class Utilizador{
 
             if (x.isAnswer()) {
                 engine.Resposta y = (engine.Resposta) x;
-                Long fund = y.getParentId();
+                Long parentpost = y.getParentId();
 
-                if (this.bacia.containsKey(fund)) {
+                if (this.bacia.containsKey(parentpost)) {
                     /* já está introduzida pergunta*/
-                    Set<Long> ans = this.bacia.get(fund);
+                    Set<Long> ans = this.bacia.get(parentpost);
                     if (!ans.contains(y.getId())) {
                         ans.add(y.getId());
                         this.incA();
@@ -132,8 +136,8 @@ public class Utilizador{
 
                 } else {
                     Set<Long> ans = new HashSet<Long>();
-                    ans.add(getId());
-                    this.bacia.put(y.getFundador(), ans);
+                    ans.add(y.getId());
+                    this.bacia.put(parentpost, ans);
                     this.incA();
                 }
 
@@ -148,7 +152,7 @@ public class Utilizador{
                     }
                 } else {
                     Set<Long> ans = new HashSet<Long>();
-                    ans.add(getId());
+                    ans.add(x.getId());
                     this.bacia.put(x.getId(), ans);
                     this.incQ();
                 }
@@ -168,9 +172,14 @@ public class Utilizador{
         if(x == this) return true;
         if(!(x instanceof Utilizador)) return false;
         Utilizador y = (Utilizador) x;
-        
+        boolean name;
+        try{
+            name = y.getNome().equals(this.nome);
+        }catch( NullPointerException ex){
+            name = (this.nome==null);
+        }
         return (y.getA() == (this.A) && y.getBacia().keySet().containsAll(this.bacia.keySet()) &&
-            y.getBio().equals(this.bio) && y.getId().equals(this.id) && y.getNome().equals(this.nome)
+            y.getBio().equals(this.bio) && y.getId().equals(this.id) && name
                 && (y.getQ()==this.Q) && (y.getRep() == this.rep));
     }
 

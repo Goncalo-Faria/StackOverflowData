@@ -113,15 +113,6 @@ public class Comunidade implements TADCommunity {
         /*Construir bacia*/
         for(Map.Entry<Long,Set<engine.Publicacao> >pr : pst.getComplementar().entrySet() ){
             if(  this.users.containsKey(pr.getKey()) ){
-
-
-
-                if( pr.getKey().intValue() == 15811){
-                    System.out.println("yup");
-                    for(engine.Publicacao pub4 :pr.getValue()){
-                        System.out.println(pub4.getId().toString() + " ");
-                    }
-                }
                 final engine.Utilizador util = this.users.get(pr.getKey());
                 pr.getValue().forEach(l -> util.addBacia(l) );
             }
@@ -217,12 +208,12 @@ public class Comunidade implements TADCommunity {
         if(this.users.containsKey(id)){
 
             ut = this.users.get(id);
-            System.out.println( " Está vivo " + shortBio + " " + ut.getQ() + " " +ut.getA());
             shortBio = ut.getBio();
 
-            Set<engine.Publicacao> candidatos = ut.getBacia().values().stream().flatMap(Set::stream).
-                map(l -> this.post.get(l)).
-                        filter(l -> (id == l.getFundador().longValue()) ).collect( Collectors.toSet());
+            List<engine.Publicacao> candidatos = new LinkedList<>();
+
+            for( Set<Long> pbid : ut.getBacia().values())
+                pbid.forEach(l -> candidatos.add(this.post.get(l)));
 
             engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>
                 (10, engine.Publicacao.getComparator("MaisRecente"));
@@ -230,9 +221,6 @@ public class Comunidade implements TADCommunity {
             pq.populate(candidatos);
             p = pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
 
-            for(Long we : p){
-                System.out.println( this.post.get(we).getData().toString() );
-            }
         }
 
         return new Pair<>(shortBio,p);
@@ -250,16 +238,7 @@ public class Comunidade implements TADCommunity {
 
         pq.populate(st);
 
-        int count=0;
-        List<Long> result = new ArrayList<Long>();
-        for(engine.Publicacao y :pq.terminateToList()){
-            count++;
-            result.add(y.getId());
-            if( count > N )
-                break;
-        }
-
-        return result;
+        return pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
     }
 
     // Query 7
@@ -272,25 +251,15 @@ public class Comunidade implements TADCommunity {
         engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
             N , engine.Publicacao.getComparator("MaisRespostas")); //Inverter a ordem , "ordem decrescente"
 
-
-
         pq.populate(st);
 
-        int count=0;
-        List<Long> result = new ArrayList<Long>();
-        for(engine.Publicacao y :pq.terminateToList()){
-            count++;
-            result.add(y.getId());
-            if( count > N )
-                break;
-        }
-        return result;
+        return pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
     }
 
     // Query 8
     public List<Long> containsWord(int N, String word) {
 
-        Iterator<engine.Publicacao> litr =this.postArray.descendingIterator();
+        Iterator<engine.Publicacao> litr = this.postArray.descendingIterator();
 
         engine.Publicacao value;
         List<Long> result = new ArrayList<Long>();
@@ -298,15 +267,20 @@ public class Comunidade implements TADCommunity {
         int count =0;
         while(litr.hasNext()){
             value = litr.next();
-            if(value.getNome().contains(word)) {
-                count++;
-                result.add(value.getId());
+            try {
+                if (value.getNome().contains(word)) {
+                    count++;
+                    result.add(value.getId());
+                }
+            }catch(NullPointerException ex){
+                continue;
             }
 
             if(count>N)
                 break;
 
         }
+
 
         return result;
     }
