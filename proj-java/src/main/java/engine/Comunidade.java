@@ -30,13 +30,6 @@ public class Comunidade implements TADCommunity {
         this.tagconv = new HashMap<String, engine.Tag>();
     }
 
-    public Comunidade (Map<Long, engine.Utilizador> x, Map<Long, engine.Publicacao> p , Map<String, engine.Tag> l){
-        this.setUsers(x);
-        this.setPost(p);
-        this.setTagconv(l);
-        this.makepostArray();
-    }
-
     public Comunidade (Comunidade x){
         this.users = x.getusers();
         this.post= x.getPost();
@@ -142,11 +135,14 @@ public class Comunidade implements TADCommunity {
                 }
             }
 
-            x1 = p.getNome();
-            if(this.users.containsKey(p.getFundador())){
-                x2 = this.users.get(p.getFundador()).getNome();
-            }
+            try{ x1 = p.getNome();}catch(NullPointerException ex){x1=null;}
+            try{
+                if(this.users.containsKey(p.getFundador()))
+                    x2 = this.users.get(p.getFundador()).getNome();
 
+            }catch(NullPointerException ex){
+                x2 = null;
+            }
 
         }
         return new Pair<>(x1, x2);
