@@ -9,23 +9,13 @@ public class Pergunta extends engine.Publicacao {
 
     private Set<Long> ans;
 
-    public Pergunta() {
-        super();
-        this.ans = new HashSet<Long>();
-    }
-
-    public Pergunta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Set<Long> ans,Long fundador) {
-        super(id, nome, score, comment_count, votes, data,fundador);
-        this.ans = new TreeSet<Long>(ans);
-    }
-
     public Pergunta(Long id, String nome, int score, int comment_count, int votes, LocalDate data,Long fundador) {
         super(id, nome, score, comment_count, votes, data,fundador);
         this.ans = new HashSet<Long>();
     }
 
     public Pergunta(Pergunta x) {
-
+        super(x);
         this.ans = x.getAns();
     }
 

@@ -43,17 +43,6 @@ public class Publicacao implements Comparable{
         return Publicacao.comparadores.get(name);
     }
 
-    public Publicacao(){
-        this.id = Long.valueOf(-1);
-        this.fundador = Long.valueOf(-1);
-        this.nome = "none";
-        this.score = 0;
-        this.comment_count = 0;
-        this.votes = 0;
-        this.tags = new HashSet<engine.Tag>();
-        this.data = LocalDate.now();
-
-    }
 
     public Publicacao(LocalDate data){
         this.id = Long.valueOf(-1);
@@ -67,16 +56,6 @@ public class Publicacao implements Comparable{
 
     }
 
-    public Publicacao(String nome, Long id){
-        this.id = id;
-        this.fundador = Long.valueOf(-1);
-        this.nome = nome;
-        this.score = 0;
-        this.comment_count = 0;
-        this.votes = 0;
-        this.tags = new HashSet<engine.Tag>();
-        this.data = LocalDate.now();
-    }
 
     public Publicacao(Long id , String nome , int score , int comment_count ,int votes , LocalDate data,Long fundador){
         this.id = id;

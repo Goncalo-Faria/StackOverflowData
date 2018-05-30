@@ -6,13 +6,6 @@ public class Resposta extends engine.Publicacao {
 
     private Long parentID;
 
-
-    public Resposta() {
-        super();
-        this.parentID = Long.valueOf(-1);
-
-    }
-
     public Resposta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Long parentID,Long fundador) {
         super(id, nome, score, comment_count, votes, data,fundador);
         this.parentID = parentID;
