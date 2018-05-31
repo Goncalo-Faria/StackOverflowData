@@ -145,7 +145,8 @@ public class Comunidade implements TADCommunity {
             }
 
         }
-        return new Pair<>(x1, x2);
+        //return new Pair<>(x1, x2);
+        return new Pair<>("coisas","ola");
     }
 
     // Query 2
@@ -285,10 +286,51 @@ public class Comunidade implements TADCommunity {
 
         return result;
     }
+/*
+    public Set<Long> mutualIntervention(Utilizador x){
 
+        Set<Long> tmp = x.getBacia().keySet();
+        final Set<Long> small,big;
+
+        if( tmp.size() >= this.bacia.size() ){
+            small = this.bacia.keySet();
+            big = tmp;
+        }else{
+            small = tmp;
+            big   = this.bacia.keySet();
+        }
+
+        return small.stream().filter(l -> big.contains(l) ).collect(Collectors.toSet());
+
+    }
+    */
     // Query 9
-    public List<Long> bothParticipated(int N, long id1, long id2) {
-        return Arrays.asList(594L);
+    public List<Long> bothParticipated(int N, long id1, long id2){
+       Set<Long> tmp = new TreeSet<Long>();
+       Set<engine.Publicacao> publ = new TreeSet<engine.Publicacao>();
+       List<Long> result = new ArrayList<Long>();
+
+       engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
+                N , engine.Publicacao.getComparator("MaisRecente"));
+
+
+        if(this.users.containsKey(id1)){
+           if(this.users.containsKey(id2)){
+               engine.Utilizador u1 = this.users.get(id1);
+               engine.Utilizador u2 = this.users.get(id2);
+               tmp = u1.mutualIntervention(u2);
+               for(Long x : tmp){
+                   publ.add(this.post.get(x));
+               }
+           }
+       }
+       pq.populate(publ);
+       for(engine.Publicacao y : pq.terminateToList()){
+           result.add(y.getId());
+        }
+
+
+        return result;
     }
 
     // Query 10
