@@ -25,6 +25,13 @@ public class Utilizador{
             } };
 
         Utilizador.comparadores.put("UtilizadoresAtivos",utilAti );
+
+        Utilizador.comparadores.put("MaiorReputacao",
+                new Comparator<Utilizador>() {
+                    public int compare(Utilizador x, Utilizador y) {
+                        Long val = Long.valueOf(y.getRep());
+                        return val.compareTo(Long.valueOf(x.getRep()));
+                    } });
     }
 
     static public Comparator<Utilizador> getComparator(String name){
