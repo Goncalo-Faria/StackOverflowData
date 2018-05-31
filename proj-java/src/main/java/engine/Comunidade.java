@@ -2,6 +2,7 @@ package engine;
 
 import common.MyLog;
 import common.Pair;
+import jdk.nashorn.api.tree.Tree;
 import li3.TADCommunity;
 
 import org.w3c.dom.Document;
@@ -111,12 +112,14 @@ public class Comunidade implements TADCommunity {
             }
         }
 
-        this.post = ((engine.VotesSAX)parse.analyze("Votes.xml", new engine.VotesSAX(this.post))).getResults();
         this.makepostArray();
+        //System.out.println( this.post.size() );
+        //System.out.println( this.users.size() );
+        //this.post.keySet().forEach(l -> System.out.println( l.toString() ));
 
     }
 
-    // Query 1
+    // Query 1 works
     public Pair<String,String> infoFromPost(long id) {
         String x1 = null;
         String x2 = null;
@@ -143,12 +146,11 @@ public class Comunidade implements TADCommunity {
             }catch(NullPointerException ex){
                 x2 = null;
             }
-
         }
         return new Pair<>(x1, x2);
     }
 
-    // Query 2
+    // Query 2 works
     public List<Long> topMostActive(int N) {
         engine.GeneralizedPriorityQueue<engine.Utilizador> pq = new engine.GeneralizedPriorityQueue<engine.Utilizador>(
             N, engine.Utilizador.getComparator("UtilizadoresAtivos"));
@@ -158,18 +160,10 @@ public class Comunidade implements TADCommunity {
         List<Long> l = pq.terminateToList().stream().
                     map(engine.Utilizador::getId).collect(Collectors.toList());
 
-        /*
-        for(Long x: l){
-
-            int val = this.users.get(x).getQ() +this.users.get(x).getA();
-            System.out.println( this.users.get(x).getId() + "  " + val);
-        }
-        */
-
         return l;
     }
 
-    // Query 3
+    // Query 3 works
     public Pair<Long,Long> totalPosts(LocalDate begin, LocalDate end) {
         long question = 0;
         long answer = 0;
@@ -181,16 +175,11 @@ public class Comunidade implements TADCommunity {
             if(p.isQuestion()) question++;
             else answer++;
         }
-        long gt = this.postArray.stream().map(engine.Publicacao::getData).filter(l -> l.isAfter(begin)).filter(l -> l.isBefore(end)).count();
-        /*
-        System.out.println(begin.toString());
-        System.out.println(end.toString());
-        System.out.println(question + "  A:" + answer + " gt: " + gt);
-        */
+
         return new Pair<>(Long.valueOf(question),Long.valueOf(answer));
     }
 
-    // Query 4
+    // Query 4 works
     public List<Long> questionsWithTag(String tag, LocalDate begin, LocalDate end) {
         List<Long> st = new ArrayList<Long>();
 
@@ -204,11 +193,11 @@ public class Comunidade implements TADCommunity {
 
             //Collections.reverse(st) caso seja preciso reverter;
         }
-        
+
         return st;
     }
 
-    // Query 5
+    // Query 5 works
     public Pair<String, List<Long>> getUserInfo(long id) {
 
         String shortBio = null ;
@@ -233,37 +222,45 @@ public class Comunidade implements TADCommunity {
         return new Pair<>(shortBio,p);
     }
 
-    // Query 6
+    // Query 6 works
     public List<Long> mostVotedAnswers(int N, LocalDate begin, LocalDate end) {
 
         List<engine.Publicacao> st = this.postArray.
                 subSet(new engine.Publicacao(begin), new engine.Publicacao(end)).
-                    stream().filter( h -> h.isAnswer() ).collect(Collectors.toList());
+                stream().filter(engine.Publicacao::isAnswer).collect(Collectors.toList());
+
 
         engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
             N , engine.Publicacao.getComparator("MaiorScore"));
 
         pq.populate(st);
+        List<Long> g = pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
 
-        return pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
+        //Collections.reverse(g);
+        return g;
     }
 
-    // Query 7
+    // Query 7 works
     public List<Long> mostAnsweredQuestions(int N, LocalDate begin, LocalDate end) {
 
         Set<engine.Publicacao> st = this.postArray.
                 subSet(new engine.Publicacao(begin), new engine.Publicacao(end)).
-                stream().filter( h -> h.isQuestion() ).collect(Collectors.toSet());
+                stream().filter(engine.Publicacao::isQuestion).collect(Collectors.toSet());
 
         engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
             N , engine.Publicacao.getComparator("MaisRespostas")); //Inverter a ordem , "ordem decrescente"
 
         pq.populate(st);
 
-        return pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
+        List<Long> ll = pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
+
+        for(Long lo :ll){
+            engine.Pergunta pp = (engine.Pergunta) this.post.get(lo);
+        }
+        return ll;
     }
 
-    // Query 8
+    // Query 8 works
     public List<Long> containsWord(int N, String word) {
 
         Iterator<engine.Publicacao> litr = this.postArray.descendingIterator();
@@ -274,8 +271,10 @@ public class Comunidade implements TADCommunity {
         int count =0;
         while(litr.hasNext()){
             value = litr.next();
+
             try {
-                if (value.getNome().contains(word)) {
+
+                if (value.getNome().toLowerCase().contains(word)) {
                     count++;
                     result.add(value.getId());
                 }
@@ -315,7 +314,7 @@ public class Comunidade implements TADCommunity {
         return result;
     }
 
-    // Query 10
+    // Query 10 yup
     public long betterAnswer(long id) {
         Long cont = Long.valueOf(-1);
         double tmp =0;
@@ -336,11 +335,12 @@ public class Comunidade implements TADCommunity {
                     }
                 }
             }
+
         }
         return cont;
     }
 
-    // Query 11
+    // Query 11 works
     public List<Long> mostUsedBestRep(int N, LocalDate begin, LocalDate end) {
 
         engine.GeneralizedPriorityQueue<engine.Utilizador> pq = new engine.GeneralizedPriorityQueue<engine.Utilizador>(
@@ -357,18 +357,16 @@ public class Comunidade implements TADCommunity {
         Set <engine.Publicacao> st = this.postArray.
                 subSet(new engine.Publicacao(begin), new engine.Publicacao(end));
 
-        for(engine.Publicacao y :st){
+        for(engine.Publicacao y : st ){
             if( reputados.containsKey(y.getFundador())){
-
                 for( engine.Tag tgx : y.getTags()){
-                    Integer count = histtag.get(tgx);
+                    int count = histtag.get(tgx).intValue();
                     histtag.remove(tgx);
-                    histtag.put(tgx, Integer.valueOf(count.intValue() + 1));
+                    histtag.put(tgx, Integer.valueOf(count+ 1));
                 }
 
             }
         }
-
         Comparator<Map.Entry<engine.Tag, Integer>> freqCmp = ((l,s) -> l.getValue().compareTo(s.getValue()));
 
         engine.GeneralizedPriorityQueue<Map.Entry<engine.Tag, Integer>> fpq = new engine.

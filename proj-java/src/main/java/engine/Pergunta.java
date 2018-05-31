@@ -9,8 +9,8 @@ public class Pergunta extends engine.Publicacao {
 
     private Set<Long> ans;
 
-    public Pergunta(Long id, String nome, int score, int comment_count, int votes, LocalDate data,Long fundador) {
-        super(id, nome, score, comment_count, votes, data,fundador);
+    public Pergunta(Long id, String nome, int score, int comment_count, LocalDate data,Long fundador) {
+        super(id, nome, score, comment_count, data,fundador);
         this.ans = new HashSet<Long>();
     }
 

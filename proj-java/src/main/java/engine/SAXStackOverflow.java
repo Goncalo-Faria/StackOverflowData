@@ -27,7 +27,7 @@ public abstract class SAXStackOverflow extends DefaultHandler {
         if(qName.equals("row")){
             rowInspector(atts);
         }
-        super.startElement(namespaceURI, localName, qName, atts);
+        //super.startElement(namespaceURI, localName, qName, atts);
     }
 
     @Override

@@ -76,6 +76,6 @@ public class Tag{
     @Override
     public int hashCode() {
 
-        return getId().hashCode() + getNome().hashCode();
+        return getId().hashCode();
     }
 }

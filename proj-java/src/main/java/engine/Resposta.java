@@ -6,8 +6,8 @@ public class Resposta extends engine.Publicacao {
 
     private Long parentID;
 
-    public Resposta(Long id, String nome, int score, int comment_count, int votes, LocalDate data, Long parentID,Long fundador) {
-        super(id, nome, score, comment_count, votes, data,fundador);
+    public Resposta(Long id, String nome, int score, int comment_count, LocalDate data, Long parentID,Long fundador) {
+        super(id, nome, score, comment_count, data,fundador);
         this.parentID = parentID;
 
     }
@@ -20,7 +20,7 @@ public class Resposta extends engine.Publicacao {
 
     public double calculateCotacao(engine.Utilizador u){
         double rep = u.getRep();
-        return rep*0.25 + this.getVotes()*0.2 + this.getComment_count()*0.1 + this.getScore()*0.45;
+        return rep*0.25 + this.getScore()*0.2 + this.getComment_count()*0.1 + this.getScore()*0.45;
     }
 
     @Override

@@ -9,7 +9,6 @@ public class Publicacao implements Comparable{
     private String nome;
     private int score;
     private int comment_count;
-    private int votes;
     private Set<engine.Tag> tags;
     private LocalDate data;
     private Long fundador;
@@ -36,7 +35,6 @@ public class Publicacao implements Comparable{
                 return val.compareTo(Long.valueOf(s.getAnsCount()));
             } });
         Publicacao.comparadores.put("MaisRespostas",Publicacao.comparadores.get("MenosRespostas").reversed());
-
     }
 
     static public Comparator<Publicacao> getComparator(String name){
@@ -50,19 +48,19 @@ public class Publicacao implements Comparable{
         this.nome = "none";
         this.score = 0;
         this.comment_count = 0;
-        this.votes = 0;
+
         this.tags = new HashSet<engine.Tag>();
         this.data = data;
 
     }
 
-    public Publicacao(Long id , String nome , int score , int comment_count ,int votes , LocalDate data,Long fundador){
+    public Publicacao(Long id , String nome , int score , int comment_count, LocalDate data,Long fundador){
         this.id = id;
         this.fundador = fundador;
         this.nome = nome;
         this.score = score;
         this.comment_count = comment_count;
-        this.votes = votes;
+
         this.data = data;
         this.tags = new HashSet<engine.Tag>();
     }
@@ -73,7 +71,6 @@ public class Publicacao implements Comparable{
         this.nome = x.getNome();
         this.score = x.getScore();
         this.comment_count = x.getComment_count();
-        this.votes = x.getVotes();
         this.tags = x.getTags();
         this.data = x.getData();
     }
@@ -86,8 +83,6 @@ public class Publicacao implements Comparable{
     public int getScore(){return this.score;}
 
     public int getComment_count(){return this.comment_count;}
-
-    public int getVotes(){return this.votes;}
 
     public Set<engine.Tag> getTags(){return this.tags.stream().map(engine.Tag::clone).collect(Collectors.toSet());}
 
@@ -104,12 +99,6 @@ public class Publicacao implements Comparable{
     void setScore(int x){this.score=x;}
 
     void setComment_count(int x){this.comment_count=x;}
-
-    void setVotes(int x){this.votes = x;}
-
-    void incUpVotes(){this.votes++;}
-
-    void decDownVotes(){this.votes--;}
 
     public void setFundador(Long pa) {
         this.fundador = pa;
@@ -144,8 +133,7 @@ public class Publicacao implements Comparable{
 
         return ((y.getComment_count() == this.comment_count) && y.getData().equals(this.data)
                  && y.getId().equals(this.id) && y.getNome().equals(this.nome) &&
-                (y.getScore() == this.getScore()) && y.getTags().containsAll(this.tags) &&
-                (y.getVotes() == this.votes) );
+                (y.getScore() == this.getScore()) && y.getTags().containsAll(this.tags));
     }
 
     public int compareTo(Object x){
