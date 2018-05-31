@@ -56,7 +56,6 @@ public class Publicacao implements Comparable{
 
     }
 
-
     public Publicacao(Long id , String nome , int score , int comment_count ,int votes , LocalDate data,Long fundador){
         this.id = id;
         this.fundador = fundador;
@@ -154,8 +153,6 @@ public class Publicacao implements Comparable{
         if( !( x instanceof Publicacao)) return 0;
 
         Publicacao y = (Publicacao)x;
-        if(this.data.isAfter(y.getData())) return 1;
-        if(this.data.isBefore(y.getData())) return -1;
-        return 0;
+        return this.data.compareTo(y.getData());
     }
 }

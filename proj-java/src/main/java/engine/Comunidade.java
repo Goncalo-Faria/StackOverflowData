@@ -153,10 +153,14 @@ public class Comunidade implements TADCommunity {
         engine.GeneralizedPriorityQueue<engine.Utilizador> pq = new engine.GeneralizedPriorityQueue<engine.Utilizador>(
             N, engine.Utilizador.getComparator("UtilizadoresAtivos"));
 
-            pq.populate(this.users.values());
+        pq.populate(this.users.values());
 
-            List<Long> l = pq.terminateToList().stream().
+        List<Long> l = pq.terminateToList().stream().
                     map(engine.Utilizador::getId).collect(Collectors.toList());
+        for(Long x: l){
+            int val = this.users.get(x).getQ() +this.users.get(x).getA();
+            System.out.println( this.users.get(x).getId() + "  " + val);
+        }
 
         return l;
     }
@@ -173,7 +177,10 @@ public class Comunidade implements TADCommunity {
             if(p.isQuestion()) question++;
             else answer++;
         }
-
+        long gt = this.postArray.stream().map(engine.Publicacao::getData).filter(l -> l.isAfter(begin)).filter(l -> l.isBefore(end)).count();
+        System.out.println(begin.toString());
+        System.out.println(end.toString());
+        System.out.println(question + "  A:" + answer + " gt: " + gt);
         return new Pair<>(Long.valueOf(question),Long.valueOf(answer));
     }
 
@@ -206,10 +213,8 @@ public class Comunidade implements TADCommunity {
             ut = this.users.get(id);
             shortBio = ut.getBio();
 
-            List<engine.Publicacao> candidatos = new LinkedList<>();
-
-            for( Set<Long> pbid : ut.getBacia().values())
-                pbid.forEach(l -> candidatos.add(this.post.get(l)));
+            List<engine.Publicacao> candidatos = ut.getBacia().values().stream().
+                    flatMap(Set::stream).map(l-> this.post.get(l)).collect(Collectors.toList());
 
             engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>
                 (10, engine.Publicacao.getComparator("MaisRecente"));

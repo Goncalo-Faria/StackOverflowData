@@ -26,8 +26,6 @@ public class UsersSAX extends engine.SAXStackOverflow {
                 intValue() - Long.valueOf(atts.getValue("DownVotes")).intValue();
         String shortbio = atts.getValue("AboutMe");
 
-        if( id.intValue()>0){
             this.users.put(id,new engine.Utilizador(id, displayname,0,0, shortbio, reputation));
-        }
     }
 }
