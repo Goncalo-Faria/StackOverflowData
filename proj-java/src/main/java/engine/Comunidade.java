@@ -145,8 +145,7 @@ public class Comunidade implements TADCommunity {
             }
 
         }
-        //return new Pair<>(x1, x2);
-        return new Pair<>("coisas","ola");
+        return new Pair<>(x1, x2);
     }
 
     // Query 2
@@ -286,24 +285,7 @@ public class Comunidade implements TADCommunity {
 
         return result;
     }
-/*
-    public Set<Long> mutualIntervention(Utilizador x){
-
-        Set<Long> tmp = x.getBacia().keySet();
-        final Set<Long> small,big;
-
-        if( tmp.size() >= this.bacia.size() ){
-            small = this.bacia.keySet();
-            big = tmp;
-        }else{
-            small = tmp;
-            big   = this.bacia.keySet();
-        }
-
-        return small.stream().filter(l -> big.contains(l) ).collect(Collectors.toSet());
-
-    }
-    */
+    
     // Query 9
     public List<Long> bothParticipated(int N, long id1, long id2){
        Set<Long> tmp = new TreeSet<Long>();
