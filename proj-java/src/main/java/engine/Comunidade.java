@@ -93,7 +93,6 @@ public class Comunidade implements TADCommunity {
 
     public void load(String dumpPath) {
 
-
         engine.StackOverFlowParse parse = new engine.StackOverFlowParse(dumpPath);
 
         this.tagconv = ((engine.TagConversionSAX)parse.analyze("Tags.xml", new engine.TagConversionSAX())).getResults();
@@ -104,19 +103,14 @@ public class Comunidade implements TADCommunity {
 
         this.post = ((engine.PostSAX)parse.analyze("Posts.xml", pst )).getResults();
 
-        /*Construir bacia*/
         for(Map.Entry<Long,Set<engine.Publicacao> >pr : pst.getComplementar().entrySet() ){
             if(  this.users.containsKey(pr.getKey()) ){
-                final engine.Utilizador util = this.users.get(pr.getKey());
+                engine.Utilizador util = this.users.get(pr.getKey());
                 pr.getValue().forEach(l -> util.addBacia(l) );
             }
         }
 
         this.makepostArray();
-        //System.out.println( this.post.size() );
-        //System.out.println( this.users.size() );
-        //this.post.keySet().forEach(l -> System.out.println( l.toString() ));
-
     }
 
     // Query 1 works
@@ -254,9 +248,6 @@ public class Comunidade implements TADCommunity {
 
         List<Long> ll = pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
 
-        for(Long lo :ll){
-            engine.Pergunta pp = (engine.Pergunta) this.post.get(lo);
-        }
         return ll;
     }
 
@@ -351,6 +342,7 @@ public class Comunidade implements TADCommunity {
         HashMap<engine.Tag,Integer> histtag= new HashMap<engine.Tag,Integer>();
         HashMap<Long,engine.Utilizador> reputados = new HashMap<Long,engine.Utilizador>();
 
+
         this.tagconv.values().forEach(l -> histtag.put(l,Integer.valueOf(0)));
         pq.terminateToList().forEach(l -> reputados.put(l.getId(),l));
 
@@ -378,6 +370,10 @@ public class Comunidade implements TADCommunity {
     }
 
     public void clear(){
-
+        //Perder o apontador para que o Garbage collector libertar a memória.
+        this.users = null;
+        this.post = null;
+        this.postArray = null;
+        this.tagconv = null;
     }
 }
