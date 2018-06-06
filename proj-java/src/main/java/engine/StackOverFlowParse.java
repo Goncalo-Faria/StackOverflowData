@@ -19,7 +19,7 @@ public class StackOverFlowParse {
 
         try{
             SAXParser parser = this.factory.newSAXParser();
-            parser.parse(new File(this.path + "/" + file), sax);
+            parser.parse(new File(this.path + file), sax);
         }catch (Exception exp) {
             System.out.println(exp.toString());
             exp.printStackTrace();
