@@ -111,6 +111,7 @@ public class Comunidade implements TADCommunity {
         }
 
         this.makepostArray();
+
     }
 
     // Query 1
@@ -163,8 +164,10 @@ public class Comunidade implements TADCommunity {
         long answer = 0;
 
         SortedSet<engine.Publicacao> st = this.postArray.
-                subSet(new engine.Publicacao(begin), new engine.Publicacao(end));
-
+                    subSet(new engine.Publicacao(begin,-1), new engine.Publicacao(end,1));
+        //List<engine.Publicacao> st = this.postArray.stream().filter(l -> l.getData().
+                    //equals(begin) || l.getData().equals(end) || (l.getData().
+                        //isAfter(begin) && l.getData().isBefore(end)) ).collect(Collectors.toList());
         for(engine.Publicacao p : st ){
             if(p.isQuestion()) question++;
             else answer++;
@@ -181,7 +184,7 @@ public class Comunidade implements TADCommunity {
             final engine.Tag tg = this.tagconv.get(tag);
 
             st = this.postArray.
-                    subSet(new engine.Publicacao(begin), new engine.Publicacao(end)).
+                    subSet(new engine.Publicacao(begin,-1), new engine.Publicacao(end,1)).
                         stream().filter( h -> h.isQuestion() && h.getTags().contains(tg)).
                             map(engine.Publicacao::getId).map(Long::valueOf).collect(Collectors.toList());
 
@@ -220,7 +223,7 @@ public class Comunidade implements TADCommunity {
     public List<Long> mostVotedAnswers(int N, LocalDate begin, LocalDate end) {
 
         List<engine.Publicacao> st = this.postArray.
-                subSet(new engine.Publicacao(begin), new engine.Publicacao(end)).
+                subSet(new engine.Publicacao(begin,-1), new engine.Publicacao(end,1)).
                 stream().filter(engine.Publicacao::isAnswer).collect(Collectors.toList());
 
 
@@ -238,7 +241,7 @@ public class Comunidade implements TADCommunity {
     public List<Long> mostAnsweredQuestions(int N, LocalDate begin, LocalDate end) {
 
         Set<engine.Publicacao> st = this.postArray.
-                subSet(new engine.Publicacao(begin), new engine.Publicacao(end)).
+                subSet(new engine.Publicacao(begin,-1), new engine.Publicacao(end,1)).
                 stream().filter(engine.Publicacao::isQuestion).collect(Collectors.toSet());
 
         engine.GeneralizedPriorityQueue<engine.Publicacao> pq = new engine.GeneralizedPriorityQueue<engine.Publicacao>(
@@ -347,7 +350,7 @@ public class Comunidade implements TADCommunity {
         pq.terminateToList().forEach(l -> reputados.put(l.getId(),l));
 
         Set <engine.Publicacao> st = this.postArray.
-                subSet(new engine.Publicacao(begin), new engine.Publicacao(end));
+                subSet(new engine.Publicacao(begin,-1), new engine.Publicacao(end,1));
 
         for(engine.Publicacao y : st ){
             if( reputados.containsKey(y.getFundador())){
