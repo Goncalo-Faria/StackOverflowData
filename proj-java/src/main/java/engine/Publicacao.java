@@ -141,6 +141,11 @@ public class Publicacao implements Comparable{
         if( !( x instanceof Publicacao)) return 0;
 
         Publicacao y = (Publicacao)x;
-        return this.data.compareTo(y.getData());
+        int d = this.data.compareTo(y.getData());
+        
+        if( (this.id != null) && (y.getId() != null) && d == 0 ){
+            d = this.id.compareTo( y.getId() );
+        }
+        return d;
     }
 }

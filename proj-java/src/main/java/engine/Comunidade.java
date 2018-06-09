@@ -113,7 +113,7 @@ public class Comunidade implements TADCommunity {
         this.makepostArray();
     }
 
-    // Query 1 works
+    // Query 1
     public Pair<String,String> infoFromPost(long id) {
         String x1 = null;
         String x2 = null;
@@ -144,7 +144,7 @@ public class Comunidade implements TADCommunity {
         return new Pair<>(x1, x2);
     }
 
-    // Query 2 works
+    // Query 2 
     public List<Long> topMostActive(int N) {
         engine.GeneralizedPriorityQueue<engine.Utilizador> pq = new engine.GeneralizedPriorityQueue<engine.Utilizador>(
             N, engine.Utilizador.getComparator("UtilizadoresAtivos"));
@@ -165,7 +165,7 @@ public class Comunidade implements TADCommunity {
         SortedSet<engine.Publicacao> st = this.postArray.
                 subSet(new engine.Publicacao(begin), new engine.Publicacao(end));
 
-        for(engine.Publicacao p : st){
+        for(engine.Publicacao p : st ){
             if(p.isQuestion()) question++;
             else answer++;
         }
