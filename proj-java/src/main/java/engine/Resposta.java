@@ -4,19 +4,19 @@ import java.util.Objects;
 
 public class Resposta extends engine.Publicacao {
 
-    private Long parentID;
+    private String parentID;
 
-    public Resposta(Long id, String nome, int score, int comment_count, LocalDate data, Long parentID,Long fundador) {
+    public Resposta(String id, String nome, int score, int comment_count, LocalDate data, String parentID,String fundador) {
         super(id, nome, score, comment_count, data,fundador);
         this.parentID = parentID;
 
     }
 
-    public void setParentID(Long parentID) {
+    public void setParentID(String parentID) {
         this.parentID = parentID;
     }
 
-    public Long getParentId(){return this.parentID;}
+    public String getParentId(){return this.parentID;}
 
     public double calculateCotacao(engine.Utilizador u){
         double rep = u.getRep();

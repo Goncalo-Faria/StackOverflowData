@@ -1,6 +1,5 @@
 package engine;
 
-import com.sun.jdi.LongValue;
 import org.xml.sax.Attributes;
 
 import java.time.LocalDate;
@@ -11,22 +10,22 @@ import java.util.Map;
 import java.util.Set;
 
 public class PostSAX extends engine.SAXStackOverflow {
-    private HashMap<Long,Set<engine.Publicacao>> users; /*-> fundador -> publicacoes*/
-    private HashMap<Long, Set<Long>> answers; /* correspondencia pergunta -> respostas */
-    private HashMap <Long,engine.Publicacao> posts;
+    private HashMap<String,Set<engine.Publicacao>> users; /*-> fundador -> publicacoes*/
+    private HashMap<String, Set<String>> answers; /* correspondencia pergunta -> respostas */
+    private HashMap <String,engine.Publicacao> posts;
     private Map<String, engine.Tag> tags;
 
     public PostSAX(Map<String, engine.Tag> tags){
         super();
-        this.users = new HashMap<Long,Set<engine.Publicacao>>();
-        this.posts = new HashMap<Long, engine.Publicacao>();
+        this.users = new HashMap<String,Set<engine.Publicacao>>();
+        this.posts = new HashMap<String, engine.Publicacao>();
         this.tags = tags;
-        this.answers =  new HashMap<Long, Set<Long>>();
+        this.answers =  new HashMap<String, Set<String>>();
     }
 
-    public Map<Long, engine.Publicacao> getResults () {
+    public Map<String, engine.Publicacao> getResults () {
 
-        for( Map.Entry<Long,Set<Long>> x :this.answers.entrySet()){
+        for( Map.Entry<String,Set<String>> x :this.answers.entrySet()){
             if( this.posts.containsKey(x.getKey()) ){
                 engine.Publicacao pub = this.posts.get(x.getKey());
                     if( pub.isQuestion() ){
@@ -38,14 +37,14 @@ public class PostSAX extends engine.SAXStackOverflow {
 
         return this.posts;
     }
-    public HashMap<Long,Set<engine.Publicacao>> getComplementar(){ return this.users; }
+    public HashMap<String,Set<engine.Publicacao>> getComplementar(){ return this.users; }
 
     public void rowInspector( Attributes atts){
 
 
         String nome = atts.getValue("Title");
-        Long id = Long.valueOf(atts.getValue("Id"));
-        Long fundador = Long.valueOf(atts.getValue("OwnerUserId"));
+        String id = atts.getValue("Id");
+        String fundador = atts.getValue("OwnerUserId");
         int postType = Long.valueOf(atts.getValue("PostTypeId")).intValue();
         int commentCount = Long.valueOf(atts.getValue("CommentCount")).intValue();
         int score = Long.valueOf(atts.getValue("Score")).intValue();
@@ -60,11 +59,11 @@ public class PostSAX extends engine.SAXStackOverflow {
         if( postType == 1){
             newlyCreatedPublication = new engine.Pergunta(id,nome,score,commentCount,date,fundador);
         }else if( postType == 2 ){
-            Long parentid = Long.valueOf(atts.getValue("ParentId"));
+            String parentid = atts.getValue("ParentId");
             if(this.answers.containsKey(parentid)){
                 this.answers.get(parentid).add(id);
             } else {
-                Set<Long> val = new HashSet<Long>();
+                Set<String> val = new HashSet<String>();
                 val.add(id);
                 this.answers.put(parentid,val);
             }

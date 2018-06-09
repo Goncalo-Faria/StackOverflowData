@@ -17,7 +17,7 @@ public class TagConversionSAX extends engine.SAXStackOverflow {
     }
 
     public void rowInspector( Attributes atts){
-        Long id = Long.valueOf(atts.getValue("Id"));
+        String id = atts.getValue("Id");
         String tagname = atts.getValue("TagName");
         this.tags.put(tagname,new engine.Tag(id,tagname));
     }

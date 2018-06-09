@@ -7,11 +7,11 @@ import java.util.TreeSet;
 
 public class Pergunta extends engine.Publicacao {
 
-    private Set<Long> ans;
+    private Set<String> ans;
 
-    public Pergunta(Long id, String nome, int score, int comment_count, LocalDate data,Long fundador) {
+    public Pergunta(String id, String nome, int score, int comment_count, LocalDate data,String fundador) {
         super(id, nome, score, comment_count, data,fundador);
-        this.ans = new HashSet<Long>();
+        this.ans = new HashSet<String>();
     }
 
     public Pergunta(Pergunta x) {
@@ -19,15 +19,15 @@ public class Pergunta extends engine.Publicacao {
         this.ans = x.getAns();
     }
 
-    public void setAns(Set<Long> ans) {
+    public void setAns(Set<String> ans) {
         this.ans = new HashSet<>(ans);
     }
 
-    public Set<Long> getAns(){return (new HashSet<Long>(this.ans));}
+    public Set<String> getAns(){return (new HashSet<String>(this.ans));}
 
     public int getAnsCount(){return this.ans.size();}
 
-    public void addAns(Long x){
+    public void addAns(String x){
         this.ans.add(x);
     }
 

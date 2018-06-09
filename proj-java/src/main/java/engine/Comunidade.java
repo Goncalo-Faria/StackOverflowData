@@ -19,15 +19,15 @@ import java.util.*;
 
 public class Comunidade implements TADCommunity {
     
-    private Map<Long, engine.Utilizador> users;
-    private Map<Long, engine.Publicacao> post;
+    private Map<String, engine.Utilizador> users;
+    private Map<String, engine.Publicacao> post;
     private TreeSet<engine.Publicacao> postArray;
     private Map<String, engine.Tag> tagconv;
 
     public Comunidade (){
-        this.users = new HashMap<Long, engine.Utilizador>();
+        this.users = new HashMap<String, engine.Utilizador>();
         this.postArray = new TreeSet<engine.Publicacao>();
-        this.post = new HashMap<Long, engine.Publicacao>();
+        this.post = new HashMap<String, engine.Publicacao>();
         this.tagconv = new HashMap<String, engine.Tag>();
     }
 
@@ -39,7 +39,7 @@ public class Comunidade implements TADCommunity {
     }
 
 //Getters!------------------------------------------------------------------------------------------------------------------------------------
-    public Map<Long, engine.Utilizador> getusers(){
+    public Map<String, engine.Utilizador> getusers(){
         return this.users.values().stream().collect(Collectors.toMap(l ->l.getId(), l -> l.clone()));
     }
 
@@ -47,7 +47,7 @@ public class Comunidade implements TADCommunity {
         return this.postArray.stream().map(engine.Publicacao::clone).collect(Collectors.toSet());
     }
 
-    public Map<Long, engine.Publicacao> getPost(){
+    public Map<String, engine.Publicacao> getPost(){
          return this.post.values().stream().collect(Collectors.toMap(l ->l.getId(), l -> l.clone()));
     }
     
@@ -56,11 +56,11 @@ public class Comunidade implements TADCommunity {
     }
 
 //Setters!------------------------------------------------------------------------------------------------------------------------------------
-    void setUsers(Map<Long, engine.Utilizador> x){
+    void setUsers(Map<String, engine.Utilizador> x){
         this.users = x.values().stream().collect(Collectors.toMap(l->l.getId(), l->l.clone()));
     }
     
-    void setPost(Map<Long, engine.Publicacao> x){
+    void setPost(Map<String, engine.Publicacao> x){
         this.post = x.values().stream().collect(Collectors.toMap(l->l.getId(), l->l.clone()));
     }
     
@@ -103,7 +103,7 @@ public class Comunidade implements TADCommunity {
 
         this.post = ((engine.PostSAX)parse.analyze("Posts.xml", pst )).getResults();
 
-        for(Map.Entry<Long,Set<engine.Publicacao> >pr : pst.getComplementar().entrySet() ){
+        for(Map.Entry<String,Set<engine.Publicacao> >pr : pst.getComplementar().entrySet() ){
             if(  this.users.containsKey(pr.getKey()) ){
                 engine.Utilizador util = this.users.get(pr.getKey());
                 pr.getValue().forEach(l -> util.addBacia(l) );
@@ -152,7 +152,7 @@ public class Comunidade implements TADCommunity {
         pq.populate(this.users.values());
 
         List<Long> l = pq.terminateToList().stream().
-                    map(engine.Utilizador::getId).collect(Collectors.toList());
+                    map(engine.Utilizador::getId).map(Long::valueOf).collect(Collectors.toList());
 
         return l;
     }
@@ -183,7 +183,7 @@ public class Comunidade implements TADCommunity {
             st = this.postArray.
                     subSet(new engine.Publicacao(begin), new engine.Publicacao(end)).
                         stream().filter( h -> h.isQuestion() && h.getTags().contains(tg)).
-                            map(engine.Publicacao::getId).collect(Collectors.toList());
+                            map(engine.Publicacao::getId).map(Long::valueOf).collect(Collectors.toList());
 
             //Collections.reverse(st) caso seja preciso reverter;
         }
@@ -209,7 +209,7 @@ public class Comunidade implements TADCommunity {
                 (10, engine.Publicacao.getComparator("MaisRecente"));
             
             pq.populate(candidatos);
-            p = pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
+            p = pq.terminateToList().stream().map(engine.Publicacao::getId).map(Long::valueOf).collect(Collectors.toList());
 
         }
 
@@ -228,7 +228,7 @@ public class Comunidade implements TADCommunity {
             N , engine.Publicacao.getComparator("MaiorScore"));
 
         pq.populate(st);
-        List<Long> g = pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
+        List<Long> g = pq.terminateToList().stream().map(engine.Publicacao::getId).map(Long::valueOf).collect(Collectors.toList());
 
         //Collections.reverse(g);
         return g;
@@ -246,7 +246,7 @@ public class Comunidade implements TADCommunity {
 
         pq.populate(st);
 
-        List<Long> ll = pq.terminateToList().stream().map(engine.Publicacao::getId).collect(Collectors.toList());
+        List<Long> ll = pq.terminateToList().stream().map(engine.Publicacao::getId).map(Long::valueOf).collect(Collectors.toList());
 
         return ll;
     }
@@ -267,7 +267,7 @@ public class Comunidade implements TADCommunity {
 
                 if (value.getNome().toLowerCase().contains(word)) {
                     count++;
-                    result.add(value.getId());
+                    result.add(Long.valueOf(value.getId()));
                 }
             }catch(NullPointerException ex){
                 continue;
@@ -299,7 +299,7 @@ public class Comunidade implements TADCommunity {
                     map(l -> this.post.get(l)).collect(Collectors.toSet()));
 
             result = pq.terminateToList().stream().
-                    map(engine.Publicacao::getId).collect(Collectors.toList());
+                    map(engine.Publicacao::getId).map(Long::valueOf).collect(Collectors.toList());
        }
 
         return result;
@@ -321,7 +321,7 @@ public class Comunidade implements TADCommunity {
                         double temp = x.calculateCotacao(this.users.get(x.getFundador()));
                         if( temp >  mvalue){
                             mvalue = temp;
-                            cont = x.getId();
+                            cont = Long.valueOf(x.getId());
                         }
                     }
                 }
@@ -340,7 +340,7 @@ public class Comunidade implements TADCommunity {
         pq.populate(this.users.values());
 
         HashMap<engine.Tag,Integer> histtag= new HashMap<engine.Tag,Integer>();
-        HashMap<Long,engine.Utilizador> reputados = new HashMap<Long,engine.Utilizador>();
+        HashMap<String,engine.Utilizador> reputados = new HashMap<String,engine.Utilizador>();
 
 
         this.tagconv.values().forEach(l -> histtag.put(l,Integer.valueOf(0)));
@@ -366,7 +366,7 @@ public class Comunidade implements TADCommunity {
         fpq.populate(histtag.entrySet());
 
         return fpq.terminateToList().stream().
-                map(l ->l.getKey().getId()).collect(Collectors.toList());
+                map(l ->l.getKey().getId()).map(Long::valueOf).collect(Collectors.toList());
     }
 
     public void clear(){

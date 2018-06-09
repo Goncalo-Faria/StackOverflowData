@@ -5,13 +5,13 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Publicacao implements Comparable{
-    private Long id;
+    private String id;
     private String nome;
     private int score;
     private int comment_count;
     private Set<engine.Tag> tags;
     private LocalDate data;
-    private Long fundador;
+    private String fundador;
     static private HashMap<String,Comparator<Publicacao>> comparadores;
 
     static {
@@ -43,8 +43,8 @@ public class Publicacao implements Comparable{
 
 
     public Publicacao(LocalDate data){
-        this.id = Long.valueOf(-1);
-        this.fundador = Long.valueOf(-1);
+        this.id = null;
+        this.fundador = null;
         this.nome = "none";
         this.score = 0;
         this.comment_count = 0;
@@ -54,7 +54,7 @@ public class Publicacao implements Comparable{
 
     }
 
-    public Publicacao(Long id , String nome , int score , int comment_count, LocalDate data,Long fundador){
+    public Publicacao(String id , String nome , int score , int comment_count, LocalDate data,String fundador){
         this.id = id;
         this.fundador = fundador;
         this.nome = nome;
@@ -76,7 +76,7 @@ public class Publicacao implements Comparable{
     }
 
 //Getters!----------------------------------------------------------------------------------------------------------------
-    public Long getId(){return this.id;}
+    public String getId(){return this.id;}
 
     public String getNome(){return this.nome;}
 
@@ -88,11 +88,11 @@ public class Publicacao implements Comparable{
 
     public LocalDate getData(){return this.data;}
 
-    public Long getFundador(){return this.fundador;}
+    public String getFundador(){return this.fundador;}
 
 
 //Setterss!-----------------------------------------------------------------------------------------------------------------
-    void  setId(Long x){this.id = x;}
+    void  setId(String x){this.id = x;}
 
     void setNome(String x){this.nome =x;}
 
@@ -100,7 +100,7 @@ public class Publicacao implements Comparable{
 
     void setComment_count(int x){this.comment_count=x;}
 
-    public void setFundador(Long pa) {
+    public void setFundador(String pa) {
         this.fundador = pa;
     }
 

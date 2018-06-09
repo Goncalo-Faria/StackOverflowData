@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 
 public class Utilizador{
 
-    private Long id;
+    private String id;
     private String nome;
     private int Q;
     private int A;
     private String bio;
-    private Map<Long,Set<Long>> bacia;
+    private Map<String,Set<String>> bacia;
     private int rep;
     static private HashMap<String,Comparator<Utilizador>> comparadores;
 
@@ -38,13 +38,13 @@ public class Utilizador{
         return Utilizador.comparadores.get(name);
     }
 
-    public Utilizador(Long id , String nome, int Q , int A, String bio, int rep){
+    public Utilizador(String id , String nome, int Q , int A, String bio, int rep){
         this.id = id;
         this.nome = nome;
         this.Q = Q;
         this.A = A;
         this.bio = bio;
-        this.bacia = new HashMap<Long,Set<Long>>();
+        this.bacia = new HashMap<String,Set<String>>();
         this.rep = rep;
     }
 
@@ -63,7 +63,7 @@ public class Utilizador{
     }
     
 //Getters!----------------------------------------------------------------------------------------------------------------
-    public Long getId(){return this.id;}
+    public String getId(){return this.id;}
 
     public String getNome() throws NullPointerException {if(this.nome==null) new NullPointerException( this.id + " Não contêm título");return this.nome;}
 
@@ -73,12 +73,12 @@ public class Utilizador{
 
     public String getBio(){return this.bio;}
 
-    public Map<Long,Set<Long>> getBacia(){return this.bacia.entrySet().stream().collect(Collectors.toMap( l -> l.getKey(), l-> new HashSet<Long>(l.getValue())));}
+    public Map<String,Set<String>> getBacia(){return this.bacia.entrySet().stream().collect(Collectors.toMap( l -> l.getKey(), l-> new HashSet<String>(l.getValue())));}
 
     public int getRep(){return this.rep;}
 
 //Setters!----------------------------------------------------------------------------------------------------------------
-    public void setId(Long x){this.id = x;}
+    public void setId(String x){this.id = x;}
 
     public void setNome(String x){this.nome = x;}
 
@@ -92,26 +92,26 @@ public class Utilizador{
 
     public void setBio(String x){this.bio = x;}
 
-    public void setBacia(Map<Long,Set<Long>> x){this.bacia = x.entrySet().stream().collect(Collectors.toMap( l -> l.getKey(), l-> new HashSet<Long>(l.getValue())));}
+    public void setBacia(Map<String,Set<String>> x){this.bacia = x.entrySet().stream().collect(Collectors.toMap( l -> l.getKey(), l-> new HashSet<String>(l.getValue())));}
 
     public void addBacia(engine.Publicacao x) {
 
-        if (x.getFundador().longValue() == this.id.longValue()) {
+        if ( x.getFundador().equals( this.id ) ){
 
             if (x.isAnswer()) {
                 engine.Resposta y = (engine.Resposta) x;
-                Long parentpost = y.getParentId();
+                String parentpost = y.getParentId();
 
                 if (this.bacia.containsKey(parentpost)) {
                     /* já está introduzida pergunta*/
-                    Set<Long> ans = this.bacia.get(parentpost);
+                    Set<String> ans = this.bacia.get(parentpost);
                     if (!ans.contains(y.getId())) {
                         ans.add(y.getId());
                         this.incA();
                     }
 
                 } else {
-                    Set<Long> ans = new HashSet<Long>();
+                    Set<String> ans = new HashSet<String>();
                     ans.add(y.getId());
                     this.bacia.put(parentpost, ans);
                     this.incA();
@@ -121,13 +121,13 @@ public class Utilizador{
 
             if (x.isQuestion()) {
                 if (this.bacia.containsKey(x.getId())) {
-                    Set<Long> ans = this.bacia.get(x.getId());
+                    Set<String> ans = this.bacia.get(x.getId());
                     if (!ans.contains(x.getId())) {
                         ans.add(x.getId());
                         this.incQ();
                     }
                 } else {
-                    Set<Long> ans = new HashSet<Long>();
+                    Set<String> ans = new HashSet<String>();
                     ans.add(x.getId());
                     this.bacia.put(x.getId(), ans);
                     this.incQ();
@@ -161,10 +161,10 @@ public class Utilizador{
 
 //-------------------------------------------------------------------------------------------------------------------------
 
-    public Set<Long> mutualIntervention(Utilizador x){
+    public Set<String> mutualIntervention(Utilizador x){
         /* Calcula interseção*/
-        Set<Long> tmp = x.getBacia().keySet();
-        final Set<Long> small,big;
+        Set<String> tmp = x.getBacia().keySet();
+        final Set<String> small,big;
 
         if( tmp.size() >= this.bacia.size() ){
             small = this.bacia.keySet();

@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Tag{
-    private Long id;
+    private String id;
     private String nome;
     /**ADD HASH CODE */
 
@@ -27,11 +27,11 @@ public class Tag{
     }
 
     public Tag(){
-        this.id = Long.valueOf(-1);
+        this.id = null;
         this.nome = "nenhum";
     }
 
-    public Tag(Long x, String y){
+    public Tag(String x, String y){
         this.id = x;
         this.nome = y;
     }
@@ -42,7 +42,7 @@ public class Tag{
     }
     
 //Getters!----------------------------------------------------------------------------------------------------------------
-    public Long getId(){
+    public String getId(){
         return this.id;
     }
 
@@ -51,7 +51,7 @@ public class Tag{
     }
 
 //Setters!----------------------------------------------------------------------------------------------------------------
-    public void setId(Long x){
+    public void setId(String x){
         this.id = x;
     }
 
