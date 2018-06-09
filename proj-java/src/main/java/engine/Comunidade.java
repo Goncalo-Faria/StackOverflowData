@@ -165,9 +165,7 @@ public class Comunidade implements TADCommunity {
 
         SortedSet<engine.Publicacao> st = this.postArray.
                     subSet(new engine.Publicacao(begin,-1), new engine.Publicacao(end,1));
-        //List<engine.Publicacao> st = this.postArray.stream().filter(l -> l.getData().
-                    //equals(begin) || l.getData().equals(end) || (l.getData().
-                        //isAfter(begin) && l.getData().isBefore(end)) ).collect(Collectors.toList());
+
         for(engine.Publicacao p : st ){
             if(p.isQuestion()) question++;
             else answer++;
