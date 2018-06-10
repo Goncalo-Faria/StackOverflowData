@@ -218,7 +218,6 @@ public class MvcView extends JFrame {
     }
     public void Interrogacao11View(JPanel calcPanel){
         calcPanel.add(interrogacao11);
-        calcPanel.add(info);
         calcPanel.add(number);
         calcPanel.add(data_inicial);
         calcPanel.add(data_final);

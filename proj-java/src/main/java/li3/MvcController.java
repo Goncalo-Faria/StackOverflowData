@@ -108,7 +108,6 @@ public class MvcController {
 
             try{
                 begin = theView.getData_inicial();
-                System.out.println(begin);
                 end = theView.getData_final();
                 theView.setPairSolution(theModel.totalPosts(begin,end));
             }
