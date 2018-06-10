@@ -186,7 +186,8 @@ public class Comunidade implements TADCommunity {
                         stream().filter( h -> h.isQuestion() && h.getTags().contains(tg)).
                             map(engine.Publicacao::getId).map(Long::valueOf).collect(Collectors.toList());
 
-            //Collections.reverse(st) caso seja preciso reverter;
+
+            Collections.reverse(st);
         }
 
         return st;
@@ -198,9 +199,9 @@ public class Comunidade implements TADCommunity {
         String shortBio = null ;
         List<Long> p = new ArrayList<Long>();
         engine.Utilizador ut;
-        if(this.users.containsKey(id)){
+        if(this.users.containsKey(String.valueOf(id))){
 
-            ut = this.users.get(id);
+            ut = this.users.get(String.valueOf(id));
             shortBio = ut.getBio();
 
             List<engine.Publicacao> candidatos = ut.getBacia().values().stream().
@@ -266,7 +267,7 @@ public class Comunidade implements TADCommunity {
 
             try {
 
-                if (value.getNome().toLowerCase().contains(word)) {
+                if (value.getNome().contains(word)) {
                     count++;
                     result.add(Long.valueOf(value.getId()));
                 }
@@ -274,7 +275,7 @@ public class Comunidade implements TADCommunity {
                 continue;
             }
 
-            if(count>N)
+            if(count>(N-1))
                 break;
 
         }
