@@ -7,12 +7,15 @@ import engine.Comunidade;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
+    //irá tratar de por o Model(Tad Community , O View e o Controller a funcionar)
 
     public static void main(String[] args){
-
+        Scanner x = new Scanner(System.in);
+        String check;
         /*
             LOG CONFIGURATION
         */
@@ -147,6 +150,15 @@ public class Main {
         after = System.currentTimeMillis();
         logtime.writeLog("CLEAN -> "+(after-before)+" ms");
 
+
+        do {
+            System.out.println("Digite o numero da interrogação que pretende testar.\nCaso pretenda parar digite 'stop'.");
+            check = x.next();
+            MvcView theView = new MvcView(check);
+            engine.Comunidade theModel = new engine.Comunidade();
+            MvcController theController = new MvcController(theView, theModel,check);
+            theView.setVisible(true);
+        }while(check!= "stop");
     }
 
 }
