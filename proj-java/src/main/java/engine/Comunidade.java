@@ -120,8 +120,8 @@ public class Comunidade implements TADCommunity {
         String x2 = null;
         engine.Utilizador u;
         engine.Publicacao p;
-        if(this.post.containsKey(id)){
-            p=this.post.get(id);
+        if(this.post.containsKey(String.valueOf(id))){
+            p=this.post.get(String.valueOf(id));
             if(p.isAnswer()){
 
                 engine.Resposta rp = (engine.Resposta)p;
@@ -292,10 +292,10 @@ public class Comunidade implements TADCommunity {
                 N , engine.Publicacao.getComparator("MaisRecente"));
 
 
-        if(this.users.containsKey(id1) && this.users.containsKey(id2))
+        if(this.users.containsKey(String.valueOf(id1)) && this.users.containsKey(String.valueOf(id2)))
         {
-            engine.Utilizador u1 = this.users.get(id1);
-            engine.Utilizador u2 = this.users.get(id2);
+            engine.Utilizador u1 = this.users.get(String.valueOf(id1));
+            engine.Utilizador u2 = this.users.get(String.valueOf(id2));
 
             pq.populate(u1.mutualIntervention(u2).stream().
                     map(l -> this.post.get(l)).collect(Collectors.toSet()));
@@ -311,8 +311,8 @@ public class Comunidade implements TADCommunity {
     public long betterAnswer(long id) {
         Long cont = Long.valueOf(-1);
         double tmp =0;
-        if(this.post.containsKey(id)) {
-            engine.Publicacao pub = this.post.get(id);
+        if(this.post.containsKey(String.valueOf(id))) {
+            engine.Publicacao pub = this.post.get(String.valueOf(id));
             if( pub.isQuestion()){
                 engine.Pergunta ans = (engine.Pergunta)pub;
                 Set<engine.Resposta> respostas = ans.getAns().stream().map( l -> this.post.get(l)).filter(engine.Publicacao::isAnswer).map(l->(engine.Resposta)l).collect(Collectors.toSet());
@@ -358,16 +358,16 @@ public class Comunidade implements TADCommunity {
                     histtag.remove(tgx);
                     histtag.put(tgx, Integer.valueOf(count+ 1));
                 }
-
             }
         }
-        Comparator<Map.Entry<engine.Tag, Integer>> freqCmp = ((l,s) -> l.getValue().compareTo(s.getValue()));
+        Comparator<Map.Entry<engine.Tag, Integer>> freqCmp = ((l,s) -> l.getKey().compare( l.getValue() , s) );
 
         engine.GeneralizedPriorityQueue<Map.Entry<engine.Tag, Integer>> fpq = new engine.
-                    GeneralizedPriorityQueue<Map.Entry<engine.Tag, Integer>>(N,freqCmp.reversed());
+                    GeneralizedPriorityQueue<Map.Entry<engine.Tag, Integer>>(N,freqCmp);
         fpq.populate(histtag.entrySet());
+        List<Map.Entry<engine.Tag, Integer>>ll = fpq.terminateToList();
 
-        return fpq.terminateToList().stream().
+        return ll.stream().
                 map(l ->l.getKey().getId()).map(Long::valueOf).collect(Collectors.toList());
     }
 
