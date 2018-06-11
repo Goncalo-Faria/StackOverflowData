@@ -158,7 +158,7 @@ public class Comunidade implements TADCommunity {
         return l;
     }
 
-    // Query 3 works
+    // Query 3 
     public Pair<Long,Long> totalPosts(LocalDate begin, LocalDate end) {
         long question = 0;
         long answer = 0;
@@ -174,7 +174,7 @@ public class Comunidade implements TADCommunity {
         return new Pair<>(Long.valueOf(question),Long.valueOf(answer));
     }
 
-    // Query 4 works
+    // Query 4
     public List<Long> questionsWithTag(String tag, LocalDate begin, LocalDate end) {
         List<Long> st = new ArrayList<Long>();
 
@@ -193,7 +193,7 @@ public class Comunidade implements TADCommunity {
         return st;
     }
 
-    // Query 5 works
+    // Query 5
     public Pair<String, List<Long>> getUserInfo(long id) {
 
         String shortBio = null ;
@@ -218,7 +218,7 @@ public class Comunidade implements TADCommunity {
         return new Pair<>(shortBio,p);
     }
 
-    // Query 6 works
+    // Query 6 
     public List<Long> mostVotedAnswers(int N, LocalDate begin, LocalDate end) {
 
         List<engine.Publicacao> st = this.postArray.
@@ -230,13 +230,13 @@ public class Comunidade implements TADCommunity {
             N , engine.Publicacao.getComparator("MaiorScore"));
 
         pq.populate(st);
-        List<Long> g = pq.terminateToList().stream().map(engine.Publicacao::getId).map(Long::valueOf).collect(Collectors.toList());
 
-        //Collections.reverse(g);
-        return g;
+        return pq.terminateToList().stream().map(engine.Publicacao::getId).
+                    map(Long::valueOf).collect(Collectors.toList());
+
     }
 
-    // Query 7 works
+    // Query 7
     public List<Long> mostAnsweredQuestions(int N, LocalDate begin, LocalDate end) {
 
         Set<engine.Publicacao> st = this.postArray.
@@ -248,12 +248,12 @@ public class Comunidade implements TADCommunity {
 
         pq.populate(st);
 
-        List<Long> ll = pq.terminateToList().stream().map(engine.Publicacao::getId).map(Long::valueOf).collect(Collectors.toList());
-
-        return ll;
+        return pq.terminateToList().stream().
+                map(engine.Publicacao::getId).map(Long::valueOf).
+                        collect(Collectors.toList());
     }
 
-    // Query 8 works
+    // Query 8
     public List<Long> containsWord(int N, String word) {
 
         Iterator<engine.Publicacao> litr = this.postArray.descendingIterator();
@@ -333,7 +333,7 @@ public class Comunidade implements TADCommunity {
         return cont;
     }
 
-    // Query 11 works
+    // Query 11 
     public List<Long> mostUsedBestRep(int N, LocalDate begin, LocalDate end) {
 
         engine.GeneralizedPriorityQueue<engine.Utilizador> pq = new engine.GeneralizedPriorityQueue<engine.Utilizador>(

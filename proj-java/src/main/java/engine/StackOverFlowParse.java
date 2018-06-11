@@ -15,7 +15,7 @@ public class StackOverFlowParse {
         this.factory = SAXParserFactory.newInstance ();
     }
 
-    public DefaultHandler analyze( String file , DefaultHandler sax){
+    public SAXStackOverflow analyze( String file , SAXStackOverflow sax){
 
         try{
             SAXParser parser = this.factory.newSAXParser();
