@@ -373,9 +373,9 @@ public class Comunidade implements TADCommunity {
 
     public void clear(){
         //Perder o apontador para que o Garbage collector libertar a memória.
-        this.users = null;
-        this.post = null;
-        this.postArray = null;
-        this.tagconv = null;
+        this.users = new HashMap<String, engine.Utilizador>();
+        this.postArray = new TreeSet<engine.Publicacao>();
+        this.post = new HashMap<String, engine.Publicacao>();
+        this.tagconv = new HashMap<String, engine.Tag>();
     }
 }
