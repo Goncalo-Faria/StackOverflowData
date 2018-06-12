@@ -69,16 +69,16 @@ public class MvcController implements ActionListener {
     }
 
     public void show() {
-        theView.setVisible(true);
+        this.theView.setVisible(true);
     }
 
     public void hide() {
-        theView.setVisible(false);
+        this.theView.setVisible(false);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (currentQuerie) {
+        switch (this.currentQuerie) {
         case 0:Interrogacao0();
             break;
         case 1:Interrogacao1();
@@ -109,14 +109,14 @@ public class MvcController implements ActionListener {
     private void Interrogacao0() {
         String info;
         try {
-            info = theView.getInfo();
-            theModel.load(info);
-            theView.setTextSolution("Load efetuado com sucesso!\n");
+            info = this.theView.getInfo();
+            this.theModel.load(info);
+            this.theView.setTextSolution("Load efetuado com sucesso!\n");
         }
 
         catch (NumberFormatException ex) {
             System.out.println(ex);
-            theView.displayErrorMessage("You Need to Enter 1 Number");
+            this.theView.displayErrorMessage("You Need to Enter 1 Number");
         }
     }
 
@@ -124,11 +124,11 @@ public class MvcController implements ActionListener {
         long firstNumber = 0;
         try {
 
-            firstNumber = theView.getNumber();
-            theView.setPairSolution(theModel.infoFromPost(firstNumber));
+            firstNumber = this.theView.getNumber();
+            this.theView.setPairSolution(this.theModel.infoFromPost(firstNumber));
         } catch (NumberFormatException ex) {
             System.out.println(ex);
-            theView.displayErrorMessage("You Need to Enter 1 Number");
+            this.theView.displayErrorMessage("You Need to Enter 1 Number");
         }
     }
 
@@ -136,12 +136,12 @@ public class MvcController implements ActionListener {
         int firstNumber = 0;
 
         try {
-            firstNumber = theView.getNumber();
+            firstNumber = this.theView.getNumber();
 
-            theView.setListSolution(theModel.topMostActive(firstNumber));
+            this.theView.setListSolution(this.theModel.topMostActive(firstNumber));
         } catch (NumberFormatException ex) {
             System.out.println(ex);
-            theView.displayErrorMessage("You Need to Enter 1 Integers");
+            this.theView.displayErrorMessage("You Need to Enter 1 Integers");
         }
     }
 
@@ -150,14 +150,14 @@ public class MvcController implements ActionListener {
         LocalDate end;
 
         try {
-            begin = theView.getData_inicial();
-            end = theView.getData_final();
-            theView.setPairSolution(theModel.totalPosts(begin, end));
+            begin = this.theView.getData_inicial();
+            end = this.theView.getData_final();
+            this.theView.setPairSolution(this.theModel.totalPosts(begin, end));
         }
 
         catch (NumberFormatException ex) {
             System.out.println(ex);
-            theView.displayErrorMessage("You Need to Enter 2 Datas");
+            this.theView.displayErrorMessage("You Need to Enter 2 Datas");
         }
     }
 
@@ -167,28 +167,28 @@ public class MvcController implements ActionListener {
         String info;
 
         try {
-            info = theView.getInfo();
-            begin = theView.getData_inicial();
-            end = theView.getData_final();
-            theView.setListSolution(theModel.questionsWithTag(info, begin, end));
+            info = this.theView.getInfo();
+            begin = this.theView.getData_inicial();
+            end = this.theView.getData_final();
+            this.theView.setListSolution(this.theModel.questionsWithTag(info, begin, end));
         }
 
         catch (NumberFormatException ex) {
             System.out.println(ex);
-            theView.displayErrorMessage("You Need to Enter 2 Datas and 1 Tag");
+            this.theView.displayErrorMessage("You Need to Enter 2 Datas and 1 Tag");
         }
     }
 
     private void Interrogacao5() {
         Long firstNumber;
             try {
-                firstNumber = theView.getNumberid1();
-                theView.setPairSolution(theModel.getUserInfo(firstNumber));
+                firstNumber = this.theView.getNumberid1();
+                this.theView.setPairSolution(this.theModel.getUserInfo(firstNumber));
             }
 
             catch (NumberFormatException ex) {
                 System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 1 Number");
+                this.theView.displayErrorMessage("You Need to Enter 1 Number");
             }
     }
 
@@ -198,16 +198,16 @@ public class MvcController implements ActionListener {
             int firstNumber;
 
             try {
-                firstNumber = theView.getNumber();
-                begin = theView.getData_inicial();
-                end = theView.getData_final();
-                theView.setListSolution(theModel.mostVotedAnswers(firstNumber, begin, end));
+                firstNumber = this.theView.getNumber();
+                begin = this.theView.getData_inicial();
+                end = this.theView.getData_final();
+                this.theView.setListSolution(this.theModel.mostVotedAnswers(firstNumber, begin, end));
 
             }
 
             catch (NumberFormatException ex) {
                 System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 2 Datas and 1 Number");
+                this.theView.displayErrorMessage("You Need to Enter 2 Datas and 1 Number");
             }
     }
 
@@ -217,13 +217,13 @@ public class MvcController implements ActionListener {
             int firstNumber;
 
             try {
-                firstNumber = theView.getNumber();
-                begin = theView.getData_inicial();
-                end = theView.getData_final();
-                theView.setListSolution(theModel.mostAnsweredQuestions(firstNumber, begin, end));
+                firstNumber =this.theView.getNumber();
+                begin = this.theView.getData_inicial();
+                end = this.theView.getData_final();
+                this.theView.setListSolution(this.theModel.mostAnsweredQuestions(firstNumber, begin, end));
             } catch (NumberFormatException ex) {
                 System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 2 Datas and 1 Number");
+                this.theView.displayErrorMessage("You Need to Enter 2 Datas and 1 Number");
             }
     }
 
@@ -232,12 +232,12 @@ public class MvcController implements ActionListener {
             int firstNumber;
 
             try {
-                firstNumber = theView.getNumber();
-                info = theView.getInfo();
-                theView.setListSolution(theModel.containsWord(firstNumber, info));
+                firstNumber = this.theView.getNumber();
+                info = this.theView.getInfo();
+                this.theView.setListSolution(this.theModel.containsWord(firstNumber, info));
             } catch (NumberFormatException ex) {
                 System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 1 word and 1 Number");
+                this.theView.displayErrorMessage("You Need to Enter 1 word and 1 Number");
             }
     }
 
@@ -247,13 +247,13 @@ public class MvcController implements ActionListener {
             int firstNumber;
 
             try {
-                id1 = theView.getNumberid1();
-                id2 = theView.getNumberid2();
-                firstNumber = theView.getNumber();
-                theView.setListSolution(theModel.bothParticipated(firstNumber, id1, id2));
+                id1 = this.theView.getNumberid1();
+                id2 = this.theView.getNumberid2();
+                firstNumber = this.theView.getNumber();
+                this.theView.setListSolution(this.theModel.bothParticipated(firstNumber, id1, id2));
             } catch (NumberFormatException ex) {
                 System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 2 Ids and 1 Number");
+                this.theView.displayErrorMessage("You Need to Enter 2 Ids and 1 Number");
             }
     }
 
@@ -261,11 +261,11 @@ public class MvcController implements ActionListener {
         Long number;
 
         try {
-            number = theView.getNumberid1();
-            theView.setLongSolution(theModel.betterAnswer(number));
+            number = this.theView.getNumberid1();
+            this.theView.setLongSolution(this.theModel.betterAnswer(number));
         } catch (NumberFormatException ex) {
             System.out.println(ex);
-            theView.displayErrorMessage("You Need to Enter 1 Number");
+            this.theView.displayErrorMessage("You Need to Enter 1 Number");
         }
     }
 
@@ -275,13 +275,13 @@ public class MvcController implements ActionListener {
             int firstNumber;
 
             try {
-                firstNumber = theView.getNumber();
-                begin = theView.getData_inicial();
-                end = theView.getData_final();
-                theView.setListSolution(theModel.mostUsedBestRep(firstNumber, begin, end));
+                firstNumber = this.theView.getNumber();
+                begin = this.theView.getData_inicial();
+                end = this.theView.getData_final();
+                this.theView.setListSolution(this.theModel.mostUsedBestRep(firstNumber, begin, end));
             } catch (NumberFormatException ex) {
                 System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 1 Number and 2 Data");
+                this.theView.displayErrorMessage("You Need to Enter 1 Number and 2 Data");
             }
     }
 
