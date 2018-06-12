@@ -114,12 +114,12 @@ public class MvcController {
 
     public class Interrogacao0 implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            System.out.println("aa");
             String info;
 
             try {
                 info = theView.getInfo();
                 theModel.load(info);
+                theView.setTextSolution("Load efetuado com sucesso!\n");
             }
 
             catch (NumberFormatException ex) {
@@ -132,7 +132,6 @@ public class MvcController {
     // Interrogação 1
     public class Interrogacao1 implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            System.out.println("aa");
             long firstNumber = 0;
             try {
 

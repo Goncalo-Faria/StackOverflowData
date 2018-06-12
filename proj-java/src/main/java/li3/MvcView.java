@@ -210,6 +210,10 @@ public class MvcView extends JFrame {
         this.calcSolution.setText(x.toString());
     }
 
+    public void setTextSolution(String x) {
+        this.calcSolution.setText(x);
+    }
+
     public void setPairSolution(Pair x) {
         if (x.getFst() == null)
             this.calcSolution.setText("None");

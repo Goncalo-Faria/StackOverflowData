@@ -157,13 +157,16 @@ public class Main {
             System.out.println("Digite o numero da interrogação que pretende testar.\nCaso pretenda parar digite 'stop'.");
             check = x.next();
             theController.hide();
-            if(!check.equals("stop")){
+            if(!check.contains("stop")){
                 theController.setInterrogacao(check);
                 theController.show();
             }else{
                 break;
             }
         }while(true);
+        System.out.println("Program executado com sucesso.");
+        System.exit(0);
+        
     }
 
 }
