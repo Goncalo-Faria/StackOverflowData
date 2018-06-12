@@ -2,7 +2,6 @@ package li3;
 
 import java.awt.*;
 import common.Pair;
-import li3.TADCommunity;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,145 +10,109 @@ import java.util.Scanner;
 import javax.swing.*;
 
 public class MvcView extends JFrame {
-    //interface gráfica do trabalho
-
-
-    //geral
+    // interface gráfica do trabalho
+    private JPanel calcPanel;
+    // geral
     private JButton calculateButton = new JButton("Result");
     private JTextField calcSolution = new JTextField(30);
-    private JTextField numberid2  = new JTextField(10);
-    private JTextField numberid1  = new JTextField(10);
+    private JTextField numberid2 = new JTextField(10);
+    private JTextField numberid1 = new JTextField(10);
     private JTextField info = new JTextField(20);
-    private JTextField number  = new JTextField(10);
+    private JTextField number = new JTextField(10);
     private JTextField data_inicial = new JTextField(10);
     private JTextField data_final = new JTextField(10);
 
-    //primeira interrogacao
-    private JLabel interrogacao1 = new JLabel("Interrogação 1 :");
+    static private JLabel interrogacao0 = new JLabel("load :");
+    static private JLabel interrogacao1 = new JLabel("Interrogação 1 :");
+    static private JLabel interrogacao2 = new JLabel("Interrogação 2 :");
+    static private JLabel interrogacao3 = new JLabel("Interrogação 3 :");
+    static private JLabel interrogacao4 = new JLabel("Interrogação 4 :");
+    static private JLabel interrogacao5 = new JLabel("Interrogação 5 :");
+    static private JLabel interrogacao6 = new JLabel("Interrogação 6 :");
+    static private JLabel interrogacao7 = new JLabel("Interrogação 7 :");
+    static private JLabel interrogacao8 = new JLabel("Interrogação 8 :");
+    static private JLabel interrogacao9 = new JLabel("Interrogação 9 :");
+    static private JLabel interrogacao10 = new JLabel("Interrogação 10 :");
+    static private JLabel interrogacao11 = new JLabel("Interrogação 11 :");
+    static private JLabel interrogacao12 = new JLabel("Interrogação 12 :");
 
-    //segunda interrogacao
-    private JLabel interrogacao2 = new JLabel("Interrogação 2 :");
-
-    //terceira interrogacao
-    private JLabel interrogacao3 = new JLabel("Interrogação 3 :");
-
-    //quarta interrogacao
-    private JLabel interrogacao4 = new JLabel("Interrogação 4 :");
-
-    //quinta interrogacao
-    private JLabel interrogacao5 = new JLabel("Interrogação 5 :");
-
-    //sexta interrogacao
-    private JLabel interrogacao6 = new JLabel("Interrogação 6 :");
-
-    //setima interrogacao
-    private JLabel interrogacao7 = new JLabel("Interrogação 7 :");
-
-    //oitava interrogacao
-    private JLabel interrogacao8 = new JLabel("Interrogação 8 :");
-
-    //nona interrogacao
-    private JLabel interrogacao9 = new JLabel("Interrogação 9 :");
-
-    //decima interrogacao
-    private JLabel interrogacao10 = new JLabel("Interrogação 10 :");
-
-    //decima primeira interrogacao
-    private JLabel interrogacao11 = new JLabel("Interrogação 11 :");
-
-    //decima segunda interrogacao
-    private JLabel interrogacao12 = new JLabel("Interrogação 12 :");
-
-
-    public MvcView(String x) {
-
-        if (x.compareTo("1") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao1View(calcPanel);
-        }
-
-        if (x.compareTo("2") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao2View(calcPanel);
-        }
-
-        if (x.compareTo("3") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao3View(calcPanel);
-        }
-
-        if (x.compareTo("4") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao4View(calcPanel);
-        }
-        if (x.compareTo("5") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao5View(calcPanel);
-        }
-        if (x.compareTo("6") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao6View(calcPanel);
-        }
-        if (x.compareTo("7") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao7View(calcPanel);
-        }
-        if (x.compareTo("8") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao8View(calcPanel);
-        }
-        if (x.compareTo("9") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao9View(calcPanel);
-        }
-        if (x.compareTo("10") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao10View(calcPanel);
-        }
-        if (x.compareTo("11") == 0) {
-            JPanel calcPanel = new JPanel();
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(1000, 200);
-            Interrogacao11View(calcPanel);
-        }
+    public MvcView() {
+        this.calcPanel = new JPanel();
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(1000, 200);
 
     }
 
-    public void Interrogacao1View(JPanel calcPanel){
+    public void setInterrogacaoViewer(String x) {
+        try {
+            switch (Integer.valueOf(x).intValue()) {
+            case 0:
+                this.Interrogacao0View(calcPanel);
+                break;
+            case 1:
+                this.Interrogacao1View(calcPanel);
+                break;
+            case 2:
+                this.Interrogacao2View(calcPanel);
+                break;
+            case 3:
+                this.Interrogacao3View(calcPanel);
+                break;
+            case 4:
+                this.Interrogacao4View(calcPanel);
+                break;
+            case 5:
+                this.Interrogacao5View(calcPanel);
+                break;
+            case 6:
+                this.Interrogacao6View(calcPanel);
+                break;
+            case 7:
+                this.Interrogacao7View(calcPanel);
+                break;
+            case 8:
+                this.Interrogacao8View(calcPanel);
+                break;
+            case 9:
+                this.Interrogacao9View(calcPanel);
+                break;
+            case 10:
+                this.Interrogacao10View(calcPanel);
+                break;
+            case 11:
+                this.Interrogacao11View(calcPanel);
+                break;
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    public void Interrogacao0View(JPanel calcPanel) {
+        calcPanel.add(interrogacao0);
+        calcPanel.add(info);
+        calcPanel.add(calculateButton);
+        calcPanel.add(calcSolution);
+        this.add(calcPanel);
+    }
+
+    public void Interrogacao1View(JPanel calcPanel) {
         calcPanel.add(interrogacao1);
         calcPanel.add(number);
         calcPanel.add(calculateButton);
         calcPanel.add(calcSolution);
         this.add(calcPanel);
     }
-    public void Interrogacao2View(JPanel calcPanel){
+
+    public void Interrogacao2View(JPanel calcPanel) {
         calcPanel.add(interrogacao2);
         calcPanel.add(number);
         calcPanel.add(calculateButton);
         calcPanel.add(calcSolution);
         this.add(calcPanel);
     }
-    public void Interrogacao3View(JPanel calcPanel){
+
+    public void Interrogacao3View(JPanel calcPanel) {
         calcPanel.add(interrogacao3);
         calcPanel.add(data_inicial);
         calcPanel.add(data_final);
@@ -157,7 +120,8 @@ public class MvcView extends JFrame {
         calcPanel.add(calcSolution);
         this.add(calcPanel);
     }
-    public void Interrogacao4View(JPanel calcPanel){
+
+    public void Interrogacao4View(JPanel calcPanel) {
         calcPanel.add(interrogacao4);
         calcPanel.add(info);
         calcPanel.add(data_inicial);
@@ -166,7 +130,8 @@ public class MvcView extends JFrame {
         calcPanel.add(calcSolution);
         this.add(calcPanel);
     }
-    public void Interrogacao5View(JPanel calcPanel){
+
+    public void Interrogacao5View(JPanel calcPanel) {
         calcPanel.add(interrogacao5);
         calcPanel.add(numberid1);
         calcPanel.add(calculateButton);
@@ -174,7 +139,7 @@ public class MvcView extends JFrame {
         this.add(calcPanel);
     }
 
-    public void Interrogacao6View(JPanel calcPanel){
+    public void Interrogacao6View(JPanel calcPanel) {
         calcPanel.add(interrogacao7);
         calcPanel.add(number);
         calcPanel.add(data_inicial);
@@ -183,7 +148,8 @@ public class MvcView extends JFrame {
         calcPanel.add(calcSolution);
         this.add(calcPanel);
     }
-    public void Interrogacao7View(JPanel calcPanel){
+
+    public void Interrogacao7View(JPanel calcPanel) {
         calcPanel.add(interrogacao7);
         calcPanel.add(number);
         calcPanel.add(data_inicial);
@@ -192,7 +158,8 @@ public class MvcView extends JFrame {
         calcPanel.add(calcSolution);
         this.add(calcPanel);
     }
-    public void Interrogacao8View(JPanel calcPanel){
+
+    public void Interrogacao8View(JPanel calcPanel) {
         calcPanel.add(interrogacao8);
         calcPanel.add(info);
         calcPanel.add(number);
@@ -200,7 +167,8 @@ public class MvcView extends JFrame {
         calcPanel.add(calcSolution);
         this.add(calcPanel);
     }
-    public void Interrogacao9View(JPanel calcPanel){
+
+    public void Interrogacao9View(JPanel calcPanel) {
         calcPanel.add(interrogacao9);
         calcPanel.add(numberid1);
         calcPanel.add(numberid2);
@@ -209,14 +177,16 @@ public class MvcView extends JFrame {
         calcPanel.add(calcSolution);
         this.add(calcPanel);
     }
-    public void Interrogacao10View(JPanel calcPanel){
+
+    public void Interrogacao10View(JPanel calcPanel) {
         calcPanel.add(interrogacao10);
         calcPanel.add(numberid1);
         calcPanel.add(calculateButton);
         calcPanel.add(calcSolution);
         this.add(calcPanel);
     }
-    public void Interrogacao11View(JPanel calcPanel){
+
+    public void Interrogacao11View(JPanel calcPanel) {
         calcPanel.add(interrogacao11);
         calcPanel.add(number);
         calcPanel.add(data_inicial);
@@ -226,45 +196,47 @@ public class MvcView extends JFrame {
         this.add(calcPanel);
     }
 
-    public Long getNumberid1(){
+    public Long getNumberid1() {
         return Long.parseLong(numberid1.getText());
     }
 
-    public Long getNumberid2(){
+    public Long getNumberid2() {
         return Long.parseLong(numberid2.getText());
     }
 
-    public int getNumber(){
+    public int getNumber() {
         return Integer.parseInt(number.getText());
     }
 
-    public String getInfo(){
+    public String getInfo() {
         return info.getText();
     }
 
-    public LocalDate getData_inicial(){
+    public LocalDate getData_inicial() {
         return LocalDate.parse(data_inicial.getText());
     }
 
-    public LocalDate getData_final(){
+    public LocalDate getData_final() {
         return LocalDate.parse(data_final.getText());
     }
 
-    public void setLongSolution(Long x){
+    public void setLongSolution(Long x) {
         calcSolution.setText(x.toString());
     }
 
-    public void setPairSolution(Pair x){
-        if(x.getFst() == null) calcSolution.setText("None");
-        else calcSolution.setText(x.getFst().toString() + " " + x.getSnd().toString());
+    public void setPairSolution(Pair x) {
+        if (x.getFst() == null)
+            calcSolution.setText("None");
+        else
+            calcSolution.setText(x.getFst().toString() + " " + x.getSnd().toString());
     }
 
-    public void setListSolution(List x){
+    public void setListSolution(List x) {
 
         calcSolution.setText(x.toString());
     }
 
-    void addCalculateListener(ActionListener listenForCalcButton){
+    void addCalculateListener(ActionListener listenForCalcButton) {
 
         calculateButton.addActionListener(listenForCalcButton);
 
@@ -272,7 +244,7 @@ public class MvcView extends JFrame {
 
     // Open a popup that contains the error message passed
 
-    void displayErrorMessage(String errorMessage){
+    void displayErrorMessage(String errorMessage) {
 
         JOptionPane.showMessageDialog(this, errorMessage);
 

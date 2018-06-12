@@ -150,15 +150,19 @@ public class Main {
         after = System.currentTimeMillis();
         logtime.writeLog("CLEAN -> "+(after-before)+" ms");
 
+        MvcController theController = new MvcController(new engine.Comunidade());
 
         do {
             System.out.println("Digite o numero da interrogação que pretende testar.\nCaso pretenda parar digite 'stop'.");
             check = x.next();
-            MvcView theView = new MvcView(check);
-            engine.Comunidade theModel = new engine.Comunidade();
-            MvcController theController = new MvcController(theView, theModel,check);
-            theView.setVisible(true);
-        }while(check!= "stop");
+            
+            if(!check.equals("stop")){
+                theController.setInterrogacao(check);
+                theController.show();
+            }else{
+                break;
+            }
+        }while(true);
     }
 
 }
