@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Pergunta extends engine.Publicacao {
+public class Pergunta extends Publicacao {
 
     private Set<String> ans;
 

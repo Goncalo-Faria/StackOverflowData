@@ -5,15 +5,15 @@ import org.xml.sax.Attributes;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UsersSAX extends engine.SAXStackOverflow {
-    private HashMap<String, engine.Utilizador> users;
+public class UsersSAX extends SAXStackOverflow {
+    private HashMap<String, Utilizador> users;
 
     public UsersSAX(){
         super();
-        this.users = new HashMap<String, engine.Utilizador>();
+        this.users = new HashMap<String, Utilizador>();
     }
 
-    public Map<String, engine.Utilizador> getResults () {
+    public Map<String, Utilizador> getResults () {
         return this.users;
     }
 
@@ -26,6 +26,6 @@ public class UsersSAX extends engine.SAXStackOverflow {
           //      intValue() - Long.valueOf(atts.getValue("DownVotes")).intValue();
         String shortbio = atts.getValue("AboutMe");
 
-        this.users.put(id,new engine.Utilizador(id, displayname,0,0, shortbio, reputation));
+        this.users.put(id,new Utilizador(id, displayname,0,0, shortbio, reputation));
     }
 }

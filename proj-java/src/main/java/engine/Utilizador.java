@@ -94,12 +94,12 @@ public class Utilizador{
 
     public void setBacia(Map<String,Set<String>> x){this.bacia = x.entrySet().stream().collect(Collectors.toMap( l -> l.getKey(), l-> new HashSet<String>(l.getValue())));}
 
-    public void addBacia(engine.Publicacao x) {
+    public void addBacia(Publicacao x) {
 
         if ( x.getFundador().equals( this.id ) ){
 
             if (x.isAnswer()) {
-                engine.Resposta y = (engine.Resposta) x;
+                Resposta y = (Resposta) x;
                 String parentpost = y.getParentId();
 
                 if (this.bacia.containsKey(parentpost)) {

@@ -10,7 +10,7 @@ public class Publicacao implements Comparable {
     private String nome;
     private int score;
     private int comment_count;
-    private Set<engine.Tag> tags;
+    private Set<Tag> tags;
     private LocalDate data;
     private String fundador;
     static private HashMap<String, Comparator<Publicacao>> comparadores;
@@ -19,7 +19,7 @@ public class Publicacao implements Comparable {
         Publicacao.comparadores = new HashMap<String, Comparator<Publicacao>>();
         Publicacao.comparadores.put("MaisAntigo", new Comparator<Publicacao>() {
             public int compare(Publicacao x, Publicacao y) {
-                return ((engine.Publicacao) x).compareTo(y);
+                return ((Publicacao) x).compareTo(y);
             }
         });
         Publicacao.comparadores.put("MaisRecente", Publicacao.comparadores.get("MaisAntigo").reversed());
@@ -33,7 +33,7 @@ public class Publicacao implements Comparable {
 
         Publicacao.comparadores.put("MenosRespostas", new Comparator<Publicacao>() {
             public int compare(Publicacao x, Publicacao y) {
-                engine.Pergunta l = (engine.Pergunta) x, s = (engine.Pergunta) y;
+                Pergunta l = (Pergunta) x, s = (Pergunta) y;
                 Long val = Long.valueOf(l.getAnsCount());
                 return val.compareTo(Long.valueOf(s.getAnsCount()));
             }
@@ -57,7 +57,7 @@ public class Publicacao implements Comparable {
         this.score = 0;
         this.comment_count = 0;
 
-        this.tags = new HashSet<engine.Tag>();
+        this.tags = new HashSet<Tag>();
         this.data = data;
 
     }
@@ -70,7 +70,7 @@ public class Publicacao implements Comparable {
         this.comment_count = comment_count;
 
         this.data = data;
-        this.tags = new HashSet<engine.Tag>();
+        this.tags = new HashSet<Tag>();
     }
 
     public Publicacao(Publicacao x) {
@@ -100,8 +100,8 @@ public class Publicacao implements Comparable {
         return this.comment_count;
     }
 
-    public Set<engine.Tag> getTags() {
-        return this.tags.stream().map(engine.Tag::clone).collect(Collectors.toSet());
+    public Set<Tag> getTags() {
+        return this.tags.stream().map(Tag::clone).collect(Collectors.toSet());
     }
 
     public LocalDate getData() {
@@ -133,7 +133,7 @@ public class Publicacao implements Comparable {
         this.fundador = pa;
     }
 
-    public void addTag(engine.Tag x) {
+    public void addTag(Tag x) {
         if (!this.tags.contains(x))
             this.tags.add(x.clone());
     }
@@ -143,11 +143,11 @@ public class Publicacao implements Comparable {
     }
 
     boolean isQuestion() {
-        return (this instanceof engine.Pergunta);
+        return (this instanceof Pergunta);
     }
 
     boolean isAnswer() {
-        return (this instanceof engine.Resposta);
+        return (this instanceof Resposta);
     }
 
     // --------------------------------------------------------------------------------------------------------------------------

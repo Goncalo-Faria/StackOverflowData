@@ -2,7 +2,7 @@ package engine;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Resposta extends engine.Publicacao {
+public class Resposta extends Publicacao {
 
     private String parentID;
 
@@ -18,7 +18,7 @@ public class Resposta extends engine.Publicacao {
 
     public String getParentId(){return this.parentID;}
 
-    public double calculateCotacao(engine.Utilizador u){
+    public double calculateCotacao(Utilizador u){
         double rep = u.getRep();
         return rep*0.25 + this.getScore()*0.2 + this.getComment_count()*0.1 + this.getScore()*0.45;
     }

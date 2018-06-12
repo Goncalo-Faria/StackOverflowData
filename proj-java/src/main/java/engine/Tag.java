@@ -71,13 +71,13 @@ public class Tag {
     public boolean equals(Object x) {
         if (this == x)
             return true;
-        if (!(x instanceof engine.Tag))
+        if (!(x instanceof Tag))
             return false;
         Tag y = (Tag) x;
         return (y.getNome().equals(this.getNome()) && y.getId().equals((this.getId())));
     }
 
-    public int compare(Integer oc, Map.Entry<engine.Tag, Integer> other) {
+    public int compare(Integer oc, Map.Entry<Tag, Integer> other) {
         int fs = other.getValue().compareTo(oc);
 
         if (fs == 0) {
