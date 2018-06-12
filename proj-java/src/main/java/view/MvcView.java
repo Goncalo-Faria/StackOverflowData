@@ -226,7 +226,7 @@ public class MvcView extends JFrame {
         this.calcSolution.setText(x.toString());
     }
 
-    void addCalculateListener(ActionListener listenForCalcButton) {
+    public void addCalculateListener(ActionListener listenForCalcButton) {
 
         this.calculateButton.addActionListener(listenForCalcButton);
 
@@ -234,7 +234,7 @@ public class MvcView extends JFrame {
 
     // Open a popup that contains the error message passed
 
-    void displayErrorMessage(String errorMessage) {
+    public void displayErrorMessage(String errorMessage) {
 
         JOptionPane.showMessageDialog(this, errorMessage);
 
