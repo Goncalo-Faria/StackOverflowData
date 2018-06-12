@@ -18,6 +18,52 @@ public class MvcController {
     public void setInterrogacao(String x) {
 
         this.theView.setInterrogacaoViewer(x);
+        try {
+            switch (Integer.valueOf(x).intValue()) {
+            case 0:
+                this.theView.addCalculateListener(new Interrogacao0());
+                break;
+            case 1:
+                this.theView.addCalculateListener(new Interrogacao1());
+                break;
+            case 2:
+                this.theView.addCalculateListener(new Interrogacao2());
+                break;
+            case 3:
+                this.theView.addCalculateListener(new Interrogacao3());
+                break;
+            case 4:
+                this.theView.addCalculateListener(new Interrogacao4());
+                break;
+            case 5:
+                this.theView.addCalculateListener(new Interrogacao5());
+                break;
+            case 6:
+                this.theView.addCalculateListener(new Interrogacao6());
+                break;
+            case 7:
+                this.theView.addCalculateListener(new Interrogacao7());
+                break;
+            case 8:
+                this.theView.addCalculateListener(new Interrogacao8());
+                break;
+            case 9:
+                this.theView.addCalculateListener(new Interrogacao9());
+                break;
+            case 10:
+                this.theView.addCalculateListener(new Interrogacao10());
+                break;
+            case 11:
+                this.theView.addCalculateListener(new Interrogacao11());
+                break;
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+
+
+
+
         if (x.equals("0")) {
             this.theView.addCalculateListener(new Interrogacao0());
         }
