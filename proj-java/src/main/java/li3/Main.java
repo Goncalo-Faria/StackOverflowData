@@ -153,9 +153,10 @@ public class Main {
         MvcController theController = new MvcController(new engine.Comunidade());
 
         do {
+           
             System.out.println("Digite o numero da interrogação que pretende testar.\nCaso pretenda parar digite 'stop'.");
             check = x.next();
-            
+            theController.hide();
             if(!check.equals("stop")){
                 theController.setInterrogacao(check);
                 theController.show();

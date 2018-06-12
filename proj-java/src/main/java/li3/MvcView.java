@@ -13,6 +13,15 @@ public class MvcView extends JFrame {
     // interface gráfica do trabalho
     private JPanel calcPanel;
 
+    private JButton calculateButton = new JButton("Result");
+    private JTextField calcSolution = new JTextField(30);
+    private JTextField numberid2 = new JTextField(10);
+    private JTextField numberid1 = new JTextField(10);
+    private JTextField info = new JTextField(20);
+    private JTextField number = new JTextField(10);
+    private JTextField data_inicial = new JTextField(10);
+    private JTextField data_final = new JTextField(10);
+
     public MvcView() {
         this.calcPanel = new JPanel();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,155 +76,155 @@ public class MvcView extends JFrame {
 
     public void Interrogacao0View(JPanel calcPanel) {
         calcPanel.add(new JLabel("load :"));
-        calcPanel.add(new JTextField(20));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.info);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao1View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 1 :"));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.number);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao2View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 2 :"));
-        calcPanel.add(new JTextField(10);
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.number);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao3View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 3 :"));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.data_inicial);
+        calcPanel.add(this.data_final);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao4View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 4 :"));
-        calcPanel.add(new JTextField(20));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.info);
+        calcPanel.add(this.data_inicial);
+        calcPanel.add(this.data_final);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao5View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 5 :"));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.numberid1);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao6View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 6 :"));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.number);
+        calcPanel.add(this.data_inicial);
+        calcPanel.add(this.data_final);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao7View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 7 :"));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.number);
+        calcPanel.add(this.data_inicial);
+        calcPanel.add(this.data_final);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao8View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 8 :"));
-        calcPanel.add(new JTextField(20));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.info);
+        calcPanel.add(this.number);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao9View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 9 :"));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JTextField(10)id2);
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.numberid1);
+        calcPanel.add(this.numberid2);
+        calcPanel.add(this.number);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao10View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 10 :"));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.numberid1);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public void Interrogacao11View(JPanel calcPanel) {
         calcPanel.add(new JLabel("Interrogação 11 :"));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JTextField(10));
-        calcPanel.add(new JButton("Result"));
-        calcPanel.add(new JTextField(30));
+        calcPanel.add(this.number);
+        calcPanel.add(this.data_inicial);
+        calcPanel.add(this.data_final);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
         this.add(calcPanel);
     }
 
     public Long getNumberid1() {
-        return Long.parseLong(new JTextField(10).getText());
+        return Long.parseLong(this.numberid1.getText());
     }
 
     public Long getNumberid2() {
-        return Long.parseLong(new JTextField(10)id2.getText());
+        return Long.parseLong(this.numberid2.getText());
     }
 
     public int getNumber() {
-        return Integer.parseInt(new JTextField(10).getText());
+        return Integer.parseInt(this.number.getText());
     }
 
     public String getInfo() {
-        return new JTextField(20).getText();
+        return this.info.getText();
     }
 
     public LocalDate getData_inicial() {
-        return LocalDate.parse(new JTextField(10).getText());
+        return LocalDate.parse(this.data_inicial.getText());
     }
 
     public LocalDate getData_final() {
-        return LocalDate.parse(new JTextField(10).getText());
+        return LocalDate.parse(this.data_final.getText());
     }
 
     public void setLongSolution(Long x) {
-        new JTextField(30).setText(x.toString());
+        this.calcSolution.setText(x.toString());
     }
 
     public void setPairSolution(Pair x) {
         if (x.getFst() == null)
-            new JTextField(30).setText("None");
+            this.calcSolution.setText("None");
         else
-            new JTextField(30).setText(x.getFst().toString() + " " + x.getSnd().toString());
+            this.calcSolution.setText(x.getFst().toString() + " " + x.getSnd().toString());
     }
 
     public void setListSolution(List x) {
 
-        new JTextField(30).setText(x.toString());
+        this.calcSolution.setText(x.toString());
     }
 
     void addCalculateListener(ActionListener listenForCalcButton) {
 
-        new JButton("Result").addActionListener(listenForCalcButton);
+        this.calculateButton.addActionListener(listenForCalcButton);
 
     }
 

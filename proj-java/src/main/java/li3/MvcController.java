@@ -16,7 +16,8 @@ public class MvcController {
     }
 
     public void setInterrogacao(String x) {
-
+        this.hide();
+        this.theView = new MvcView();
         this.theView.setInterrogacaoViewer(x);
         try {
             switch (Integer.valueOf(x).intValue()) {
