@@ -3,6 +3,7 @@ package li3;
 import common.MyLog;
 import common.Pair;
 import engine.Comunidade;
+import controller.MvcController;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -150,7 +151,7 @@ public class Main {
         after = System.currentTimeMillis();
         logtime.writeLog("CLEAN -> "+(after-before)+" ms");
 
-        MvcController theController = new MvcController(new engine.Comunidade());
+        MvcController theController = new MvcController(new Comunidade());
 
         do {
            

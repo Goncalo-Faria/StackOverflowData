@@ -1,4 +1,7 @@
-package li3;
+package controller;
+
+import li3.TADCommunity;
+import view.MvcView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

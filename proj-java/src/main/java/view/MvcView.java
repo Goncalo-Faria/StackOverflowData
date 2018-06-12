@@ -1,4 +1,4 @@
-package li3;
+package view;
 
 import java.awt.*;
 import common.Pair;
