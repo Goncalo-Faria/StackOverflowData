@@ -68,6 +68,9 @@ public class MvcView extends JFrame {
             case 11:
                 this.Interrogacao11View(calcPanel);
                 break;
+            case 12:
+                this.Interrogacao12View(calcPanel);
+                break;
             }
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -177,6 +180,13 @@ public class MvcView extends JFrame {
         calcPanel.add(this.number);
         calcPanel.add(this.data_inicial);
         calcPanel.add(this.data_final);
+        calcPanel.add(this.calculateButton);
+        calcPanel.add(this.calcSolution);
+        this.add(calcPanel);
+    }
+
+    public void Interrogacao12View(JPanel calcPanel) {
+        calcPanel.add(new JLabel("Clear :"));
         calcPanel.add(this.calculateButton);
         calcPanel.add(this.calcSolution);
         this.add(calcPanel);

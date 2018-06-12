@@ -62,6 +62,9 @@ public class MvcController implements ActionListener {
             case 11:
                 this.theView.addCalculateListener(this);
                 break;
+            case 12:
+                this.theView.addCalculateListener(this);
+                break;
             }
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -103,6 +106,7 @@ public class MvcController implements ActionListener {
             break;
         case 11:Interrogacao11();
             break;
+        case 12:Interrogacao12();
         }
     }
 
@@ -283,6 +287,19 @@ public class MvcController implements ActionListener {
                 System.out.println(ex);
                 this.theView.displayErrorMessage("You Need to Enter 1 Number and 2 Data");
             }
+    }
+
+    private void Interrogacao12() {
+        String info;
+        try {
+            this.theModel.clear();
+            this.theView.setTextSolution("Delete efetuado com sucesso!\n");
+        }
+
+        catch (NumberFormatException ex) {
+            System.out.println(ex);
+            this.theView.displayErrorMessage("You Need to Enter 1 Number");
+        }
     }
 
 }
