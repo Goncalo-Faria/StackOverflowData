@@ -7,10 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 
-public class MvcController {
+public class MvcController implements ActionListener {
     // Faz com que o View e o Model(TadCommunity) trabalhem em sintonia
     private MvcView theView;
     private TADCommunity theModel;
+    private int currentQuerie;
 
     public MvcController(TADCommunity theModel) {
 
@@ -22,43 +23,44 @@ public class MvcController {
         this.hide();
         this.theView = new MvcView();
         this.theView.setInterrogacaoViewer(x);
+        this.currentQuerie = Integer.valueOf(x).intValue();
         try {
-            switch (Integer.valueOf(x).intValue()) {
+            switch (this.currentQuerie) {
             case 0:
-                this.theView.addCalculateListener(new Interrogacao0());
+                this.theView.addCalculateListener(this);
                 break;
             case 1:
-                this.theView.addCalculateListener(new Interrogacao1());
+                this.theView.addCalculateListener(this);
                 break;
             case 2:
-                this.theView.addCalculateListener(new Interrogacao2());
+                this.theView.addCalculateListener(this);
                 break;
             case 3:
-                this.theView.addCalculateListener(new Interrogacao3());
+                this.theView.addCalculateListener(this);
                 break;
             case 4:
-                this.theView.addCalculateListener(new Interrogacao4());
+                this.theView.addCalculateListener(this);
                 break;
             case 5:
-                this.theView.addCalculateListener(new Interrogacao5());
+                this.theView.addCalculateListener(this);
                 break;
             case 6:
-                this.theView.addCalculateListener(new Interrogacao6());
+                this.theView.addCalculateListener(this);
                 break;
             case 7:
-                this.theView.addCalculateListener(new Interrogacao7());
+                this.theView.addCalculateListener(this);
                 break;
             case 8:
-                this.theView.addCalculateListener(new Interrogacao8());
+                this.theView.addCalculateListener(this);
                 break;
             case 9:
-                this.theView.addCalculateListener(new Interrogacao9());
+                this.theView.addCalculateListener(this);
                 break;
             case 10:
-                this.theView.addCalculateListener(new Interrogacao10());
+                this.theView.addCalculateListener(this);
                 break;
             case 11:
-                this.theView.addCalculateListener(new Interrogacao11());
+                this.theView.addCalculateListener(this);
                 break;
             }
         } catch (Exception e) {
@@ -74,104 +76,111 @@ public class MvcController {
         theView.setVisible(false);
     }
 
-    public class Interrogacao0 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            String info;
-
-            try {
-                info = theView.getInfo();
-                theModel.load(info);
-                theView.setTextSolution("Load efetuado com sucesso!\n");
-            }
-
-            catch (NumberFormatException ex) {
-                System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 1 Number");
-            }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (currentQuerie) {
+        case 0:Interrogacao0();
+            break;
+        case 1:Interrogacao1();
+            break;
+        case 2:Interrogacao2();
+            break;
+        case 3:Interrogacao3();
+            break;
+        case 4:Interrogacao4();
+            break;
+        case 5:Interrogacao5();
+            break;
+        case 6:Interrogacao6();
+            break;
+        case 7:Interrogacao7();
+            break;
+        case 8:Interrogacao8();
+            break;
+        case 9:Interrogacao9();
+            break;
+        case 10:Interrogacao10();
+            break;
+        case 11:Interrogacao11();
+            break;
         }
     }
 
-    // Interrogação 1
-    public class Interrogacao1 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            long firstNumber = 0;
-            try {
+    private void Interrogacao0() {
+        String info;
+        try {
+            info = theView.getInfo();
+            theModel.load(info);
+            theView.setTextSolution("Load efetuado com sucesso!\n");
+        }
 
-                firstNumber = theView.getNumber();
-                theView.setPairSolution(theModel.infoFromPost(firstNumber));
-            }
-
-            catch (NumberFormatException ex) {
-                System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 1 Number");
-            }
+        catch (NumberFormatException ex) {
+            System.out.println(ex);
+            theView.displayErrorMessage("You Need to Enter 1 Number");
         }
     }
 
-    // Interrogação 2
-    public class Interrogacao2 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
+    private void Interrogacao1() {
+        long firstNumber = 0;
+        try {
 
-            int firstNumber = 0;
-
-            try {
-                firstNumber = theView.getNumber();
-
-                theView.setListSolution(theModel.topMostActive(firstNumber));
-            } catch (NumberFormatException ex) {
-                System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 1 Integers");
-            }
+            firstNumber = theView.getNumber();
+            theView.setPairSolution(theModel.infoFromPost(firstNumber));
+        } catch (NumberFormatException ex) {
+            System.out.println(ex);
+            theView.displayErrorMessage("You Need to Enter 1 Number");
         }
     }
 
-    // Interrogação 3
-    public class Interrogacao3 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
+    private void Interrogacao2() {
+        int firstNumber = 0;
 
-            LocalDate begin;
-            LocalDate end;
+        try {
+            firstNumber = theView.getNumber();
 
-            try {
-                begin = theView.getData_inicial();
-                end = theView.getData_final();
-                theView.setPairSolution(theModel.totalPosts(begin, end));
-            }
-
-            catch (NumberFormatException ex) {
-                System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 2 Datas");
-            }
+            theView.setListSolution(theModel.topMostActive(firstNumber));
+        } catch (NumberFormatException ex) {
+            System.out.println(ex);
+            theView.displayErrorMessage("You Need to Enter 1 Integers");
         }
     }
 
-    // Interrogação 4
-    public class Interrogacao4 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
+    private void Interrogacao3() {
+        LocalDate begin;
+        LocalDate end;
 
-            LocalDate begin;
-            LocalDate end;
-            String info;
+        try {
+            begin = theView.getData_inicial();
+            end = theView.getData_final();
+            theView.setPairSolution(theModel.totalPosts(begin, end));
+        }
 
-            try {
-                info = theView.getInfo();
-                begin = theView.getData_inicial();
-                end = theView.getData_final();
-                theView.setListSolution(theModel.questionsWithTag(info, begin, end));
-            }
-
-            catch (NumberFormatException ex) {
-                System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 2 Datas and 1 Tag");
-            }
+        catch (NumberFormatException ex) {
+            System.out.println(ex);
+            theView.displayErrorMessage("You Need to Enter 2 Datas");
         }
     }
 
-    // Interrogação 5
-    public class Interrogacao5 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
+    private void Interrogacao4() {
+        LocalDate begin;
+        LocalDate end;
+        String info;
 
-            Long firstNumber;
+        try {
+            info = theView.getInfo();
+            begin = theView.getData_inicial();
+            end = theView.getData_final();
+            theView.setListSolution(theModel.questionsWithTag(info, begin, end));
+        }
+
+        catch (NumberFormatException ex) {
+            System.out.println(ex);
+            theView.displayErrorMessage("You Need to Enter 2 Datas and 1 Tag");
+        }
+    }
+
+    private void Interrogacao5() {
+        Long firstNumber;
             try {
                 firstNumber = theView.getNumberid1();
                 theView.setPairSolution(theModel.getUserInfo(firstNumber));
@@ -181,15 +190,10 @@ public class MvcController {
                 System.out.println(ex);
                 theView.displayErrorMessage("You Need to Enter 1 Number");
             }
-        }
     }
 
-    // Interrogação 6
-    public class Interrogacao6 implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-
-            LocalDate begin;
+    private void Interrogacao6() {
+        LocalDate begin;
             LocalDate end;
             int firstNumber;
 
@@ -205,14 +209,10 @@ public class MvcController {
                 System.out.println(ex);
                 theView.displayErrorMessage("You Need to Enter 2 Datas and 1 Number");
             }
-        }
     }
 
-    // Interrogação 7
-    public class Interrogacao7 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-
-            LocalDate begin;
+    private void Interrogacao7() {
+        LocalDate begin;
             LocalDate end;
             int firstNumber;
 
@@ -225,14 +225,10 @@ public class MvcController {
                 System.out.println(ex);
                 theView.displayErrorMessage("You Need to Enter 2 Datas and 1 Number");
             }
-        }
     }
 
-    // Interrogação 8
-    public class Interrogacao8 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-
-            String info;
+    private void Interrogacao8() {
+        String info;
             int firstNumber;
 
             try {
@@ -243,14 +239,10 @@ public class MvcController {
                 System.out.println(ex);
                 theView.displayErrorMessage("You Need to Enter 1 word and 1 Number");
             }
-        }
     }
 
-    // Interrogação 9
-    public class Interrogacao9 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-
-            Long id1;
+    private void Interrogacao9() {
+        Long id1;
             Long id2;
             int firstNumber;
 
@@ -263,30 +255,22 @@ public class MvcController {
                 System.out.println(ex);
                 theView.displayErrorMessage("You Need to Enter 2 Ids and 1 Number");
             }
+    }
+
+    private void Interrogacao10() {
+        Long number;
+
+        try {
+            number = theView.getNumberid1();
+            theView.setLongSolution(theModel.betterAnswer(number));
+        } catch (NumberFormatException ex) {
+            System.out.println(ex);
+            theView.displayErrorMessage("You Need to Enter 1 Number");
         }
     }
 
-    // Interrogação 10
-    public class Interrogacao10 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-
-            Long number;
-
-            try {
-                number = theView.getNumberid1();
-                theView.setLongSolution(theModel.betterAnswer(number));
-            } catch (NumberFormatException ex) {
-                System.out.println(ex);
-                theView.displayErrorMessage("You Need to Enter 1 Number");
-            }
-        }
-    }
-
-    // Interrogação 11
-    public class Interrogacao11 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-
-            LocalDate begin;
+    private void Interrogacao11() {
+        LocalDate begin;
             LocalDate end;
             int firstNumber;
 
@@ -299,6 +283,6 @@ public class MvcController {
                 System.out.println(ex);
                 theView.displayErrorMessage("You Need to Enter 1 Number and 2 Data");
             }
-        }
     }
+
 }
