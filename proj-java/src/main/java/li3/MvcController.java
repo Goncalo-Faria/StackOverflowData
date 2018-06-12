@@ -61,47 +61,6 @@ public class MvcController {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
-
-
-
-
-        if (x.equals("0")) {
-            this.theView.addCalculateListener(new Interrogacao0());
-        }
-
-        if (x.equals("1")) {
-            this.theView.addCalculateListener(new Interrogacao1());
-        }
-        if (x.equals("2")) {
-            this.theView.addCalculateListener(new Interrogacao2());
-        }
-        if (x.equals("3")) {
-            this.theView.addCalculateListener(new Interrogacao3());
-        }
-        if (x.equals("4")) {
-            this.theView.addCalculateListener(new Interrogacao4());
-        }
-        if (x.equals("5")) {
-            this.theView.addCalculateListener(new Interrogacao5());
-        }
-        if (x.equals("6")) {
-            this.theView.addCalculateListener(new Interrogacao6());
-        }
-        if (x.equals("7")) {
-            this.theView.addCalculateListener(new Interrogacao7());
-        }
-        if (x.equals("8")) {
-            this.theView.addCalculateListener(new Interrogacao8());
-        }
-        if (x.equals("9")) {
-            this.theView.addCalculateListener(new Interrogacao9());
-        }
-        if (x.equals("10")) {
-            this.theView.addCalculateListener(new Interrogacao10());
-        }
-        if (x.equals("11")) {
-            this.theView.addCalculateListener(new Interrogacao11());
-        }
     }
 
     public void show() {
