@@ -45,6 +45,9 @@ public class Publicacao implements Comparable {
         return Publicacao.comparadores.get(name);
     }
 
+    /**
+     * Construtor parametrisado de Publicacao.
+     */
     public Publicacao(LocalDate data, int sign) {
         if (sign < 0) {
             this.id = "0";
@@ -62,6 +65,9 @@ public class Publicacao implements Comparable {
 
     }
 
+    /**
+     * Construtor parametrisado de Publicacao.
+     */
     public Publicacao(String id, String nome, int score, int comment_count, LocalDate data, String fundador) {
         this.id = id;
         this.fundador = fundador;
@@ -73,6 +79,9 @@ public class Publicacao implements Comparable {
         this.tags = new HashSet<Tag>();
     }
 
+    /**
+     * Construtor de cópia Publicacao.
+     */
     public Publicacao(Publicacao x) {
         this.id = x.getId();
         this.fundador = x.getFundador();
@@ -84,77 +93,131 @@ public class Publicacao implements Comparable {
     }
 
     // Getters!----------------------------------------------------------------------------------------------------------------
+    /**
+     * Obtêm o identifador.
+     */
     public String getId() {
         return this.id;
     }
 
+     /**
+     * Obtêm o nome.
+     */
     public String getNome() {
         return this.nome;
     }
 
+     /**
+     * Obtêm a Classificação.
+     */
     public int getScore() {
         return this.score;
     }
 
+     /**
+     * Obtêm o número de comentários.
+     */
     public int getComment_count() {
         return this.comment_count;
     }
 
+     /**
+     * Obtêm o conjunto de tags.
+     */
     public Set<Tag> getTags() {
         return this.tags.stream().map(Tag::clone).collect(Collectors.toSet());
     }
 
+     /**
+     * Obtêm a data de criação.
+     */
     public LocalDate getData() {
         return this.data;
     }
 
+     /**
+     * Obtêm o identifador do fundador.
+     */
     public String getFundador() {
         return this.fundador;
     }
 
     // Setterss!-----------------------------------------------------------------------------------------------------------------
+     /**
+     * Atribui um identifador.
+     */
     void setId(String x) {
         this.id = x;
     }
 
+    /**
+     * Atribui um nome.
+     */
     void setNome(String x) {
         this.nome = x;
     }
 
+    /**
+     * Atribui uma classificão.
+     */
     void setScore(int x) {
         this.score = x;
     }
 
+    /**
+     * Atribui um número de comentários.
+     */
     void setComment_count(int x) {
         this.comment_count = x;
     }
 
+    /**
+     * Atribui o identifador do fundador.
+     */
     public void setFundador(String pa) {
         this.fundador = pa;
     }
 
+    /**
+     * Adiciona uma tag.
+     */
     public void addTag(Tag x) {
         if (!this.tags.contains(x))
             this.tags.add(x.clone());
     }
 
+    /**
+     * Atribui uma Data.
+     */
     void setData(LocalDate x) {
         this.data = x;
     }
 
+    /**
+     * Verifica se é questão.
+     */
     boolean isQuestion() {
         return (this instanceof Pergunta);
     }
 
+    /**
+     * Verifica se é reposta.
+     */
     boolean isAnswer() {
         return (this instanceof Resposta);
     }
 
     // --------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Faz uma cópia.
+     */
     public Publicacao clone() {
         return new Publicacao(this);
     }
 
+    /**
+     * Verifica a igualdade de objetos.
+     */
     public boolean equals(Object x) {
         if (x == this)
             return true;
@@ -168,6 +231,9 @@ public class Publicacao implements Comparable {
                 && y.getTags().containsAll(this.tags));
     }
 
+    /**
+     * Ordem natural.
+     */
     public int compareTo(Object x) {
 
         if (!(x instanceof Publicacao))
