@@ -7,18 +7,32 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 
+/**
+ * Teste para a classe MvcController.
+ *
+ * @author  Guilherme Viveiros e Gonçalo Faria
+ * @version 1
+ */
 public class MvcController implements ActionListener {
     // Faz com que o View e o Model(TadCommunity) trabalhem em sintonia
     private MvcView theView;
     private TADCommunity theModel;
     private int currentQuerie;
 
+    /**
+     * Construtor por parametro
+     * @param TADCommunity
+     */
     public MvcController(TADCommunity theModel) {
 
         this.theView = new MvcView();
         this.theModel = theModel;
     }
 
+    /**
+     * Recebe o numero da interrogacao , inicializando-a no View
+     * @param String
+     */
     public void setInterrogacao(String x) {
         this.hide();
         this.theView = new MvcView();
@@ -79,7 +93,10 @@ public class MvcController implements ActionListener {
         this.theView.setVisible(false);
     }
 
-    @Override
+    /**
+     * Inicializa a respetiva Interrogação
+     * @param Action
+     */
     public void actionPerformed(ActionEvent e) {
         switch (this.currentQuerie) {
         case 0:Interrogacao0();
@@ -106,10 +123,13 @@ public class MvcController implements ActionListener {
             break;
         case 11:Interrogacao11();
             break;
-        case 12:Interrogacao12();
+        case 12:clear();
         }
     }
 
+    /**
+     * Executa o load
+     */
     private void Interrogacao0() {
         String info;
         try {
@@ -124,6 +144,9 @@ public class MvcController implements ActionListener {
         }
     }
 
+    /**
+     * Executa a Interrogacao1 através dos parametros recebidos na interface
+     */
     private void Interrogacao1() {
         long firstNumber = 0;
         try {
@@ -136,6 +159,9 @@ public class MvcController implements ActionListener {
         }
     }
 
+    /**
+     * Executa a Interrogacao2 através dos parametros recebidos na interface
+     */
     private void Interrogacao2() {
         int firstNumber = 0;
 
@@ -149,6 +175,9 @@ public class MvcController implements ActionListener {
         }
     }
 
+    /**
+     * Executa a Interrogacao3 através dos parametros recebidos na interface
+     */
     private void Interrogacao3() {
         LocalDate begin;
         LocalDate end;
@@ -165,6 +194,9 @@ public class MvcController implements ActionListener {
         }
     }
 
+    /**
+     * Executa a Interrogacao4 através dos parametros recebidos na interface
+     */
     private void Interrogacao4() {
         LocalDate begin;
         LocalDate end;
@@ -183,6 +215,9 @@ public class MvcController implements ActionListener {
         }
     }
 
+    /**
+     * Executa a Interrogacao5 através dos parametros recebidos na interface
+     */
     private void Interrogacao5() {
         Long firstNumber;
             try {
@@ -196,6 +231,9 @@ public class MvcController implements ActionListener {
             }
     }
 
+    /**
+     * Executa a Interrogacao6 através dos parametros recebidos na interface
+     */
     private void Interrogacao6() {
         LocalDate begin;
             LocalDate end;
@@ -215,6 +253,9 @@ public class MvcController implements ActionListener {
             }
     }
 
+    /**
+     * Executa a Interrogacao7 através dos parametros recebidos na interface
+     */
     private void Interrogacao7() {
         LocalDate begin;
             LocalDate end;
@@ -231,6 +272,9 @@ public class MvcController implements ActionListener {
             }
     }
 
+    /**
+     * Executa a Interrogacao8 através dos parametros recebidos na interface
+     */
     private void Interrogacao8() {
         String info;
             int firstNumber;
@@ -245,6 +289,9 @@ public class MvcController implements ActionListener {
             }
     }
 
+    /**
+     * Executa a Interrogacao9 através dos parametros recebidos na interface
+     */
     private void Interrogacao9() {
         Long id1;
             Long id2;
@@ -261,6 +308,9 @@ public class MvcController implements ActionListener {
             }
     }
 
+    /**
+     * Executa a Interrogacao10 através dos parametros recebidos na interface
+     */
     private void Interrogacao10() {
         Long number;
 
@@ -273,6 +323,9 @@ public class MvcController implements ActionListener {
         }
     }
 
+    /**
+     * Executa a Interrogacao11 através dos parametros recebidos na interface
+     */
     private void Interrogacao11() {
         LocalDate begin;
             LocalDate end;
@@ -289,8 +342,10 @@ public class MvcController implements ActionListener {
             }
     }
 
-    private void Interrogacao12() {
-        String info;
+    /**
+     * Executa o clear
+     */
+    private void clear() {
         try {
             this.theModel.clear();
             this.theView.setTextSolution("Delete efetuado com sucesso!\n");
